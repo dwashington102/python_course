@@ -29,7 +29,7 @@ while (x<=y):
 		x+=1
 		loop+=1
 	else:
-		print('Thats all folks')
+		print('That\'s all folks')
 		exit(0)
 
 
