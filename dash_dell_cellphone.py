@@ -8,8 +8,10 @@
 # Calculate the payment owed for a customer based on input from the customer's text message usage for the month
 
 # Define GLOBAL_CONSTANT variables
+BASE_MSG = 60
 BASE_RATE = 5.00            # Defines monthly rate of $5 for each customer. Provides up to 60 free messages per month
-TIER1_MSG = 119
+TIER1_MSG = 180 - 61             # Used to set the
+TIER2_MSG = 181
 RATE_MSG_TIER2 = .10        # Rate structure charge .10 per messages above 180
 RATE_MSG_TIER1 = .05  # Rate structure charge .05 per message when number of messages is >= 61 and <= 181
 TAX_RATE = .12               # Federal, state, and local taxes add a total of 12 percent to each bill
@@ -28,18 +30,22 @@ tier2_msg_overage = 0
 # Gather Global Variables
 msg_total= float(input('Numbers of messages sent for the month:  ')) #User input gathering number of messages for month
 msg_total_int = int(msg_total)                  # Convert msg_total to int. because the cannot be a .5 of a message
+print('\nBASE Services allows 60 messages at no cost.')
+print('TIER1 Pricing charges .05 cents per message after 60 free messages.')
+print('TIER2 Pricing charges .10 cents per message starting at message number 181.')
 
-if msg_total_int < 60:
+if msg_total_int < BASE_MSG:
     base_tot_tax = float(BASE_RATE * TAX_RATE)
     base_tot_due = BASE_RATE + base_tot_tax
 
     # Print output to console
     print("\nTotal Monthly Cost: ${:.2f}".format(base_tot_due))
     print("\nItemized Bill:\nBASE Rate: ${:.2f}".format(BASE_RATE))
+    print("Overage Rate: $0.00")
     print("Tax: ${:.2f}".format(base_tot_tax))
 
-elif msg_total_int < 181:
-    tier1_msg_overage = msg_total_int - 60
+elif msg_total_int < TIER2_MSG:
+    tier1_msg_overage = msg_total_int - BASE_MSG
     tier1_overage_rate = float(tier1_msg_overage * .05)
     tier1_tot_tax = float((BASE_RATE + tier1_overage_rate) * TAX_RATE)
     tier1_tot_due = float(BASE_RATE + tier1_overage_rate + tier1_tot_tax)
