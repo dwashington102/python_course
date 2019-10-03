@@ -19,6 +19,7 @@ def main():
     #Print 1st year tuition and % of increase for year 2
     print('Tuition Year ', current_yr, ': $', format(tuition, '.2f'), sep='', end='')
     print('\tNext Year Expected Increase: {:.2%}'.format(TUITION_INC_YR2))
+
     # Calling function that will print the projected tuition cost along with following year's pct of increase
     tuition_cost(current_yr, tuition)
     display_footer()
@@ -26,8 +27,8 @@ def main():
 # Compute and print remaining years
 def tuition_cost(current_yr, tuition):
     next_year_inc_pct = TUITION_INC_YR2 + TUITION_INC_PCT
+    current_yr_max = current_yr + 10
     current_yr += 1
-    current_yr_max = current_yr + 9
     for current_yr in range(current_yr,current_yr_max):
         tuition = tuition * (1 + next_year_inc_pct)
         print('Tuition Year ', current_yr, ': $', format(tuition, '.2f'), sep='', end='')
