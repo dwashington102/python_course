@@ -28,6 +28,9 @@ def main():
     myfile = open('input_file.txt', 'r')
     display_header(myfile)
 
+    get_kbbras1(myfile)
+    myfile.seek(0)
+
     get_host(myfile)
     myfile.seek(0)
 
@@ -52,9 +55,6 @@ def main():
     get_chome(myfile)
     myfile.seek(0)
 
-    get_kbbras1(myfile)
-    myfile.seek(0)
-
     get_ipaddr(myfile)
     myfile.seek(0)
 
@@ -62,6 +62,12 @@ def main():
     myfile.seek(0)
 
     get_msindex(myfile)
+    myfile.seek(0)
+
+    get_protocol(myfile)
+    myfile.seek(0)
+
+    get_cms(myfile)
     myfile.seek(0)
 
 
@@ -79,6 +85,57 @@ def display_header(myfile):
 def display_footer():
     print(HEADER_FOOTER_CHAR * 70)
 
+
+def get_cms(myfile):
+    itmemptylist = []
+    for my_line in myfile:
+        if re.search(SEARCH_PROTOCOL, my_line):
+            itmemptylist.append(my_line)
+        else:
+            pass
+    a = len(itmemptylist)
+    if a <= 0:
+        print("\nTEMS Connection NOT FOUND")
+    else:
+        itmout = itmemptylist.pop(0)
+        itmout = re.sub('\n', '', itmout)
+        itmout = re.sub('\(.*\).*="', '', itmout)
+        print("\nAgent Configured to connect to TEMS:\n", itmout) 
+
+def get_protocol(myfile):
+    itmemptylist = []
+    for my_line in myfile:
+        if re.search(SEARCH_PROTOCOL, my_line):
+            itmemptylist.append(my_line)
+        else:
+            pass
+    a = len(itmemptylist)
+    if a <= 0:
+        print("\nKDC_FAMILIES NOT FOUND")
+    else:
+        itmout = itmemptylist.pop(0)
+        itmout = re.sub('\n', '', itmout)
+        itmout = re.sub('\(.*\).*="', '', itmout)
+        print("\nKDC_FAMILIES Network Protocol Setting:\n", itmout) 
+    
+
+
+def get_dynamic(myfile):
+    itmemptylist = []
+    for my_line in myfile:
+        if re.search(SEARCH_DYNAMIC, my_line):
+            itmemptylist.append(my_line)
+        else:
+            pass
+    a = len(itmemptylist)
+    if a <= 0:
+        print("Dynamic debug trace not set")
+    else:
+        itmout = itmemptylist.pop(0)
+        itmout = re.sub('\n', '', itmout)
+        print("Dynamic Trace Setting:", itmout) 
+
+
 def get_msindex(myfile):
     itmemptylist = []
     for my_line in myfile:
@@ -90,7 +147,7 @@ def get_msindex(myfile):
     if a <= 0:
         print("Monitoring Agent registration with Monitoring Service Index NOT FOUND\n")
     else:
-        print("Monitoring Service Index Ports:")
+        print("Agent Registered with Monitoring Service Index Using Ports:")
         for itmout in itmemptylist:
             itmout = re.sub('\n', '', itmout)
             itmout = re.sub('\(.*\)\slistening:\s', '', itmout)
@@ -108,9 +165,9 @@ def get_assignport(myfile):
     if a <= 0:
         print("AssignPort: NOT FOUND")
     else:
-            itmout = itmemptylist.pop(0)
-            itmout = re.sub('^.*AssignPort\"\)\s', '', itmout)
-            print("LISTENING PORT:", itmout) 
+        itmout = itmemptylist.pop(0)
+        itmout = re.sub('^.*AssignPort\"\)\s', '', itmout)
+        print("LISTENING PORT:", itmout) 
 
 
 def get_ipaddr(myfile):
@@ -136,6 +193,7 @@ def get_ipaddr(myfile):
 
 
 def get_kbbras1(myfile):
+    print(HEADER_FOOTER_CHAR * 70)
     itmemptylist = []
     for my_line in myfile:
         if re.search(SEARCH_KBBRAS1, my_line):
@@ -150,6 +208,8 @@ def get_kbbras1(myfile):
         itmout = re.sub('\n', '', itmout)
         itmout = re.sub('^.*KBB_RAS1:', '', itmout)
         print("Trace Setting:\t {:}".format(itmout))
+    get_dynamic(myfile)
+    print(HEADER_FOOTER_CHAR * 70)
 
 
 def get_chome(myfile):
