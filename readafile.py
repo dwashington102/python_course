@@ -21,7 +21,7 @@ SEARCH_PROTOCOL = 'BSS1_GetEnv.*KDC_FAMILIES='
 SEARCH_CMS = 'BSS1_GetEnv.*CMSLIST=".*'
 
 # GLOBAL CONTSTANT used for printing header & footer
-HEADER_FOOTER_CHAR = '='
+HEADER_FOOTER_CHAR = '#'
 
 
 def main():
@@ -54,7 +54,9 @@ def main():
 
     get_chome(myfile)
     myfile.seek(0)
+    display_footer()
 
+    display_footer()
     get_ipaddr(myfile)
     myfile.seek(0)
 
@@ -70,7 +72,6 @@ def main():
     get_cms(myfile)
     myfile.seek(0)
 
-
     myfile.close()
     display_footer()
 
@@ -81,15 +82,17 @@ def display_header(myfile):
     clean_filename = re.sub('\'.*$', '', dirty_filename_b)
     print('Filename:\t', clean_filename)
     print(HEADER_FOOTER_CHAR * 70)
+    print('\n')
     
 def display_footer():
     print(HEADER_FOOTER_CHAR * 70)
 
 
 def get_cms(myfile):
+    print("\nAgent Configured to connect to TEMS:")  
     itmemptylist = []
     for my_line in myfile:
-        if re.search(SEARCH_PROTOCOL, my_line):
+        if re.search(SEARCH_CMS, my_line):
             itmemptylist.append(my_line)
         else:
             pass
@@ -100,9 +103,10 @@ def get_cms(myfile):
         itmout = itmemptylist.pop(0)
         itmout = re.sub('\n', '', itmout)
         itmout = re.sub('\(.*\).*="', '', itmout)
-        print("\nAgent Configured to connect to TEMS:\n", itmout) 
+        print(itmout) 
 
 def get_protocol(myfile):
+    print("KDC_FAMILIES Network Protocol Setting:")
     itmemptylist = []
     for my_line in myfile:
         if re.search(SEARCH_PROTOCOL, my_line):
@@ -116,11 +120,12 @@ def get_protocol(myfile):
         itmout = itmemptylist.pop(0)
         itmout = re.sub('\n', '', itmout)
         itmout = re.sub('\(.*\).*="', '', itmout)
-        print("\nKDC_FAMILIES Network Protocol Setting:\n", itmout) 
+        print(itmout) 
     
 
 
 def get_dynamic(myfile):
+    print("Dynamic Trace Setting:")
     itmemptylist = []
     for my_line in myfile:
         if re.search(SEARCH_DYNAMIC, my_line):
@@ -133,10 +138,11 @@ def get_dynamic(myfile):
     else:
         itmout = itmemptylist.pop(0)
         itmout = re.sub('\n', '', itmout)
-        print("Dynamic Trace Setting:", itmout) 
+        print(itmout) 
 
 
 def get_msindex(myfile):
+    print("Agent Registered with Monitoring Service Index Using Ports:")
     itmemptylist = []
     for my_line in myfile:
         if re.search(SEARCH_MSINDEX, my_line):
@@ -147,7 +153,6 @@ def get_msindex(myfile):
     if a <= 0:
         print("Monitoring Agent registration with Monitoring Service Index NOT FOUND\n")
     else:
-        print("Agent Registered with Monitoring Service Index Using Ports:")
         for itmout in itmemptylist:
             itmout = re.sub('\n', '', itmout)
             itmout = re.sub('\(.*\)\slistening:\s', '', itmout)
@@ -155,6 +160,7 @@ def get_msindex(myfile):
 
 
 def get_assignport(myfile):
+    print("LISTENING PORT:\t", end='')
     itmemptylist = []
     for my_line in myfile:
         if re.search(SEARCH_PORT, my_line):
@@ -167,10 +173,11 @@ def get_assignport(myfile):
     else:
         itmout = itmemptylist.pop(0)
         itmout = re.sub('^.*AssignPort\"\)\s', '', itmout)
-        print("LISTENING PORT:", itmout) 
+        print(itmout) 
 
 
 def get_ipaddr(myfile):
+    print("Network Information:")
     itmemptylist = []
     for my_line in myfile:
         if re.search(SEARCH_IPADDR, my_line):
@@ -181,7 +188,6 @@ def get_ipaddr(myfile):
     if a <= 0:
         print("\nNetwork Interfaces NOT FOUND")
     else:
-        print("\nNetwork Information:")
         nic = 1
         for itmout in itmemptylist:
             itmout = re.sub('\n', '', itmout)
@@ -194,6 +200,7 @@ def get_ipaddr(myfile):
 
 def get_kbbras1(myfile):
     print(HEADER_FOOTER_CHAR * 70)
+    print("Trace Setting:\t ", end='')
     itmemptylist = []
     for my_line in myfile:
         if re.search(SEARCH_KBBRAS1, my_line):
@@ -207,12 +214,14 @@ def get_kbbras1(myfile):
         itmout = itmemptylist.pop(0)
         itmout = re.sub('\n', '', itmout)
         itmout = re.sub('^.*KBB_RAS1:', '', itmout)
-        print("Trace Setting:\t {:}".format(itmout))
+        print(itmout)
     get_dynamic(myfile)
     print(HEADER_FOOTER_CHAR * 70)
+    print('\n')
 
 
 def get_chome(myfile):
+    print("CANDLEHOME:\t", end='')
     itmemptylist = []
     for my_line in myfile:
         if re.search(SEARCH_CHOME, my_line):
@@ -221,15 +230,16 @@ def get_chome(myfile):
             pass
     a = len(itmemptylist)
     if a <= 0:
-        print("CANDLEHOME: NOT FOUND")
+        print("NOT FOUND")
     else:
         itmout = itmemptylist.pop(0)
         itmout = re.sub('\n', '', itmout)
         itmout = re.sub('^.*Home:', '', itmout)
-        print("CANDLEHOME:\t {:}".format(itmout))
+        print(itmout)
 
 
 def get_nofile(myfile):
+    print("Nofile Descriptor Limit:\t", end='')
     itmemptylist = []
     for my_line in myfile:
         if re.search(SEARCH_NOFILE, my_line):
@@ -238,15 +248,16 @@ def get_nofile(myfile):
             pass
     a = len(itmemptylist)
     if a <= 0:
-        print("NOFILE: NOT FOUND")
+        print("NOT FOUND")
     else:
         itmout = itmemptylist.pop(0)
         itmout = re.sub('\n', '', itmout)
         itmout = re.sub('^.*Limit:', '', itmout)
-        print("NOFILE Setting:\t {:}".format(itmout))
+        print(itmout)
 
 
 def get_pid(myfile):
+    print("Process ID:\t ", end='')
     itmemptylist = []
     for my_line in myfile:
         if re.search(SEARCH_PID, my_line):
@@ -255,15 +266,16 @@ def get_pid(myfile):
             pass
     a = len(itmemptylist)
     if a <= 0:
-        print("PID: NOT FOUND")
+        print("NOT FOUND")
     else:
         itmout = itmemptylist.pop(0)
         itmout = re.sub('\n', '', itmout)
         itmout = re.sub('^.*ID:', '', itmout)
-        print("PID Number:\t {:}".format(itmout))
+        print(itmout)
 
 
 def get_user(myfile):
+    print("User Name:\t ", end='')
     itmemptylist = []
     for my_line in myfile:
         if re.search(SEARCH_USER, my_line):
@@ -277,10 +289,11 @@ def get_user(myfile):
         itmout = itmemptylist.pop(0)
         itmout = re.sub('\n', '', itmout)
         itmout = re.sub('^.*Name: ', '', itmout)
-        print("User Name:\t  {:}".format(itmout))
+        print(itmout)
 
 
 def get_time(myfile):
+    print("Start Time:\t ", end='')
     itmemptylist = []
     for my_line in myfile:
         if re.search(SEARCH_TIME, my_line):
@@ -289,15 +302,16 @@ def get_time(myfile):
             pass
     a = len(itmemptylist)
     if a <= 0:
-        print("Start TIME: NOT FOUND")
+        print("NOT FOUND")
     else:
         itmout = itmemptylist.pop(0)
         itmout = re.sub('\n', '', itmout)
         itmout = re.sub('^.*Time:', '', itmout)
-        print("Start Time:\t {:}".format(itmout))
+        print(itmout)
 
 
 def get_date(myfile) :
+    print("Start Date:\t ", end='')
     itmemptylist = []
     for my_line in myfile:
         if re.search(SEARCH_DATE, my_line):
@@ -306,17 +320,17 @@ def get_date(myfile) :
             pass
     a = len(itmemptylist)
     if a <= 0:
-        print("Start Date: NOT FOUND")
+        print("NOT FOUND")
     else:
         itmout = itmemptylist.pop(0)
         itmout = re.sub('\n', '', itmout)
         itmout = re.sub('^.*Date:', '', itmout)
         itmout = re.sub('Start\sTime.*$', '', itmout)
-        #itmout = re.sub(r'St.*\n', '', itmout)
-        print("Start Date:\t {:}".format(itmout))
+        print(itmout)
 
 
 def get_ostype(myfile):
+    print("System Type:\t ", end='')
     itmemptylist = []
     for my_line in myfile:
         if re.search(SEARCH_TYPE, my_line):
@@ -325,15 +339,18 @@ def get_ostype(myfile):
             pass
     a = len(itmemptylist)
     if a <= 0:
-        print("System Type: NOT FOUND")
+        print("NOT FOUND")
     else:
             itmout = itmemptylist.pop(0)
             itmout = re.sub('^.*Type:', '', itmout)
             itmout = re.sub('\n', '', itmout)
-            print("System Type:\t {:}".format(itmout))
+            print(itmout)
 
 
 def get_host(myfile):
+    print(HEADER_FOOTER_CHAR * 70)
+    print("Hostname, System Type, Start Date/Time Process Info:")
+    print("Hostname:\t ", end='')
     itmemptylist = []
     for my_line in myfile:    
         if re.search(SEARCH_HOST, my_line):
@@ -343,14 +360,12 @@ def get_host(myfile):
             pass
     a = len(itmemptylist)
     if a <= 0:
-        print("Hostname NOT FOUND")
+        print("NOT FOUND")
     else:
         itmout = itmemptylist.pop(0)
         itmout = re.sub('^.*Name:', '', itmout)
         itmout = re.sub('Process\sID.*$\n', '', itmout)
-        print("Hostname, System Type, Start Date/Time Process Info:")
-        #print("Hostname, System Type, Start Date/Time Process Info:\t", "Hostname: ", itmout)
-        print("Hostname:\t {:}".format(itmout))
+        print(itmout)
 
 
 main()
