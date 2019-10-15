@@ -1,0 +1,8 @@
+SEARCH_KFWDSN = '.*\sKFW_DSN='
+SEARCH_EWAS = '.*KFW_AUTHORIZATION_USE_EWAS=.*'
+SEARCH_EMBED = '.*KFW_USE_EMBEDDED=.*'
+SEARCH_JVM = '.*KFW_STARTJVM=.*'
+SEARCH_FIPS = '.*KFW_FIPS_ENFORCED=.*'
+SEARCH_TDW = '.*fetchWarehouse"\)'
+SEARCH_ONLINE  = '.*Waiting\sfor\srequests.*'
+
