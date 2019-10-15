@@ -41,8 +41,8 @@ def play_game(player_1, player_2):
         p2_move = input('Player-2 {}: Enter rock, paper, or scissors: '.format(player_2)).lower()
 
         if p1_move == p2_move:
-            print("Player 1 Move", p1_move)
-            print("Player 2 Move", p2_move)
+            #print("Player 1 Move", p1_move)
+            #print("Player 2 Move", p2_move)
             print('We have a tie')
         elif p1_move == 'rock':
             if p2_move == 'paper':
