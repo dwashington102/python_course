@@ -10,6 +10,10 @@
 # - Scissors beats paper
 # - Paper beats rock
 
+# Additional Features Added
+# - Game can be played as 1-player, 2-player, or 2-player with random moves
+# - Keeping a running count and total of ties between the players
+
 # Import required modules
 import random
 
@@ -31,9 +35,10 @@ def start_game():
     while stop_game != 'y':
         print()
         print('How many players for the game?')
-        print('Choices')
-        print('Player-1 vs. Computer::\t<  Select 1  > ')
-        print('Player-1 vs. Player-2::\t<  Select 2  > ')
+        print('Choices\n')
+        print('Player-1 vs. Computer\t::\t<  Select 1  > ')
+        print('Player-1 vs. Player-2\t::\t<  Select 2  > ')
+        print('Automated 2-Player   \t::\t<  Select 9  > ')
         print()
 
         try:
@@ -43,9 +48,11 @@ def start_game():
             continue
 
         if num_of_players == 1:
-            get_one_player()
+            one_player()
         elif num_of_players == 2:
-            get_two_player()
+            two_player()
+        elif num_of_players == 9:
+            random_player()
         else:
             print('\nInvalid Entry...try again!')
         print()
@@ -53,20 +60,28 @@ def start_game():
         print()
 
 
-# get_one_player function takes user input for Player_1 while setting player_2 to Computer passing to play_game_1p()
-def get_one_player():
+# one_player function takes user input for Player_1 while setting player_2 to Computer passing to play_game_1p()
+def one_player():
     player_1 = input('Player 1 Name: ').capitalize()
     player_2 = "Computer"
     print()
     play_game_1p(player_1, player_2)
 
 
-# get_two_player function takes user input for player_1  and player_2 and passes to play_game_2p ()
-def get_two_player():
+# two_player function takes user input for player_1  and player_2 and passes to play_game_2p ()
+def two_player():
     player_1 = input('Player 1 Name: ').capitalize()
     player_2 = input('Player 2 Name: ').capitalize()
     print()
     play_game_2p(player_1, player_2)
+
+
+# two_player function takes user input for player_1  and player_2 and passes to play_game_9 ()
+def random_player():
+    player_1 = input('Player 1 Name: ').capitalize()
+    player_2 = input('Player 2 Name: ').capitalize()
+    print()
+    play_game_9(player_1, player_2)
 
 
 # play_game_1p() requests player_1 variable, sets total wins for each user to 0,
@@ -74,6 +89,7 @@ def get_two_player():
 def play_game_1p(player_1, player_2):
     total_p1_wins = 0
     total_p2_wins = 0
+    total_tie = 0
     total_games = 0
     options_list = ['rock', 'paper', 'scissors']
     play_again = 'y'
@@ -103,6 +119,7 @@ def play_game_1p(player_1, player_2):
             print("Player 1 Move", p1_move)
             print("Player 2 Move", p2_move)
             print('We have a tie')
+            total_tie += 1
         elif p1_move == 'rock':
             if p2_move == 'paper':
                 print('Player 2 wins!')
@@ -131,7 +148,7 @@ def play_game_1p(player_1, player_2):
         print()
         total_games += 1
         play_again = input('Do you want to play again? (y/n): ').lower()
-    final_results(player_1, player_2, total_p1_wins, total_p2_wins, total_games)
+    final_results(player_1, player_2, total_p1_wins, total_p2_wins, total_tie, total_games)
 
 
 # play_game_2p accepts player_1 and player_2 variables sets total wins for each user to 0,
@@ -140,6 +157,7 @@ def play_game_2p(player_1, player_2):
     total_p1_wins = 0
     total_p2_wins = 0
     total_games = 0
+    total_tie = 0
     play_again = 'y'
 
     while play_again == 'y':
@@ -164,6 +182,7 @@ def play_game_2p(player_1, player_2):
             print("Player 1 Move", p1_move)
             print("Player 2 Move", p2_move)
             print('We have a tie')
+            total_tie += 1
         elif p1_move == 'rock':
             if p2_move == 'paper':
                 print('Player 2 wins!')
@@ -193,20 +212,39 @@ def play_game_2p(player_1, player_2):
         print()
         total_games += 1
         play_again = input('Do you want to play again? (y/n): ').lower()
-    final_results(player_1, player_2, total_p1_wins, total_p2_wins, total_games)
+    final_results(player_1, player_2, total_p1_wins, total_p2_wins, total_tie, total_games)
 
 
-def do_battle(player_1, player_2, p1_move, p2_move):
+def play_game_9(player_1, player_2):
     total_p1_wins = 0
     total_p2_wins = 0
     total_games = 0
-    loop_count = 1
+    options_list = ['rock', 'paper', 'scissors']
+    print()
+    do_battle_random(player_1, player_2)
+    print()
 
-    while loop_count <= 7:
+
+def do_battle_random(player_1, player_2):
+    total_p1_wins = 0
+    total_p2_wins = 0
+    total_tie = 0
+    total_games = 0
+    options_list = ['rock', 'paper', 'scissors']
+    user_choice = 'y'
+
+    while user_choice == 'y':
+        random_play = random.randint(0, 2)
+        p1_move = options_list[random_play]
+        random_play = random.randint(0, 2)
+        p2_move = options_list[random_play]
+
+        print("Player 1 ({}) Move".format(player_1), p1_move)
+        print("Player 2 ({}) Move".format(player_2), p2_move)
+
         if p1_move == p2_move:
-            print("Player 1 Move", p1_move)
-            print("Player 2 Move", p2_move)
             print('We have a tie')
+            total_tie += 1
         elif p1_move == 'rock':
             if p2_move == 'paper':
                 print('Player 2 wins!')
@@ -221,26 +259,25 @@ def do_battle(player_1, player_2, p1_move, p2_move):
             else:
                 print('Player 1 wins!')
                 total_p1_wins += 1
-        elif p1_move == 'paper':
+        else:
             if p2_move == 'scissors':
                 print('Player 2 wins!')
                 total_p2_wins += 1
             else:
                 print('Player 1 wins!')
                 total_p1_wins += 1
-        else:
-            print('Invalid entry received.  Try again')
-        print('End of loop: ', loop_count)
-        loop_count += 1
+
+        print()
         total_games += 1
-    play_again = input('Do you want to play again? (y/n): ').lower()
-    final_results(player_1, player_2, total_p1_wins, total_p2_wins, total_games)
+        user_choice = input('Do you want to play again (y/n): ')
+    final_results(player_1, player_2, total_p1_wins, total_p2_wins, total_tie, total_games)
 
 
-def final_results(player_1, player_2, total_p1_wins, total_p2_wins, total_games):
+def final_results(player_1, player_2, total_p1_wins, total_p2_wins, total_tie, total_games):
     print()
     print(DISPLAY_SPACER * 50)
     print('Total Games Played: {}'.format(total_games))
+    print('Total Games Tied: {}'.format(total_tie))
     print('Player-1 {} '.format(player_1), 'Total Wins: ', total_p1_wins, sep='')
     print('Player-2 {} '.format(player_2), 'Total Wins: ', total_p2_wins, sep='')
     print(DISPLAY_SPACER * 50)
@@ -251,6 +288,7 @@ def main():
     display_menu()
     start_game()
     #final_results(player_1, player_2, total_p1_wins, total_p2_wins)
+
 
 main()
 print('end of program')
