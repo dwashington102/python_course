@@ -12,6 +12,7 @@
 
 # Import required modules
 import random
+import colorama
 
 #Define GLOBAL_CONSTANTS
 DISPLAY_SPACER = "="
@@ -49,10 +50,9 @@ def do_work():
         #print('DEBUG >>> Random Number is set to: {}'.format(a_random))
 
         # while loop allows user up to  5 guesses to determine the random number
-        loopcount = 0
+        loopcount = 1
         #print('prewhile: DEBUG tot_guess_count {}'.format(tot_guess_count))
         while loopcount <= 5:
-            loopcount += 1
             increment_guess_count += 1
 
             get_user_guess = int(float(input('Guess a Number: ')))
@@ -62,11 +62,13 @@ def do_work():
                 print('You correctly guessed the random number {}'.format(a_random))
                 loopcount = 10
             elif get_user_guess > a_random:
-                print('The guess is to high try again')
+                print('The guess is too high try again')
             elif get_user_guess < a_random:
-                print('The guess is to low try again')
+                print('The guess is too low try again')
             else:
                 print('Too many guesses')
+
+            loopcount += 1
 
         end_user_choice = input('\nDo you wish to play again (y/n): ').upper()
         increment_num_games += 1
@@ -81,7 +83,7 @@ def do_work():
             print(DISPLAY_SPACER * 50)
             print('Total Number of Games Played: {}'.format(increment_num_games))
             print('Total Number of Guess for all Games {}'.format(tot_guess_count))
-            print('Avg. number ot guesses per game {:.4f}'.format(avg_guess))
+            print('Avg. number of guesses per game {:.4f}'.format(avg_guess))
             print(DISPLAY_SPACER * 50)
 
 

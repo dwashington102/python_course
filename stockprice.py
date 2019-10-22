@@ -45,4 +45,8 @@ print("Debug 10:",iProfit10)
 strProfit10=str(iProfit10)
 print("Price at 10% increase: " + strProfit10)
 
+# More reasonable way to increase value when adding a %
+get_profit = float(iDollar * (1 + i10))
+print('DEBUG: >>>>>${:.2f}'.format(get_profit))
+
 
