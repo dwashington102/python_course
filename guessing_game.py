@@ -11,13 +11,15 @@
 # 2) Ask if the user wants to play again, and print the average number of guesses used for all game rounds
 
 # Import required modules
+from clear_screen import clear
 import random
-import colorama
+from colorama import Fore, Back, Style
 
 #Define GLOBAL_CONSTANTS
 DISPLAY_SPACER = "="
 
 def main():
+    clear()
     display_menu()
     do_work()
 
@@ -37,7 +39,14 @@ def do_work():
 
     while end_user_choice != 'N':
         # Ask the user for the maximum random number
-        max_rand_value = int(float(input('Insert a number that will be used as the maximum guess range: ')))
+        try:
+            max_rand_value = int(float(input('\nInsert a number that will be used as the maximum guess range: ')))
+        except ValueError:
+            print(Style.BRIGHT)
+            print(Fore.CYAN)
+            print('Invalid Value Received')
+            print(Style.RESET_ALL)
+            continue
 
         # Set the random number range
         a_random = random.randint(1,max_rand_value)
@@ -46,31 +55,43 @@ def do_work():
         print('The random number can be any from 1 to {}'.format(max_rand_value))
         print('User now has 5 guesses to determine the random number\n')
 
-        # Next 2 lines are DEBUG only
-        #print('DEBUG >>> Random Number is set to: {}'.format(a_random))
-
-        # while loop allows user up to  5 guesses to determine the random number
         loopcount = 1
         #print('prewhile: DEBUG tot_guess_count {}'.format(tot_guess_count))
         while loopcount <= 5:
             increment_guess_count += 1
-
-            get_user_guess = int(float(input('Guess a Number: ')))
+            try:
+                s_loopcount = str(loopcount)
+                print('Attempt #'+ s_loopcount+ ': ', end='')
+                get_user_guess = int(float(input('Guess a Number: ')))
+            except ValueError:
+                print(Style.BRIGHT)
+                print(Fore.CYAN)
+                print('Invalid Value Received')
+                print(Style.RESET_ALL)
+                continue
 
             if get_user_guess == a_random:
+                print(Fore.GREEN)
                 print('Congratulations!')
                 print('You correctly guessed the random number {}'.format(a_random))
+                print(Style.RESET_ALL)
                 loopcount = 10
             elif get_user_guess > a_random:
+                print(Fore.RED)
                 print('The guess is too high try again')
-            elif get_user_guess < a_random:
-                print('The guess is too low try again')
+                print(Style.RESET_ALL)
             else:
-                print('Too many guesses')
-
+                #get_user_guess < a_random:
+                print(Fore.BLUE) 
+                print('The guess is too low try again')
+                print(Style.RESET_ALL)
             loopcount += 1
 
+        print(Fore.YELLOW)
+        print('You reached the guess limit')
+        print('The number was: ', a_random)
         end_user_choice = input('\nDo you wish to play again (y/n): ').upper()
+        print(Style.RESET_ALL)
         increment_num_games += 1
         tot_guess_count = increment_guess_count
 
@@ -86,6 +107,7 @@ def do_work():
             print('Avg. number of guesses per game {:.4f}'.format(avg_guess))
             print(DISPLAY_SPACER * 50)
 
+if __name__ ==  "__main__":
+    main()
 
-main()
 print('End of Game')
