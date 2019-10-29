@@ -16,7 +16,7 @@ tot_div = 0.0                 # Set the total dividend payout to 0.00
 # convert the element to a float before adding the element to the total dividend
 
 # NOTE:  If any 0 element contains a comma ",", Python will read the element as a string which
-# cannot be converted to a float.  In order to avoid this issue we must use the replace() to 
+# cannot be converted to a float.  In order to avoid this issue we must use the replace() to
 # remove unwanted commas
 
 # Steps to create the csv file
@@ -24,19 +24,24 @@ tot_div = 0.0                 # Set the total dividend payout to 0.00
 # Grep and awk command to extract DIVIDEND entries from the csv file
 # grep DIV history.csv | awk -F",\"" '{print $2}'  | awk -F"\"" '{print $1}' >! /tmp/afile.tx
 
-with open('/tmp/afile.txt', 'r') as afile:
-    row = csv.reader(afile, delimiter='\n')
+with open('history_2015.csv', 'r') as afile:
+    row = csv.reader(afile, delimiter=',')
     for r in row:
-        my_div = r[0]
-        my_div = float(my_div.replace(',', ''))
-        tot_div = tot_div + my_div
+        if 'DIVIDEND' in r:
+            my_div = r[3]
+            my_div = float(my_div.replace(',', ''))
+#            print('DEBUG >>> my_div ${:,.2f}'.format(my_div))
+            tot_div = tot_div + my_div
+#            print('DEBUG >>> tot_div ${:,.2f}'.format(tot_div))
+        else:
+            pass
 
 afile.close()
-print('Total Dividends 2017 - 2019 (YTD): ${:,.2f}'.format(tot_div))
+print('Total Dividends 2015 - 2019 (YTD): ${:,.2f}'.format(tot_div))
 
 
 # Next step
 # 1 >>> Extract Fund Information
-# 2 >>> Total dividends to extracted fund 
+# 2 >>> Total dividends to extracted fund
 # 3 >>> After completing work for all funds - sum all divends compard to tot_div to confirm value
 #       is valid
