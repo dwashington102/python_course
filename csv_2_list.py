@@ -21,8 +21,10 @@ tot_div = 0.0                 # Set the total dividend payout to 0.00
 
 # Steps to create the csv file
 # Login to Fidelity --> Download transactions for selected time frame --> save to csv file
-# Grep and awk command to extract DIVIDEND entries from the csv file
-# grep DIV history.csv | awk -F",\"" '{print $2}'  | awk -F"\"" '{print $1}' >! /tmp/afile.tx
+# script reads each row of the csv to the variable "row"
+# Each "row" variable is then checked to see if the text 'DIVIDEND' is found
+# When 'DIVIDEND' is found the script extracts the dividend value using list[3]
+# adds the value to the cumulating value "tot_div"
 
 with open('history_2015.csv', 'r') as afile:
     row = csv.reader(afile, delimiter=',')
@@ -37,11 +39,7 @@ with open('history_2015.csv', 'r') as afile:
             pass
 
 afile.close()
+
+
+# After totaling entries they are printed using this format
 print('Total Dividends 2015 - 2019 (YTD): ${:,.2f}'.format(tot_div))
-
-
-# Next step
-# 1 >>> Extract Fund Information
-# 2 >>> Total dividends to extracted fund
-# 3 >>> After completing work for all funds - sum all divends compard to tot_div to confirm value
-#       is valid
