@@ -120,7 +120,8 @@ def compute_totals(u_history):
     print('Totat Exchange In:\t ${:,.2f}'.format(tot_xin))
 
 
-def get_lastline(u_history):
+# Opens the csv file and extracts the last line of the file
+def get_lastline(u_history):    
     with open(u_history, 'rb') as afile:
         afile.seek(-2, os.SEEK_END)
         while afile.read(1) != b'\n':
@@ -132,6 +133,7 @@ def get_lastline(u_history):
     get_fline(startday, u_history)
 
 
+# Opens the csv file and extracts the first line of the file
 def get_fline(startday, u_history):
     with open(u_history, 'r') as afile:
         first_line = afile.readline()
