@@ -38,10 +38,12 @@ def main():
 def get_filename():    # Prompt the user for the path to the csv file
     os.system('clear')
     u_history = input('Enter the path and csv filename: ')
+    # Confirm the file exists before starting to compute
     try:
-        with open(u_history, 'r'):
+        with open(u_history, 'r') as atest:
             # If file is found begin work
             compute_totals(u_history)
+            atest.close()
     except FileNotFoundError:
             # If file is not found exit(1)
         print('File not found: ', u_history)
