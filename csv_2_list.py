@@ -35,18 +35,24 @@ def main():
     get_filename()
 
 
+def get_filename():    # Prompt the user for the path to the csv file
+    os.system('clear')
+    u_history = input('Enter the path and csv filename: ')
+    try:
+        with open(u_history, 'r'):
+            # If file is found begin work
+            compute_totals(u_history)
+    except FileNotFoundError:
+            # If file is not found exit(1)
+        print('File not found: ', u_history)
+        print()
+        exit(1)
+
+
 def display_header():
     print(DISPLAY_HEADER * 50)
     print('Contributions, Dividends, Fees')
     print(DISPLAY_FOOTER * 50)
-
-
-def get_filename():    # Prompt the user for the path to the csv file
-    os.system('clear')
-    u_history = input('Enter the path and csv filename: ')
-    # Confirm if the file exists
-    # if file does not exists - try again
-    compute_totals(u_history)
 
 
 def compute_totals(u_history): 
@@ -103,8 +109,10 @@ def compute_totals(u_history):
             else:       # Ignore lines that do not contain the search strings
                 pass
     afile.close()       # close opened csv file
-    get_lastline(u_history)   # Get the start and end dates from the csv file
+    #get_lastline(u_history)   # Get the start and end dates from the csv file
+    get_daterange(u_history)
 
+    print()
     print('Total CONTRIBUTIONS:\t ${:,.2f}'.format(tot_contr))
     print('Total Dividends:\t ${:,.2f}'.format(tot_div))
     print('Total ADMIN FEES:\t ${:,.2f}'.format(tot_fees))
@@ -120,29 +128,27 @@ def compute_totals(u_history):
     print('Totat Exchange In:\t ${:,.2f}'.format(tot_xin))
 
 
-# Opens the csv file and extracts the last line of the file
-def get_lastline(u_history):    
-    with open(u_history, 'rb') as afile:
-        afile.seek(-2, os.SEEK_END)
-        while afile.read(1) != b'\n':
-            afile.seek(-2, os.SEEK_CUR)
-        last_line = afile.readline().decode()
-        afile.close()
-    startday = re.sub(r',.*$', "", last_line)
-    startday = startday.strip('\n') 
-    get_fline(startday, u_history)
-
-
-# Opens the csv file and extracts the first line of the file
-def get_fline(startday, u_history):
+def get_daterange(u_history):
     with open(u_history, 'r') as afile:
-        first_line = afile.readline()
-        afile.close()
-    endstartday = re.sub(r',.*$', "", first_line)
-    # strip \n
-    print('START DATE:\t {}'.format(startday))
-    print('END DATE:\t {}'.format(endstartday))
+        datelist = []
+        for row in afile:
+            if re.match(r"\d", row):
+                datelist.append(row)
+            else:
+                pass
 
+        size_datelist = len(datelist)
+        if size_datelist <= 0:
+            print('No valid dates found')
+        else:
+            my_begin = datelist.pop(0)
+            csv_startdate = re.sub(r',.*$', "", my_begin)
+            csv_startdate = csv_startdate.strip("\n")
+
+            my_end = datelist.pop()
+            csv_enddate = re.sub(r',.*$', "", my_end)
+            print('Start Date:\t{}'.format(csv_startdate))
+            print('End Date:\t{}'.format(csv_enddate))
 
 if __name__ == '__main__':
     main()
