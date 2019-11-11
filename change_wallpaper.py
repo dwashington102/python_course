@@ -17,7 +17,7 @@ MYPATH='/usr/share/backgrounds/various'
 #Define variables
 
 
-def main():
+def do_work():
     check_mypath()
     get_wallpaper()
 
@@ -53,9 +53,8 @@ def set_wallpaper(wallpaper):
     settings.apply()
 
 
-main()
+#main()
 
 if __name__ == 'main':
-    main()
-
+    do_work()
 
