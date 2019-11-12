@@ -4,8 +4,13 @@ import os
 import sys
 import random
 import time
+<<<<<<< HEAD
 #import os.path
 from os import path
+=======
+import os.path
+#from os import path
+>>>>>>> 66b81d584c2ce4e8fe7f63ddd7ddb737f86a0856
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -40,6 +45,7 @@ def get_wallpaper():    # Builds a list of files in MYPATH directory
             wallpaper_lst.append(afile)
 
     mytest = len(wallpaper_lst)
+    mytest = mytest - 1      # Decrease size of mytest by 1 to account for wallpaper_lst[] starting at 0 rather than 1
     #time.sleep(5)
     my_rand = random.randint(0, mytest) 
     wallpaper = wallpaper_lst[my_rand]    #Sets the wallpaper to a random item from the wallpaper_lst
@@ -53,8 +59,13 @@ def set_wallpaper(wallpaper):
     settings.apply()
 
 
-#main()
-
 if __name__ == '__main__':
     main()
+
+<<<<<<< HEAD
+if __name__ == '__main__':
+    main()
+=======
+#main()
+>>>>>>> 66b81d584c2ce4e8fe7f63ddd7ddb737f86a0856
 

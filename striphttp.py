@@ -2,6 +2,16 @@
 # strip the lines that include the text "http".  Using the http lines a
 # pull request will be initiated to pull the files to the local workstation. 
 
+
+'''
+Steps required:
+1) Copy and paste chat text into a text file located in ~/Temp/chats
+2) Generate the output_file using the command: cd ~/Temp/chats &&  ls -1 *txt > /tmp/outputfile
+3) Call script:  python3 striphttp.py
+4) Downloaded images are stored in ~/Temp
+5) Must clear /tmp/outputfile before running again
+'''
+
 from datetime import datetime
 import os
 import pathlib
@@ -13,6 +23,8 @@ import wget
 # Define GLOBAL CONSTANTS
 TSTAMP=datetime.now()
 DISPLAY_SPACER = "="
+TFILESPATH = '/home/devdavid/Temp/chats'
+IFOUND ='Image Files Found:'
 
 
 def main():
@@ -33,14 +45,17 @@ def display_header():
 
 
 def get_httpEntries():
+    # Convert the current time to use format yearmondayhourminute
     a_timenow = (TSTAMP.strftime("%Y%m%d%H%M"))
-    format_inputfile = "/home/daviddev/Temp/images-"+ a_timenow+ ".txt"
+    format_inputfile = "/home/devdavid/Temp/images-"+ a_timenow+ ".txt"
     images_captured = open(format_inputfile, 'w')
     output_file = open(r'/tmp/outputfile', 'r')
     
     for rline in output_file.readlines():
+        print('DEBUG >>>', rline)
         if re.search("txt", rline):
             searchfile = rline.rstrip('\n')
+            searchfile = TFILESPATH + '/' + searchfile
             with open(searchfile, 'r') as httpsearch:
                 for hline in httpsearch.readlines():
                     if re.search("http", hline):
@@ -61,11 +76,12 @@ def get_httpEntries():
     # Open input files for reading in order to use contents for wget statements
     images_captured = open(format_inputfile, 'r')
 
-    #os.chdir('/home/daviddev/Temp')    
+    #os.chdir('/home/devdavid/Temp')    
     for urline in images_captured.readlines():
         urline = urline.rstrip('\n')
-        output_directory = '/home/daviddev/Temp'
+        output_directory = '/home/devdavid/Temp/images'
         if re.search("http", urline):
+            print()
             print('Begin wget for:', urline)
             try:
                 filename = wget.download(urline, out=output_directory)
@@ -75,8 +91,11 @@ def get_httpEntries():
             pass
     images_captured.close()
 
-main()
+
+if __name__ == '__main__':
+     main()
 #images_captured.close()
 
+print()
 print('end of program')
 
