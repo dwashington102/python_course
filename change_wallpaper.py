@@ -4,7 +4,7 @@ import os
 import sys
 import random
 import time
-import os.path
+#import os.path
 from os import path
 
 import gi
@@ -17,7 +17,7 @@ MYPATH='/usr/share/backgrounds/various'
 #Define variables
 
 
-def do_work():
+def main():
     check_mypath()
     get_wallpaper()
 
@@ -55,6 +55,6 @@ def set_wallpaper(wallpaper):
 
 #main()
 
-if __name__ == 'main':
-    do_work()
+if __name__ == '__main__':
+    main()
 
