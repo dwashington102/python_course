@@ -40,8 +40,11 @@ def get_wallpaper():    # Builds a list of files in MYPATH directory
             wallpaper_lst.append(afile)
 
     mytest = len(wallpaper_lst)
+    mytest = mytest - 1      # Decrease size of mytest by 1 to account for wallpaper_lst[] starting at 0 rather than 1
     #time.sleep(5)
+    print('DEBUG >>> mytest', mytest)
     my_rand = random.randint(0, mytest) 
+    print('DEBUG >>> my_rand', my_rand)
     wallpaper = wallpaper_lst[my_rand]    #Sets the wallpaper to a random item from the wallpaper_lst
     set_wallpaper(wallpaper)
 
