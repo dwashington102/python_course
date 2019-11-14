@@ -1,10 +1,13 @@
 import csv
 import pandas as pd
+from pathlib import Path
 
 
 # Define GLOBAL CONSTANTS
-CSVFILE = '/home/david/Downloads/history.csv'
+HOME = str(Path.home())
+CSVFILE = HOME+ "/data/history1.csv"
 SPACER = "-"
+
 
 # Read the CSV file into memory
 with open(CSVFILE, 'r') as inputfile:
@@ -15,7 +18,6 @@ with open(CSVFILE, 'r') as inputfile:
 # Setting the columns to the values seen below
 df = pd.DataFrame(mydata, 
                   columns=["Date", "Fund", "Trade Type", "Amount", "Shares"])
-
 
 print()
 # Confirm the datatypes for the values of the dataframe

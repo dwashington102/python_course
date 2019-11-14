@@ -4,13 +4,9 @@ import os
 import sys
 import random
 import time
-<<<<<<< HEAD
-#import os.path
 from os import path
-=======
 import os.path
-#from os import path
->>>>>>> 66b81d584c2ce4e8fe7f63ddd7ddb737f86a0856
+from os import path
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -62,10 +58,6 @@ def set_wallpaper(wallpaper):
 if __name__ == '__main__':
     main()
 
-<<<<<<< HEAD
 if __name__ == '__main__':
     main()
-=======
-#main()
->>>>>>> 66b81d584c2ce4e8fe7f63ddd7ddb737f86a0856
 
