@@ -5,7 +5,7 @@ import sys
 import random
 import time
 import os.path
-#from os import path
+from os import path
 
 import gi
 gi.require_version('Gtk', '3.0')
