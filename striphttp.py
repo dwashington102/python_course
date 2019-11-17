@@ -8,13 +8,22 @@ Steps required:
 1) Copy and paste chat text into a text file located in ~/Temp/chats
 2) Generate the output_file using the command: cd ~/Temp/chats &&  ls -1 *txt > /tmp/outputfile
 3) Call script:  python3 striphttp.py
-4) Downloaded images are stored in ~/Temp
+4) Downloaded images are stored in ~/Temp/images
 5) Must clear /tmp/outputfile before running again
+'''
+
+
+'''
+To do
+Gather a list of file types=HTML
+extract text og:image | awk -F'[""]'
+ex: grep og:image <filename> | awk -F'[""]' '{print $4}'
+wget extracted URL
 '''
 
 from datetime import datetime
 import os
-import pathlib
+from pathlib import Path
 import re
 import subprocess
 import wget
@@ -23,13 +32,16 @@ import wget
 # Define GLOBAL CONSTANTS
 TSTAMP=datetime.now()
 DISPLAY_SPACER = "="
-TFILESPATH = '/home/devdavid/Temp/chats'
+HOMEDIR = str(Path.home())
+TFILESPATH = HOMEDIR + '/Temp/chats'
+HTMLFILESPATH = HOMEDIR + '/Temp/images/'
 IFOUND ='Image Files Found:'
 
 
 def main():
     display_header()
     get_httpEntries()
+    parse_htmlfiles()
 
 
 def display_header():
@@ -43,6 +55,38 @@ def display_header():
 #        for wgetline in images_captured.readlines():
 #            print('DEBUG wgetline: ', wgetline)
 
+def parse_htmlfiles():
+    print()
+    #Set/Get the text file that contains a list of html files.
+    output_file = open(r'/tmp/outputfiles_html', 'r')
+
+    # For each line of the outputfile, read the html file name, 
+    # and set the filename to the variable search_file
+    for rline in output_file.readlines():
+        rline = rline.rstrip('\n')
+        search_file = HTMLFILESPATH + rline
+
+        # Open search_file in order to locate the string "og:image content="
+        try:
+            html_file = open(search_file, 'r')
+            for searchline in html_file.readlines():
+                if re.search('og:image"\scontent=', searchline):
+                    wgeturl = re.sub(r".*http", "http", searchline)
+                    wgeturl = wgeturl.rstrip('\n')
+                    wgeturl = re.sub(r'".*', '', wgeturl)
+                    output_directory = HOMEDIR + '/Temp/images'
+                    print('\nhtml_file -> Begin wget for: ', wgeturl, '\n')
+                    try:
+                        filename = wget.download(wgeturl, out=output_directory)
+                    except:
+                        print('\nError encountered for wget: ', wgeturl, '\n')
+                else:
+                    pass
+        #closing files before leaving the function
+            html_file.close()
+        except FileNotFoundError:
+            print('\nFile NOT FOUND: ', searchline)
+    output_file.close()
 
 def get_httpEntries():
     # Convert the current time to use format yearmondayhourminute
@@ -52,7 +96,6 @@ def get_httpEntries():
     output_file = open(r'/tmp/outputfile', 'r')
     
     for rline in output_file.readlines():
-        print('DEBUG >>>', rline)
         if re.search("txt", rline):
             searchfile = rline.rstrip('\n')
             searchfile = TFILESPATH + '/' + searchfile
@@ -86,7 +129,7 @@ def get_httpEntries():
             try:
                 filename = wget.download(urline, out=output_directory)
             except:
-                print('Error encountered for wget: ', urline)
+                print('\nError encountered for wget: ', urline, '\n')
         else:
             pass
     images_captured.close()
