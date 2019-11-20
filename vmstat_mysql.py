@@ -18,6 +18,9 @@ DB_NAME = 'CRASHDB'
 TABLES = {}
 
 '''
+See url: https://www.youtube.com/watch?v=4N5ykIF1vU4
+
+-create table statement taken from mysql workbench
 CREATE TABLE `CRASHDB`.`VSTATS` (
   `RowID` INT NOT NULL AUTO_INCREMENT,
   `HostId` VARCHAR(45) NOT NULL,
@@ -31,7 +34,7 @@ TABLES['VSTATS'] = (
     "CREATE TABLE `VSTATS`("
     "`RowID` INT(5) NOT NULL AUTO_INCREMENT,"
     "`HOSTNAME` varchar(45) NOT NULL,"
-    "PRIMARY KEY(`RowID`)"
+    "PRIMARY KEY(`RowID`)" # In testing setting Primary Key could not be included when creating column
     ") ENGINE=innoDB")   #Storage engine of MySQL is innoDB
 
 
