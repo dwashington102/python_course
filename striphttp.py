@@ -5,8 +5,8 @@
 
 '''
 Steps required:
-1) Copy and paste chat text into a text file located in ~/Temp/chats
-    cd ~/Temp/chats &&  touch afile_`date +%Y%m%d-%H%M`.txt
+1) Copy and paste chat text into a text file located in ~/Temp/static
+    cd ~/Temp/static &&  touch afile_`date +%Y%m%d-%H%M`.txt
 2) Generate the output files using these commands: 
     cat /dev/null > /tmp/outputfile && cat /dev/null > /tmp/outputfiles_html
     ls -1 *txt > /tmp/outputfile
@@ -20,24 +20,29 @@ import os
 from pathlib import Path
 import re
 import subprocess
+from time import sleep
 import wget
+
+# Custom modules/python file that sits in the same directory as the striphttp.py script
+from movehtml import list_files
 
 
 # Define GLOBAL CONSTANTS
 TSTAMP=datetime.now()
 DISPLAY_SPACER = "="
 HOMEDIR = str(Path.home())
-TFILESPATH = HOMEDIR + '/Temp/chats'
+TFILESPATH = HOMEDIR + '/Temp/static'
 HTMLFILESPATH = HOMEDIR + '/Temp/images/'
 IFOUND ='Image Files Found:'
 
 
 def main():
+    sleep(3)
     display_header()
     get_httpEntries()
     create_outputhtml()
     parse_htmlfiles()
-
+    user_choice()
 
 def display_header():
     print(DISPLAY_SPACER * 50)
@@ -45,17 +50,33 @@ def display_header():
     print(DISPLAY_SPACER * 50)
 
 
-#this function replaces the manual command:
-#    for myfile in `file $HOME/Temp/images/* | grep HTML | awk -F":" '{print $1}` ; do ; echo $myfile >> /tmp/outputfiles_html ; done
+def user_choice():
+    print()
+    choice = input('\nDo you want to move html files (y/n): ')
+    choice = choice.lower()
+    if choice == "y":
+        list_files(HTMLFILESPATH)
+    elif choice == "n":
+        print('Completed run and saved html files')
+    else:
+        print('Invalid Entry...exiting')
+
+
 def create_outputhtml():
-    os.system('/home/devdavid/GIT_REPO/python_course/create_outputhtml.sh')
+    os.system(HOMEDIR + '/GIT_REPO/python_course/create_outputhtml.sh')
+    sleep(3)
+    #os.system('/home/devdavid/GIT_REPO/python_course/create_outputhtml.sh')
 
 
 def parse_htmlfiles():
+    print('DEBUG >>> Entered parse_htmlfiles')
+    sleep(5)
     print()
     #Set/Get the text file that contains a list of html files.
     try:
         output_file = open(r'/tmp/outputfiles_html', 'r')
+        print('/tmp/outputfiles_html FOUND')
+        #sleep(3)
     except FileNotFoundError:
         print('\nFile NOT FOUND: /tmp/outputfiles_html\n')
         exit(2)
@@ -70,21 +91,25 @@ def parse_htmlfiles():
         # Open search_file in order to locate the string "og:image content="
         try:
             html_file = open(search_file, 'r')
-            for searchline in html_file.readlines():
-                if re.search('og:image"\scontent=', searchline):
-                    wgeturl = re.sub(r".*http", "http", searchline)
-                    wgeturl = wgeturl.rstrip('\n')
-                    wgeturl = re.sub(r'".*', '', wgeturl)
-                    output_directory = HOMEDIR + '/Temp/images'
-                    print('\nhtml_file -> Begin wget for: ', wgeturl, '\n')
-                    try:
-                        filename = wget.download(wgeturl, out=output_directory)
-                    except:
-                        print('\nError encountered for wget: ', wgeturl, '\n')
-                else:
-                    pass
-        #closing files before leaving the function
+            html_file = str(html_file)
+            if os.path.isfile(html_file):
+                for searchline in html_file.readlines():
+                    if re.search('og:image"\scontent=', searchline):
+                        wgeturl = re.sub(r".*http", "http", searchline)
+                        wgeturl = wgeturl.rstrip('\n')
+                        wgeturl = re.sub(r'".*', '', wgeturl)
+                        output_directory = HOMEDIR + '/Temp/images'
+                        print('\nhtml_file -> Begin wget for: ', wgeturl, '\n')
+                        try:
+                            filename = wget.download(wgeturl, out=output_directory)
+                        except:
+                            print('\nError encountered for wget: ', wgeturl, '\n')
+                    else:
+                        pass
+            else:
+                print('Encountered a directory at --->', html_file)
             html_file.close()
+
         except FileNotFoundError:
             print('\nFile NOT FOUND: ', search_file)
     output_file.close()
@@ -96,6 +121,8 @@ def get_httpEntries():
     images_captured = open(format_inputfile, 'w')
     try:
         output_file = open(r'/tmp/outputfile', 'r')
+        print('/tmp/outputfile FOUND')
+        sleep(3)
     except FileNotFoundError:
         print('\nFile NOT FOUND: /tmp/outputfile\n')
         exit(1)
@@ -108,6 +135,8 @@ def get_httpEntries():
                 for hline in httpsearch.readlines():
                     if re.search("http", hline):
                         finalout = re.sub(r".*http", "http", hline)
+                        print('DEBUG finalout >>>', finalout)
+                        sleep(1)
                         #print(hline) only for debug purpose
                         #print(hline)
                         #print(finalout)
@@ -128,21 +157,25 @@ def get_httpEntries():
     for urline in images_captured.readlines():
         urline = urline.rstrip('\n')
         output_directory = HOMEDIR + '/Temp/images'
-        if re.search("http", urline):
-            print()
-            print('Begin wget for:', urline)
+        try:
+            if re.search("http", urline):
+                print()
+                print('Begin wget for:', urline)
             try:
                 filename = wget.download(urline, out=output_directory)
             except:
                 print('\nError encountered for wget: ', urline, '\n')
-        else:
-            pass
+            else:
+                pass
+        except:
+            print()
+            print('URL not found\n')
     images_captured.close()
 
 
 if __name__ == '__main__':
-     main()
+    main()
+    print()
+    print('end of program')
 
-print()
-print('end of program')
 

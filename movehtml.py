@@ -7,8 +7,8 @@ import time
 
 # Define GLOBAL CONSTANTS
 HOMEDIR = str(Path.home())
-IMG_DIR= HOMEDIR + '/Temp/images/'
-HTML_DIR='/home/devdavid/Temp/images/html/'
+IMG_DIR = HOMEDIR + '/Temp/images/'
+HTML_DIR = HOMEDIR + '/Temp/images/html'
 
 def main():
     list_files(IMG_DIR)
@@ -42,4 +42,5 @@ def move_html(myfile):
     print('Entered move_html()')
     shutil.move(myfile, HTML_DIR)
 
-main()
+if __name__ == '__main__':
+    main()
