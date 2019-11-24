@@ -6,7 +6,6 @@ import random
 import time
 from os import path
 import os.path
-from os import path
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -54,9 +53,6 @@ def set_wallpaper(wallpaper):
     settings.set_string("picture-uri", "file://" + MYPATH + '/' + wallpaper)
     settings.apply()
 
-
-if __name__ == '__main__':
-    main()
 
 if __name__ == '__main__':
     main()
