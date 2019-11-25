@@ -15,7 +15,8 @@ def main():
     myloop()
 
 # Look  throught the list (mydirlist).  Print only the "files", ignore the subdirectories
-# output:
+# The loopcount variable is used for a counting the iterations through list(mydirlist)
+# output example:
 #1: striphttp.py 	 True
 #2: future_value.py 	 True
 #3: csv_2_list.py 	 True

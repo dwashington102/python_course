@@ -17,6 +17,7 @@ Steps required:
 
 from datetime import datetime
 import os
+from os import path
 from pathlib import Path
 import re
 import subprocess
@@ -24,7 +25,6 @@ from time import sleep
 import wget
 
 # Custom modules/python file that sits in the same directory as the striphttp.py script
-from movehtml import list_files
 
 
 # Define GLOBAL CONSTANTS
@@ -42,24 +42,11 @@ def main():
     get_httpEntries()
     create_outputhtml()
     parse_htmlfiles()
-    user_choice()
 
 def display_header():
     print(DISPLAY_SPACER * 50)
     print("GET FILES")
     print(DISPLAY_SPACER * 50)
-
-
-def user_choice():
-    print()
-    choice = input('\nDo you want to move html files (y/n): ')
-    choice = choice.lower()
-    if choice == "y":
-        list_files(HTMLFILESPATH)
-    elif choice == "n":
-        print('Completed run and saved html files')
-    else:
-        print('Invalid Entry...exiting')
 
 
 def create_outputhtml():
@@ -69,8 +56,6 @@ def create_outputhtml():
 
 
 def parse_htmlfiles():
-    print('DEBUG >>> Entered parse_htmlfiles')
-    sleep(5)
     print()
     #Set/Get the text file that contains a list of html files.
     try:
@@ -84,16 +69,15 @@ def parse_htmlfiles():
     # For each line of the outputfile, read the html file name, 
     # and set the filename to the variable search_file
     for rline in output_file.readlines():
-        rline = rline.rstrip('\n')
-        search_file = rline
-        #search_file = HTMLFILESPATH + rline
-
-        # Open search_file in order to locate the string "og:image content="
-        try:
-            html_file = open(search_file, 'r')
-            html_file = str(html_file)
-            if os.path.isfile(html_file):
-                for searchline in html_file.readlines():
+        rline = rline.strip('\n')
+        ftype = str(path.isfile(rline))
+        if ftype == 'True':
+            # Following line is for DEBUG only
+            #print('wget action against --->', rline, ftype)
+            search_file = open(rline, 'r')
+            print('DEBUG >>> search_file', search_file)
+            try:
+                for searchline in search_file.readlines():
                     if re.search('og:image"\scontent=', searchline):
                         wgeturl = re.sub(r".*http", "http", searchline)
                         wgeturl = wgeturl.rstrip('\n')
@@ -106,13 +90,25 @@ def parse_htmlfiles():
                             print('\nError encountered for wget: ', wgeturl, '\n')
                     else:
                         pass
-            else:
-                print('Encountered a directory at --->', html_file)
-            html_file.close()
+            except Exception:
+                print('\nError encounterd attempting to search file --->', search_file)
+                sleep(2)
 
-        except FileNotFoundError:
-            print('\nFile NOT FOUND: ', search_file)
-    output_file.close()
+            # Closing file prior to deleting file 
+            search_file.close()
+            try:
+                os.remove(rline)
+                print('\nDeleted file ', rline)
+            except:
+                print()
+                print('\nUNABLE TO DELETE --->>', rline, '\n')
+
+        else:
+            #If file type != True - close file and return statement showing wget not attempted
+            search_file.close()
+            print('\nNo WGET Action against --->', rline, ftype)
+           #pass
+
 
 def get_httpEntries():
     # Convert the current time to use format yearmondayhourminute
@@ -122,11 +118,12 @@ def get_httpEntries():
     try:
         output_file = open(r'/tmp/outputfile', 'r')
         print('/tmp/outputfile FOUND')
-        sleep(3)
     except FileNotFoundError:
         print('\nFile NOT FOUND: /tmp/outputfile\n')
         exit(1)
-    
+
+   # Parse each line of the output_file, extracting the text "http" from the noise in the file.
+   # The "http"  lines are then passed to the images_captured() to a file 
     for rline in output_file.readlines():
         if re.search("txt", rline):
             searchfile = rline.rstrip('\n')
@@ -135,15 +132,14 @@ def get_httpEntries():
                 for hline in httpsearch.readlines():
                     if re.search("http", hline):
                         finalout = re.sub(r".*http", "http", hline)
-                        print('DEBUG finalout >>>', finalout)
-                        sleep(1)
+                        # Next 4 lines are for debug purpose only
+                        #print('DEBUG finalout >>>', finalout)
                         #print(hline) only for debug purpose
                         #print(hline)
                         #print(finalout)
                         images_captured.write(finalout)
                     else:
                         pass
-                #print(httpsearch.read())
         else:
             print("Valid Entries:  NOT FOUND\n")
     # Closing files used for output and input
@@ -160,8 +156,8 @@ def get_httpEntries():
         try:
             if re.search("http", urline):
                 print()
-                print('Begin wget for:', urline)
             try:
+                #Use python wget to download file(urline) and save to output_directory and save to output_directory
                 filename = wget.download(urline, out=output_directory)
             except:
                 print('\nError encountered for wget: ', urline, '\n')
@@ -177,5 +173,3 @@ if __name__ == '__main__':
     main()
     print()
     print('end of program')
-
-
