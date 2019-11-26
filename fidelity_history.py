@@ -155,6 +155,7 @@ def get_daterange(u_history):
 
 if __name__ == '__main__':
     main()
+    print('\nend of program\n')
 
-print('\nend of program\n')
+
 
