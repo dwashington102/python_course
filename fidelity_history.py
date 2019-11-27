@@ -149,11 +149,13 @@ def get_daterange(u_history):
 
             my_end = datelist.pop()
             csv_enddate = re.sub(r',.*$', "", my_end)
-            print('Start Date:\t{}'.format(csv_startdate))
+            csv_enddate = csv_enddate.rstrip()
             print('End Date:\t{}'.format(csv_enddate))
+            print('Start Date:\t{}'.format(csv_startdate))
 
 if __name__ == '__main__':
     main()
+    print('\nend of program\n')
 
-print('\nend of program\n')
+
 
