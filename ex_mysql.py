@@ -10,8 +10,8 @@ EBCSV='/home/x1user/databases/data/EBAY.csv'
 # Create the connection to the database
 mydb = mysql.connector.connect(
     host = "localhost",
-    user = "x1user",
-    passwd = "cxgg65$.#",
+    user = "myuser",
+    passwd = "password",
     database = "testdb",
 )
 
