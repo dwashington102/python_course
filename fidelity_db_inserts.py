@@ -16,14 +16,12 @@ describe FIDELITY;
 | AMOUNT     | varchar(45) | YES  |     | NULL    |       |
 | SHARES     | int(11)     | YES  |     | NULL    |       |
 +------------+-------------+------+-----+---------+-------+
+
+CSV file header and content format:
+Date,Investment,Transaction Type,Amount,Shares/Unit
+11/15/2019,VANG SM CAP IDX INST,CONTRIBUTION,"122.36","1.587"
+11/15/2019,VANG PRIMECAP CORE,CONTRIBUTION,"122.36","4.228"
 '''
-
-
-#CSV file header and content format:
-#Date,Investment,Transaction Type,Amount,Shares/Unit
-#11/15/2019,VANG SM CAP IDX INST,CONTRIBUTION,"122.36","1.587"
-#11/15/2019,VANG PRIMECAP CORE,CONTRIBUTION,"122.36","4.228"
-
 
 # Import common modules
 import os
@@ -48,19 +46,20 @@ def main():
     clear()
     get_csvfile()
 
+#Function opens the csv file for reading and calls the export_csvfile().
 def get_csvfile():
     csvfile_hist = CSVFILELOC + 'history_2010-2019.csv'
     #csvfile_hist = CSVFILELOC + 'test.csv'
     try:
         with open(csvfile_hist, 'r') as datafile:
-            print('DEBUG >>> Data file: ', datafile)
+            #print('DEBUG >>> Data file: ', datafile)
             export_csvfile(datafile)
     except FileNotFoundError as err:
         print('File ', csvfile_hist, ' NOT FOUND')
         print(err)
         exit(1)
 
-
+# Function defines db connection engine and exports contents of csv file
 def export_csvfile(datafile):
     try:
         engine = sqlalchemy.create_engine('mysql+pymysql://userid:whatpass$.#@localhost/TRANSACTIONS')
@@ -69,6 +68,10 @@ def export_csvfile(datafile):
         print(dbconnErr)
     
     df = pd.read_csv(datafile, sep=',')
+
+    # Column names in the csv file do not match database table columns. Using the df.rename() allows
+    # allows the inserts to complete.
+    # Format:  columns = {'csv column' : 'Table column', 'csv column' : 'Table column'}, inplace=True)
     df.rename(columns = {'Date' : 'DATE', 'Investment' : 'INVESTMENT', 'Transaction Type' : 'TRANSTYPE', 'Amount' : 'AMOUNT', 'Shares/Unit' : 'SHARES'}, inplace=True)
 
     try:
