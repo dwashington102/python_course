@@ -50,6 +50,7 @@ def main():
 
 def get_csvfile():
     csvfile_hist = CSVFILELOC + 'history_2010-2019.csv'
+    #csvfile_hist = CSVFILELOC + 'test.csv'
     try:
         with open(csvfile_hist, 'r') as datafile:
             print('DEBUG >>> Data file: ', datafile)
@@ -62,13 +63,13 @@ def get_csvfile():
 
 def export_csvfile(datafile):
     try:
-        engine = sqlalchemy.create_engine('mysql+pymysql://user:password@localhost/TRANSACTIONS')
+        engine = sqlalchemy.create_engine('mysql+pymysql://x1user:cxgg65$.#@localhost/TRANSACTIONS')
     except ConnectionError as dbconnErr: 
         print('Database connection failure')
         print(dbconnErr)
     
     df = pd.read_csv(datafile, sep=',')
-    df.rename(columns = {'Date' : 'DATE', 'Investment' : 'INVESTMENT', 'TransactionType' : 'TRANSTYPE', 'Amount' : 'AMOUNT', 'Shares/Unit' : 'SHARES'})
+    df.rename(columns = {'Date' : 'DATE', 'Investment' : 'INVESTMENT', 'Transaction Type' : 'TRANSTYPE', 'Amount' : 'AMOUNT', 'Shares/Unit' : 'SHARES'}, inplace=True)
 
     try:
         df.to_sql(name='FIDELITY', con=engine, index=False, if_exists='append')

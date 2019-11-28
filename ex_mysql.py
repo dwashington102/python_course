@@ -4,15 +4,15 @@ from time import sleep
 
 
 #Define GLOBAL CONSTANTS
-EBCSV='/home/devdavid/data/EB.csv'
+EBCSV='/home/x1user/databases/data/EBAY.csv'
 
 
 # Create the connection to the database
 mydb = mysql.connector.connect(
     host = "localhost",
-    user = "devdavid",
-    passwd = "gettingugly",
-    database = "mydb",
+    user = "x1user",
+    passwd = "cxgg65$.#",
+    database = "testdb",
 )
 
 my_cursor = mydb.cursor()
@@ -37,6 +37,14 @@ CREATE TABLE `mydb`.`dayinfo` (
   `AdjClose` VARCHAR(10) NULL,
   `Volume` VARCHAR(45) NULL,
   PRIMARY KEY (`RowNum`));
+
++--------+------------+-----------+-----------+-----------+-----------+-----------+----------+
+| RowNum | Date       | Open      | High      | Low       | Close     | AdjClose  | Volume   |
++--------+------------+-----------+-----------+-----------+-----------+-----------+----------+
+|      1 | Date       | Open      | High      | Low       | Close     | Adj Close | Volume   |
+|      2 | 2016-01-04 | 27.110001 | 27.250000 | 26.080000 | 26.430000 | 26.138819 | 19107600 |
+|      3 | 2016-01-05 | 26.610001 | 26.860001 | 25.940001 | 26.120001 | 25.832235 | 16691400 |
++--------+------------+-----------+-----------+-----------+-----------+-----------+----------+
 '''
 # Date,Open,High,Low,Close,Adj Close,Volume
 # Creating a table
@@ -58,16 +66,17 @@ CREATE TABLE `mydb`.`dayinfo` (
 #mydb.commit()
 
 #Inserting data by reading in the contents of a csv file:
-try:
-    sqlloadcsv= "LOAD DATA LOCAL INFILE '/home/devdavid/data/EB.csv' INTO TABLE DAYINFO FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' (Date, Open, High, Low, Close, AdjClose, Volume)"  
-except SystemError as genError:
-    print('Error 1 ==== \t', genError)
+#try:
+    #sqlloadcsv= "LOAD DATA LOCAL INFILE '/home/x1user/databases/data/EBAY.csv' INTO TABLE dayinfo FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' (Date, Open, High, Low, Close, Adj Close, Volume)" 
+#except SystemError as genError:
+#    print('Error 1 ==== \t', genError)
     
 
-print('DEBUG sqlloadcsv--->', sqlloadcsv)
-sleep(5)
+#print('DEBUG sqlloadcsv--->', sqlloadcsv)
+#sleep(5)
 
-my_cursor.execute(sqlloadcsv)
+#my_cursor.execute(sqlloadcsv)
+my_cursor.execute("LOAD DATA LOCAL INFILE '/home/x1user/databases/data/EBAY.csv' INTO TABLE dayinfo FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' (Date, Open, High, Low, Close, AdjClose, Volume)")
 try: 
     print('Data inserted and committed')
     mydb.commit()
