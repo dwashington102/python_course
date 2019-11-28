@@ -63,7 +63,7 @@ def get_csvfile():
 
 def export_csvfile(datafile):
     try:
-        engine = sqlalchemy.create_engine('mysql+pymysql://x1user:cxgg65$.#@localhost/TRANSACTIONS')
+        engine = sqlalchemy.create_engine('mysql+pymysql://userid:whatpass$.#@localhost/TRANSACTIONS')
     except ConnectionError as dbconnErr: 
         print('Database connection failure')
         print(dbconnErr)
