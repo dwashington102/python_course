@@ -144,14 +144,14 @@ def get_daterange(u_history):
             print('No valid dates found')
         else:
             my_begin = datelist.pop(0)
-            csv_startdate = re.sub(r',.*$', "", my_begin)
-            csv_startdate = csv_startdate.strip("\n")
+            csv_enddate = re.sub(r',.*$', "", my_begin)
+            csv_enddate = csv_enddate.strip("\n")
 
             my_end = datelist.pop()
-            csv_enddate = re.sub(r',.*$', "", my_end)
-            csv_enddate = csv_enddate.rstrip()
-            print('End Date:\t{}'.format(csv_enddate))
+            csv_startdate = re.sub(r',.*$', "", my_end)
+            csv_startdate = csv_startdate.rstrip()
             print('Start Date:\t{}'.format(csv_startdate))
+            print('End Date:\t{}'.format(csv_enddate))
 
 if __name__ == '__main__':
     main()
