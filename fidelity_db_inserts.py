@@ -48,8 +48,7 @@ def main():
 
 #Function opens the csv file for reading and calls the export_csvfile().
 def get_csvfile():
-    csvfile_hist = CSVFILELOC + 'history_2010-2019.csv'
-    #csvfile_hist = CSVFILELOC + 'test.csv'
+    csvfile_hist = CSVFILELOC + 'history_ytd.csv'
     try:
         with open(csvfile_hist, 'r') as datafile:
             #print('DEBUG >>> Data file: ', datafile)
@@ -62,7 +61,7 @@ def get_csvfile():
 # Function defines db connection engine and exports contents of csv file
 def export_csvfile(datafile):
     try:
-        engine = sqlalchemy.create_engine('mysql+pymysql://userid:whatpass$.#@localhost/TRANSACTIONS')
+        engine = sqlalchemy.create_engine('mysql+pymysql://x1user:cxgg65$.#@localhost/TRANSACTIONS')
     except ConnectionError as dbconnErr: 
         print('Database connection failure')
         print(dbconnErr)
