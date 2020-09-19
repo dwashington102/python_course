@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+# Script changes the Linux Desktop Background using the gsettings command:
+# Backgrounds and stored in MYPATH
+
+# Import required modules
 import os
 import sys
 import random
@@ -7,9 +11,12 @@ import time
 from os import path
 import os.path
 
+
+# Import module required to run gsettings command
 import gi
 gi.require_version('Gtk', '3.0')
 from  gi.repository import Gio, Gtk
+
 
 #Define GLOBAL CONSTANTS
 MYPATH='/usr/share/backgrounds/various'
@@ -22,7 +29,7 @@ def main():
     get_wallpaper()
 
 
-# Function will confirm if directory defined by MYPATH exists.  If not the program exists
+# Function will confirm if directory defined by MYPATH exists.  If not the program exits
 def check_mypath():                 
     test_dir = (path.isdir(MYPATH))
     if test_dir == True:   #Boolean check
@@ -32,7 +39,8 @@ def check_mypath():
         print('Exiting...')
         exit(1)
 
-def get_wallpaper():    # Builds a list of files in MYPATH directory
+# Function builds a random list of backgrounds in MYPATH
+def get_wallpaper():    
     wallpaper_lst = []
 
     for (dirpath, dirname, filenames) in os.walk(MYPATH):
@@ -41,17 +49,36 @@ def get_wallpaper():    # Builds a list of files in MYPATH directory
 
     mytest = len(wallpaper_lst)
     mytest = mytest - 1      # Decrease size of mytest by 1 to account for wallpaper_lst[] starting at 0 rather than 1
-    #time.sleep(5)
+    #time.sleep(5)  <-- DEBUG purpose only
     my_rand = random.randint(0, mytest) 
     wallpaper = wallpaper_lst[my_rand]    #Sets the wallpaper to a random item from the wallpaper_lst
-    set_wallpaper(wallpaper)
+    get_wm(wallpaper)
 
 
-# Uses gi module(s) to pass values to Gnome gsettings
+#  For GNOME WM function uses gi module to set schema org.gnome.desktop.background
 def set_wallpaper(wallpaper):
     settings = Gio.Settings.new("org.gnome.desktop.background")
     settings.set_string("picture-uri", "file://" + MYPATH + '/' + wallpaper)
     settings.apply()
+
+
+#  For Cinnamon WM function uses gi module to set schema org.cinnamon.desktop.background
+def cinnamon_set_wallpaper(wallpaper):
+    settings = Gio.Settings.new("org.cinnamon.desktop.background")
+    settings.set_string("picture-uri", "file://" + MYPATH + '/' + wallpaper)
+    settings.apply()
+
+# Confirm if the WM is GNOME or Cinnamon
+def get_wm(wallpaper):
+    wm_type=os.system('gnome-shell --version 2>/dev/null')
+
+    if wm_type==0:
+        #print('Gnome Found')  <---DEBUG purpose only
+        set_wallpaper(wallpaper)
+    else:
+        #print('Gnome NOT FOUND') <----DEBUG purpose only
+        cinnamon_set_wallpaper(wallpaper)
+
 
 
 if __name__ == '__main__':
