@@ -14,8 +14,9 @@
 # 4. Required python packages: pandas, sqlalchemy, pymysql
 # 5. Create these files
 #    	${HOME}/databases/sqlite_db/log_files/cron_fail.imports
+#    	${HOME}/databases/sqlite_db/log_files/cron_success.imports
 # 	${HOME}/databases/sqlite_db/SQL_files/count.txt
-
+# 6. Optional --- create cron job to run the script
 
 
 # Values used to insert data into csv file
