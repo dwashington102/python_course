@@ -1,4 +1,17 @@
 #!/bin/bash 
+# Prereqs for running this script
+# Details on G-drive: https://docs.google.com/document/d/1dS4qNmQ5aAQOshG7xX1-fgD8WTYpoWT79l3i6td0sc4
+# 
+# 1. Install required sqlite3 packages
+# 2. Create the database directories:
+# 	mkdir -p ~/databases/sqlite_db/databases
+# 	mkdir -p ~/databases/sqlite_db/csv_files
+# 	mkdir -p ~/databases/sqlite_db/import_files
+# 	mkdir -p ~/databases/sqlite_db/export_files
+# 	mkdir -p ~/databases/sqlite_db/SQL_files
+# 	mkdir -p ~/databases/sqlite_db/log_files
+# 3. Create sqlite db
+
 
 
 # Values used to insert data into csv file
