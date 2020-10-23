@@ -2,7 +2,7 @@
 # Prereqs for running this script
 # Details on G-drive: https://docs.google.com/document/d/1dS4qNmQ5aAQOshG7xX1-fgD8WTYpoWT79l3i6td0sc4
 # 
-# 1. Install required sqlite3 packages
+# 1. Install required OS sqlite3 packages
 # 2. Create the database directories:
 # 	mkdir -p ~/databases/sqlite_db/databases
 # 	mkdir -p ~/databases/sqlite_db/csv_files
@@ -11,6 +11,10 @@
 # 	mkdir -p ~/databases/sqlite_db/SQL_files
 # 	mkdir -p ~/databases/sqlite_db/log_files
 # 3. Create sqlite db
+# 4. Required python packages: pandas, sqlalchemy, pymysql
+# 5. Create these files
+#    	${HOME}/databases/sqlite_db/log_files/cron_fail.imports
+# 	${HOME}/databases/sqlite_db/SQL_files/count.txt
 
 
 
