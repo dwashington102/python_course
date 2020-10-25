@@ -15,7 +15,7 @@
 # 5. Create these files
 #    	${HOME}/databases/sqlite_db/log_files/cron_fail.imports
 #    	${HOME}/databases/sqlite_db/log_files/cron_success.imports
-# 	${HOME}/databases/sqlite_db/SQL_files/count.txt
+# 	    ${HOME}/databases/sqlite_db/SQL_files/count.txt
 # 6. Optional --- create cron job to run the script
 
 
@@ -31,6 +31,8 @@ TSTAMP=$(date +"%Y%m%d%H%M%S")
 CMD='/usr/bin/sqlite3 ${HOME}/databases/sqlite_db/databases/vstats.db ".read ${HOME}/databases/sqlite_db/SQL_files/import.sql"'
 COUNT=$(cat ${HOME}/databases/sqlite_db/SQL_files/count.txt)
 LOGFILEDIR='${HOME}/databases/sqlite_db/log_files'
+LOGSUCCESS=${LOGFILEDIR}/cron_success.imports
+LOGFAIL=${LOGFILEDIR}/cron_fail.imports
 
 # update_csv function writes data to the vmstat_out.csv file
 update_csv(){ echo $HNAME$VMSTATS$TSTAMP >> ${HOME}/databases/sqlite_db/csv_files/vmstat_out.csv ; }
@@ -66,13 +68,15 @@ else
 	# If the export is successful we write success to a log and the reset the counter to 0
 	if [ $? == 0 ];
 	then	
-		echo "DEBUG: Enter IF-Success"
-		echo "DEBUG: Successful imports $TSTAMP" >> $LOGFILEDIR/cron_success.imports
+		#echo "DEBUG: Enter IF-Success"
+		echo "DEBUG: Successful imports $TSTAMP" >> ${LOGSUCCESS}
+		#echo "DEBUG: Successful imports $TSTAMP" >> $LOGFILEDIR/cron_success.imports
 		reset_count
 	else	
-	# Else the export is unsuccessful and we write failure to a log and the reset the counter to 0
-		echo "DEBUG: Enter IF-FAIL"
-		echo "DEBUG: Failed imports $TSTAMP" >> $LOGFILEDIR/cron_fail.imports
+	# Else the export is unsuccessful, we write failure to a log, backup existing CSV file for manual import and the reset the counter to 0
+		#echo "DEBUG: Enter IF-FAIL"
+		#echo "DEBUG: Failed imports $TSTAMP" >> $LOGFILEDIR/cron_fail.imports
+		echo "DEBUG: Failed imports $TSTAMP" >> ${LOGFAIL}
 		mv  ${HOME}/databases/sqlite_db/csv_files/vmstat_out.csv  ${HOME}/databases/sqlite_db/csv_files/vmstat_out.csv_$TSTAMP	
 		reset_count
 	fi
