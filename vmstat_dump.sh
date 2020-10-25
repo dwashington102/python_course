@@ -13,7 +13,7 @@
 # 3. Create sqlite db
 # 4. Required Python packages: pandas, sqlalchemy, pymysql
 # 5. Create these files  <--2020-10-25: Currently working to auto create the following files if they do not exist
-# 	    ${HOME}/databases/sqlite_db/SQL_files/count.txt
+# 	    ${HOME}/databases/sqlite_db/SQL_files/vmstat_db_count.txt
 # 6. Optional --- create cron job to run the script
 
 
@@ -66,7 +66,20 @@ elif [ $COUNT -ge 30 ]; then
 			if [ -f $LOGSUCCESS ]; then
 				log_success
 				reset_count
-			else	
+				echo "0" > ${HOME}/databases/sqlite_db/SQL_files/vmstat_db_count.txt
+				truncate -s 0 ${HOME}/databases/sqlite_db/csv_files/vmstat_out.csv
+			else 
+				echo "CREATED SUCCESS LOG" >> $LOGSUCCESS
+				log_success
+				reset_count
+				echo "0" > ${HOME}/databases/sqlite_db/SQL_files/vmstat_db_count.txt
+				truncate -s 0 ${HOME}/databases/sqlite_db/csv_files/vmstat_out.csv
+			fi
+		else	
+			if [ -f $LOGFAIL ]; then
+				log_failure
+			else
+				echo "CREATED FAILURE LOG" >> $LOGFAIL
 				log_failure
 			fi
 		fi
