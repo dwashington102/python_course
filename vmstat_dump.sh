@@ -22,8 +22,8 @@
 # Values used to insert data into csv file
 myuser=`whoami`
 HNAME=$(hostname)
-VMSTATS=$(vmstat  | awk '{print ":"$4":"$5":"$6":"}' | grep -Ev '^:-|^:-f')
-#VMSTATS=$(vmstat  | awk '{print ":"$4":"$5":"$6":"}' | grep ^:[:digit:])
+#VMSTATS=$(vmstat  | awk '{print ":"$4":"$5":"$6":"}' | grep -Ev '^:-|^:-f')
+VMSTATS=$(vmstat  | awk '{print ":"$4":"$5":"$6":"}' | grep ^:[[:digit:]])
 TSTAMP=$(date +"%Y%m%d%H%M%S")
 #echo "DEBUG: $HNAME$VMSTATS$TSTAMP"
 
@@ -48,6 +48,7 @@ reset_count(){ echo 0 > ${HOME}/databases/sqlite_db/SQL_files/count.txt ; }
 
 if [ $COUNT -eq 0 ]; then
 	#echo "HOSTNAME:FREEMEM:BUFFER:CACHE:DATE" > ${HOME}/databases/sqlite_db/csv_files/vmstat_out.csv
+	touch ${HOME}/database/sqlite_db/SQL_files/count.txt
 	echo $(( COUNT +1 )) > ${HOME}/databases/sqlite_db/SQL_files/count.txt
 elif [ $COUNT -lt 30 ]; then
 	update_csv
