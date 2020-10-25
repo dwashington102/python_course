@@ -40,6 +40,9 @@ update_csv(){ echo $HNAME$VMSTATS$TSTAMP >> ${HOME}/databases/sqlite_db/csv_file
 #reset_count function sets the counter value to 0 by updating the count.txt file
 reset_count(){ echo 0 > ${HOME}/databases/sqlite_db/SQL_files/count.txt ; }
 
+log_success(){echo "DEBUG: Successful imports $TSTAMP" >> ${LOGSUCCESS}}
+log_failure(){echo "DEBUG: Failed imports $TSTAMP" >> ${LOGFAIL}}
+
 
 # If-Else loop actions -->
 # --> When count = 0, an echo statement adds the header to the vmstat_out.csv 
@@ -69,13 +72,15 @@ else
 	if [ $? == 0 ];
 	then	
 		#echo "DEBUG: Enter IF-Success"
+		# 2010-10-25 ---> To do test if $LOGSUCCESS exists, if not create else append
 		echo "DEBUG: Successful imports $TSTAMP" >> ${LOGSUCCESS}
-		#echo "DEBUG: Successful imports $TSTAMP" >> $LOGFILEDIR/cron_success.imports
+#echo "DEBUG: Successful imports $TSTAMP" >> $LOGFILEDIR/cron_success.imports
 		reset_count
 	else	
 	# Else the export is unsuccessful, we write failure to a log, backup existing CSV file for manual import and the reset the counter to 0
 		#echo "DEBUG: Enter IF-FAIL"
 		#echo "DEBUG: Failed imports $TSTAMP" >> $LOGFILEDIR/cron_fail.imports
+# 2010-10-25 ---> To do test if $LOGFAIL exists, if not create else append
 		echo "DEBUG: Failed imports $TSTAMP" >> ${LOGFAIL}
 		mv  ${HOME}/databases/sqlite_db/csv_files/vmstat_out.csv  ${HOME}/databases/sqlite_db/csv_files/vmstat_out.csv_$TSTAMP	
 		reset_count
