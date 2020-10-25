@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash -x
 # Prereqs for running this script
 # Details on G-drive: https://docs.google.com/document/d/1dS4qNmQ5aAQOshG7xX1-fgD8WTYpoWT79l3i6td0sc4
 # 
@@ -22,7 +22,8 @@
 # Values used to insert data into csv file
 myuser=`whoami`
 HNAME=$(hostname)
-VMSTATS=$(vmstat  | awk '{print ":"$4":"$5":"$6":"}' | grep ^:[[:digit:]])
+VMSTATS=$(vmstat  | awk '{print ":"$4":"$5":"$6":"}' | grep -Ev '^:-|^:-f')
+#VMSTATS=$(vmstat  | awk '{print ":"$4":"$5":"$6":"}' | grep ^:[:digit:])
 TSTAMP=$(date +"%Y%m%d%H%M%S")
 #echo "DEBUG: $HNAME$VMSTATS$TSTAMP"
 
@@ -46,19 +47,20 @@ reset_count(){ echo 0 > ${HOME}/databases/sqlite_db/SQL_files/count.txt ; }
 # Current DB connection: engine = sqlalchemy.create_engine('mysql+pymysql://devdavid:h3...@localhost:3306/testdb2')
 
 if [ $COUNT -eq 0 ]; then
-	echo "HOSTNAME:FREEMEM:BUFFER:CACHE:DATE" > ${HOME}/databases/sqlite_db/csv_files/vmstat_out.csv
+	#echo "HOSTNAME:FREEMEM:BUFFER:CACHE:DATE" > ${HOME}/databases/sqlite_db/csv_files/vmstat_out.csv
 	echo $(( COUNT +1 )) > ${HOME}/databases/sqlite_db/SQL_files/count.txt
 elif [ $COUNT -lt 30 ]; then
 	update_csv
 	echo $(( COUNT +1 )) > ${HOME}/databases/sqlite_db/SQL_files/count.txt
 else
+	echo ".import ${HOME}/databases/sqlite_db/csv_files/vmstat_out.csv VSTATS" >> ${HOME}/databases/sqlite_db/SQL_files/import.sql
 	update_csv
 
 	# Export data from csv file to the sqlite VSTATS database
-	#/usr/bin/sqlite3 ${HOME}/databases/sqlite_db/databases/vstats.db ".read ${HOME}/databases/sqlite_db/SQL_files/import.sql"
+	/usr/bin/sqlite3 ${HOME}/databases/sqlite_db/databases/vstats.db ".read ${HOME}/databases/sqlite_db/SQL_files/import.sql"
 
 	# Export data from csv file to the mysql database
-        /usr/bin/python3 ${HOME}/GIT_REPO/python_course/ex_csv_glob_pandas.py
+        #/usr/bin/python3 ${HOME}/GIT_REPO/python_course/ex_csv_glob_pandas.py
 
 	# If the export is successful we write success to a log and the reset the counter to 0
 	if [ $? == 0 ];
