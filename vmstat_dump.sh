@@ -66,13 +66,11 @@ elif [ $COUNT -ge 30 ]; then
 			if [ -f $LOGSUCCESS ]; then
 				log_success
 				reset_count
-				echo "0" > ${HOME}/databases/sqlite_db/SQL_files/vmstat_db_count.txt
 				truncate -s 0 ${HOME}/databases/sqlite_db/csv_files/vmstat_out.csv
 			else 
 				echo "CREATED SUCCESS LOG" >> $LOGSUCCESS
 				log_success
 				reset_count
-				echo "0" > ${HOME}/databases/sqlite_db/SQL_files/vmstat_db_count.txt
 				truncate -s 0 ${HOME}/databases/sqlite_db/csv_files/vmstat_out.csv
 			fi
 		else	
