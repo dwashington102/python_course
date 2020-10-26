@@ -10,7 +10,7 @@
 # 	mkdir -p ~/databases/sqlite_db/export_files
 # 	mkdir -p ~/databases/sqlite_db/SQL_files
 # 	mkdir -p ~/databases/sqlite_db/log_files
-# 3. Create sqlite db
+# 3. Create sqlite db (vstats.db)
 # 4. Required Python packages: pandas, sqlalchemy, pymysql
 # 5. Create these files  <--2020-10-25: Currently working to auto create the following files if they do not exist
 # 	    ${HOME}/databases/sqlite_db/SQL_files/vmstat_db_count.txt
