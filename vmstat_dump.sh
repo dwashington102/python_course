@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 # Prereqs for running this script
 # Details on G-drive: https://docs.google.com/document/d/1dS4qNmQ5aAQOshG7xX1-fgD8WTYpoWT79l3i6td0sc4
 # 
@@ -14,6 +14,8 @@
 # 4. Required Python packages: pandas, sqlalchemy, pymysql
 # 5. Create these files  <--2020-10-25: Currently working to auto create the following files if they do not exist
 # 	    ${HOME}/databases/sqlite_db/SQL_files/vmstat_db_count.txt
+# 	    echo 0 > ${HOME}/databases/sqlite_db/SQL_files/vmstat_db_count.txt
+           
 # 6. Optional --- create cron job to run the script
 
 
