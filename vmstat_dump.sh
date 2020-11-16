@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 # Prereqs for running this script
 # Details on G-drive: https://docs.google.com/document/d/1dS4qNmQ5aAQOshG7xX1-fgD8WTYpoWT79l3i6td0sc4
 # 
@@ -59,6 +59,11 @@ elif [ $COUNT -ge 30 ]; then
 	# Adding "grep import... " statement to test if the vmstat_db_import.sql file contains import command
 	grep import ${HOME}/databases/sqlite_db/SQL_files/vmstat_db_import.sql
 	if [ $? != 0 ]; then
+# 2020-11-14:   TO DO
+#### It may be necessary to null out the vmstat_db_import.sql file and rebuild it adding
+		cat /dev/null > ${HOME}/databases/sqlite_db/SQL_files/vmstat_db_import.sql
+		echo ".mode csv" > ${HOME}/databases/sqlite_db/SQL_files/vmstat_db_import.sql
+		echo ".separator ':'" >> ${HOME}/databases/sqlite_db/SQL_files/vmstat_db_import.sql
 		# IF statement will add import statement to vmstat_db_import.sql if missing, update csv file,  and then attempt export of csv file
 		echo ".import ${HOME}/databases/sqlite_db/csv_files/vmstat_out.csv VSTATS" >> ${HOME}/databases/sqlite_db/SQL_files/vmstat_db_import.sql
 		update_csv
