@@ -22,7 +22,7 @@
 # Values used to insert data into csv file
 myuser=`whoami`
 HNAME=$(hostname)
-VMSTATS=$(vmstat  | awk '{print ":"$4":"$5":"$6":"}' | grep ^:[[:digit:]])
+VMSTATS=$(vmstat -wa -SM  | awk '{print ":"$4":"$5":"$6":"}' | grep ^:[[:digit:]])
 TSTAMP=$(date +"%Y%m%d%H%M%S")
 
 # Values
