@@ -1,3 +1,4 @@
+# Importing colorama module
 import colorama
 
 gcolor = colorama.Fore.GREEN
