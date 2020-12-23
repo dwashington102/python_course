@@ -52,6 +52,7 @@ printf "\nFiles converted to text logs\n" >> ${convert_log}
 get_sqlite3_db_files
 printf "\nWork completed see ${convert_log}\n"
 printf "\n\n---------------------------------\n" >> ${convert_log}
+printf "\nConverted log files located in directory ${timeStamp}\n" >> ${convert_log}
 }
 
 
