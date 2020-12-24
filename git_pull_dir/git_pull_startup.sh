@@ -5,7 +5,7 @@
 # Set variables
 pythonCourse=$HOME/GIT_REPO/python_course
 dotfiles=$HOME/GIT_REPO/dotfiles
-timeStamp=`date +%Y%m%d%H%M`
+timeStamp=`date +%Y%m%d_%H%M`
 currDir=$HOME/GIT_REPO
 
 function print_spacer (){
