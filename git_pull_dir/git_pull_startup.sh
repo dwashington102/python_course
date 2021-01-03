@@ -3,6 +3,7 @@
 # Script run on startup to pull git projects.
 
 # Set variables
+GITDIR=$HOME/GIT_REPO
 pythonCourse=$HOME/GIT_REPO/python_course
 dotfiles=$HOME/GIT_REPO/dotfiles
 timeStamp=`date +%Y%m%d_%H%M`
@@ -10,6 +11,15 @@ currDir=$HOME/GIT_REPO
 
 function print_spacer (){
 	printf "\n\n\n"
+}
+
+function remove_30day_dirs (){
+	cd  $GITDIR
+	for myDirs in `find . -maxdepth 1 -mmin +10  -name "*202*" -type  d `
+	    do
+                printf "\nMyFile: ${myDirs}"
+		printf "\n"
+	    done
 }
 
 
@@ -81,10 +91,11 @@ function MAIN (){
 check_pythoncourse
 print_spacer
 check_dotfiles
+remove_30day_dirs
 }
 
 
 # Where the magic happens
 MAIN
-printf "git pull actions completed\n"
+printf "\ngit pull actions completed\n"
 exit 0
