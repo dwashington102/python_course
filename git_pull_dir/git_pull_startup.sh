@@ -88,6 +88,7 @@ function check_dotfiles (){
 
 
 function MAIN (){
+cd $GITDIR
 check_pythoncourse
 print_spacer
 check_dotfiles
