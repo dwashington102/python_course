@@ -15,10 +15,10 @@ function print_spacer (){
 
 function remove_30day_dirs (){
 	cd  $GITDIR
-	for myDirs in `find . -maxdepth 1 -mmin +10  -name "*202*" -type  d `
+	for myDirs in `find . -maxdepth 1 -mtime +30  -name "*202*" -type  d`
 	    do
-                printf "\nMyFile: ${myDirs}"
-		printf "\n"
+                printf "${mydirs}"
+                rm -f "\nMyFile: ${myDirs}"
 	    done
 }
 
