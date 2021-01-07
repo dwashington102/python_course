@@ -1,6 +1,6 @@
 #!/bin/sh 
-
-# Script run on startup to pull git projects.
+# 2021-01-06
+# Script runs on startup to pull git projects.
 
 # Set variables
 GITDIR=$HOME/GIT_REPO
@@ -15,7 +15,7 @@ function print_spacer (){
 
 function remove_30day_dirs (){
 	cd  $GITDIR
-	for myDirs in `find . -maxdepth 1 -mtime +30  -name "*202*" -type  d`
+	for myDirs in `find . -maxdepth 1 -mtime +5  -name "*202*" -type  d`
 	    do
                 printf "${mydirs}"
                 rm -f "\nMyFile: ${myDirs}"
