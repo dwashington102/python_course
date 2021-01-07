@@ -2,7 +2,14 @@
 # Version: 2.0
 # Script gathers a list of files in the current directory, if the file type is "SQLite*database" the
 # script will convert the contents of the database to a text file in text format.
-# This allows L2 to view the contents of WDG AgentService.log file using a standard text editor.
+# This allows L2 to view the contents of WDG log files using a standard text editor.
+# 
+# Author:  David Washington 
+# Any problems with the script please contact me via Slack or email (washingd@us.ibm.com)
+#
+# 2020-01-05:  The current WDG Log files share a common table (LogTable).  If additional tables are added to WDG Log files this script 
+#              will require an updated "select * from" statement.
+
 
 
 set_logfile() {
