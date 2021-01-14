@@ -7,8 +7,12 @@
 # Author:  David Washington 
 # Any problems with the script please contact me via Slack or email (washingd@us.ibm.com)
 #
-# 2020-01-05:  The current WDG Log files share a common table (LogTable).  If additional tables are added to WDG Log files this script 
+# 2021-01-05:  The current WDG Log files share a common table (LogTable).  If additional tables are added to WDG Log files this script 
 #              will require an updated "select * from" statement.
+#
+# 2021-01-14: Updated grep statement in  get_sqlite3_db_files() to correctly identify "data" files when running the script on AIX server
+# file output command on Linux shows: AgentService.log:         SQLite 3.x database
+# file output command on AIX show:    AgentService.log: data or International Language text
 
 
 
@@ -34,7 +38,7 @@ printf "\n-------------------------------" >> ${convert_log}
 get_sqlite3_db_files() {
 # Function gathers a list of files in the current directory, if the file type is "SQLite*database" the
 # contents of the database are written to a text file.
-    for get_fileName in `file * | grep 'SQLite.*database' | awk -F":" '{print $1}'`
+    for get_fileName in `file * | grep -E  'SQLite.*database|data\ or.*text' | awk -F":" '{print $1}'`
     do
         if [[ $? -eq 0 ]]; then
             outputFile="${timeStamp}/${get_fileName}.txt"
