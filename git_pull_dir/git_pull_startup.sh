@@ -9,10 +9,12 @@ dotfiles=$HOME/GIT_REPO/dotfiles
 timeStamp=`date +%Y%m%d_%H%M`
 currDir=$HOME/GIT_REPO
 
+# Just a spacer to format the output
 function print_spacer (){
 	printf "\n\n\n"
 }
 
+# Function removes copies of the older python_course and dotfiles directory
 function remove_30day_dirs (){
 	cd  $GITDIR
 	for myDirs in `find . -maxdepth 1 -mtime +5  -name "*202*" -type  d`
@@ -23,6 +25,7 @@ function remove_30day_dirs (){
 }
 
 
+#Function pulls the GIT repo python_course
 function pull_pythoncourse (){
 	    printf "git clone attempt for $pythonCourse\n"
 	    git clone https://github.com/dwashington102/python_course
@@ -34,6 +37,7 @@ function pull_pythoncourse (){
 }
 
 
+#Function pulls the GIT repo dotfiles
 function pull_dotfiles (){
 	    printf "git clone attempt for $dotfiles\n"
 	    git clone https://github.com/dwashington102/dotfiles
@@ -45,6 +49,7 @@ function pull_dotfiles (){
 }
 
 
+#Function renames the existing python_course directory on the local server
 function rename_pythoncourse (){
 	cd $currDir
 	mv $pythonCourse $pythonCourse.$timeStamp
@@ -57,6 +62,7 @@ function rename_pythoncourse (){
 }
 
 
+#Function renames the existing python_course directory on the local server
 function rename_dotfiles (){
 	cd $currDir
 	mv $dotfiles $dotfiles.$timeStamp
@@ -69,6 +75,8 @@ function rename_dotfiles (){
 }
 
 
+# Checks if GIT_REPO/python_course exists
+# If the directory exits, rename the current directory before pulling from Github
 function check_pythoncourse (){
 	if [ -d "$pythonCourse" ]; then
 		rename_pythoncourse
@@ -78,6 +86,8 @@ function check_pythoncourse (){
 }
 
 
+# Checks if GIT_REPO/dotfiles exists
+# If the directory exits, rename the current directory before pulling from Github
 function check_dotfiles (){
 	if [ -d "$dotfiles" ]; then
 		rename_dotfiles
