@@ -87,7 +87,13 @@ elif [ $COUNT -ge 30 ]; then
 				truncate -s 0 ${HOME}/databases/sqlite_db/csv_files/vmstat_out.csv
 			fi
 		else	
-			#else statement writes failure msg
+			#else statement rebuilds vmstat_db_import.sql for the next running of the script and writes failure msg to indicate an export failed 
+			#during this cycle
+			cat /dev/null > ${HOME}/databases/sqlite_db/SQL_files/vmstat_db_import.sql
+			echo ".mode csv" > ${HOME}/databases/sqlite_db/SQL_files/vmstat_db_import.sql
+			echo ".separator ':'" >> ${HOME}/databases/sqlite_db/SQL_files/vmstat_db_import.sql
+			# IF statement will add import statement to vmstat_db_import.sql if missing, update csv file,  and then attempt export of csv file
+			echo ".import ${HOME}/databases/sqlite_db/csv_files/vmstat_out.csv VSTATS" >> ${HOME}/databases/sqlite_db/SQL_files/vmstat_db_import.sql
 			if [ -f $LOGFAIL ]; then
 				log_failure
 			else
