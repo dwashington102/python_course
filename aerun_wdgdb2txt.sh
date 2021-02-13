@@ -1,72 +1,108 @@
-#!/bin/sh 
-# Version: 2.0
-# Script gathers a list of files in the current directory, if the file type is "SQLite*database" the
-# script will convert the contents of the database to a text file in text format.
-# This allows L2 to view the contents of WDG log files using a standard text editor.
+#!/usr/bin/env bash
+# Version: 3.0
+
+# Script gathers a list of files in the current directory, if the file type indicates the file is a SQLite database the
+# script attempts to convert the contents of the database to a text file.
+# This allows IBM L2 to view the contents of WDG log files using a standard text editor.
 # 
-# Author:  David Washington 
-# Any problems with the script please contact me via Slack or email (washingd@us.ibm.com)
-#
-# 2021-01-05:  The current WDG Log files share a common table (LogTable).  If additional tables are added to WDG Log files this script 
+# 2020-01-05:  The current WDG Log files share a common table (LogTable).  If additional tables are added to WDG Log files this script 
 #              will require an updated "select * from" statement.
 #
-# 2021-01-14: Updated grep statement in  get_sqlite3_db_files() to correctly identify "data" files when running the script on AIX server
-# file output command on Linux shows: AgentService.log:         SQLite 3.x database
-# file output command on AIX show:    AgentService.log: data or International Language text
+# 2020-02-12: Major overhaul to the script in order to dump all tables of the SQLite databases.  Turns out not all WDG SQLite databases
+#             are using the common table name (LogTable).
 
-
-
-set_logfile() {
-# Function: Created a log in the current directory.  After an AgentService.log file is successfully converted to a text file
-# entry is added in the log file.
-convert_log=${PWD}/converted_files_success.txt
-touch ${convert_log}
-cat /dev/null > ${convert_log}
-
-# Create a directory in the $CWD setting the directory name to timeStamp variable
+# This function creates a subdirectory in the $PWD in order to store log file and converted database text files
+set_logfile_dir() {
 timeStamp=$(date +"%Y%m%d_%H%M%S")
 mkdir ${timeStamp}
 
-
-echo $PWD >> ${convert_log}
-printf "\n------------------------------" >> ${convert_log}
-printf "\nFiles in current directory:\n\n" >> ${convert_log}
-file * >> ${convert_log}
-printf "\n-------------------------------" >> ${convert_log}
+if [[ $? != 0 ]]; then
+    printf "\nUnable to create subdirectory...exiting now!"
+else
+    # Print a list of the files in the current directory.
+    # Printing a list of the files is for debugging purposes
+    convertResults=./${timeStamp}/converted_Results.txt
+    touch "${convertResults}"
+    #touch "${convertResults}" 2>&1 > /dev/null
+    cat /dev/null > "${convertResults}"
+    echo $PWD >> "${convertResults}"
+    printf "\n------------------------------" >> "${convertResults}"
+    printf "\nResults:" >> "${convertResults}"
+fi
 }
 
-get_sqlite3_db_files() {
-# Function gathers a list of files in the current directory, if the file type is "SQLite*database" the
-# contents of the database are written to a text file.
-    for get_fileName in `file * | grep -E  'SQLite.*database|data\ or.*text' | awk -F":" '{print $1}'`
+# Function connects to the SQLite database and counts the number of rows in the database
+# If the number of rows == 0 the databse contents is not converted to a text file.
+# If the number of rows > 0 the database contents are converted to a text file and stored 
+# echo commands build the SQL file that is responsible for dumping the contents of each table to the outputText file
+convert_db() {
+tableRows=`sqlite3 "${get_fileName}" "select count(*) from '$tableName'"`
+if [ $tableRows -eq 0 ]; then
+    printf "\n\tTablename: ${tableName} contains 0 rows - skipping converting table contents to text file." >> ${convertResults}
+else
+    printf "\n\tTablename: ${tableName} contains '${tableRows}' rows converting table contents to text file." >> ${convertResults}
+    mkdir -p ${outputLogs}
+    outputText=${outputLogs}'/'$tableName.txt
+    touch $outputText
+    echo ".mode csv" >> convert_wdg.sql
+    echo ".output '${outputText}'" >> convert_wdg.sql
+    echo "select * from '${tableName}';" >> convert_wdg.sql
+    echo ".quit" >> convert_wdg.sql
+    sqlite3 "${get_fileName}" ".read convert_wdg.sql"
+fi                        
+rm -f ${outputTables}
+}
+
+# Function confirms if SQLite database files are found
+# If the SQLite database files are found the function loops through each file, creating a .tables file.
+# The .tables file contains a list of tables in the SQLite database 
+# The function convert_db is ran against each table listed in the .tables file 
+
+get_tableNames() {
+IFS=$'\n'
+file * | grep -E "SQLite.*database|data\ or.*text"  1>/dev/null 2>&1
+if  [[ $? -ne 0 ]]; then
+    printf "\nNo SQLite database files found in current directory.\n"
+else
+    for get_fileName in `file * | grep -E "SQLite.*database|data\ or.*text" | awk -F":" '{print $1}'`
     do
-        if [[ $? -eq 0 ]]; then
-            outputFile="${timeStamp}/${get_fileName}.txt"
-            touch convert_wdg.sql
+        if [[ $? -eq 1 ]]; then
+            printf "\nmade it"
+        exit 1
+        else
+            outputTables="${timeStamp}/${get_fileName}_db.tables"
+            touch "$outputTables" 2>/dev/null
+            touch convert_wdg.sql 2>/dev/null
             cat /dev/null > convert_wdg.sql
-            echo ".mode csv" > convert_wdg.sql
-            echo ".output ${outputFile}" >> convert_wdg.sql
-            echo "select * from LogTable;" >> convert_wdg.sql
-            echo ".output stdout" >> convert_wdg.sql
-            echo ".quit" >> convert_wdg.sql
-            sqlite3 ${get_fileName} ".read convert_wdg.sql"                                               
-            printf "${get_fileName} converted to ${get_fileName}.txt\n" >> ${convert_log}
+            sqlite3 "$get_fileName" "select name from sqlite_master where type='table' group by name having name != 'sqlite_sequence';"  > "$outputTables"
+            if [ -s "$outputTables" ]; then
+                outputLogs='./'$timeStamp'/'$get_fileName'_db_converted_dir'
+                printf "\n${get_fileName} database: " >> ${convertResults}
+                for tableName in `cat $outputTables`
+                    do
+                        convert_db
+                     done
+                rm -f convert_wdg.sql
+            fi
         fi
     done
+fi
 }
-
 
 MAIN () {
-set_logfile
-printf "\n\n--------------------------------" >> ${convert_log}
-printf "\nFiles converted to text logs\n" >> ${convert_log}
-get_sqlite3_db_files
-printf "\nWork completed see ${convert_log}\n"
-printf "\n\n---------------------------------\n" >> ${convert_log}
-printf "\nConverted log files located in directory ${timeStamp}\n" >> ${convert_log}
+set_logfile_dir
+get_tableNames
+printf "\n------------------------------" >> "${convertResults}"
+printf "\nWork completed see ${convertResults}\n"
+printf "\n"
+#printf "\n\n--------------------------------" >> ${convert_log}
+#printf "\nFiles converted to text logs\n" >> ${convert_log}
+#get_sqlite3_db_files
+#printf "\nWork completed see ${convert_log}\n"
+#printf "\n\n---------------------------------\n" >> ${convert_log}
+#printf "\nConverted log files located in directory ${timeStamp}\n" >> ${convert_log}
 }
 
-
-# Calling my main MAIN
 MAIN
-exit 0
+
+
