@@ -1,5 +1,5 @@
 #!/bin/sh 
-# Version 0.0.1
+# Version 0.0.2
 
 # Script run on startup to pull git projects.
 
