@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-
+tStamp=`date +%Y%m%d_%H%M`
 get_ext () {
     printf "Input Ext.:\t"
     read ext_type
@@ -21,8 +21,8 @@ else
 		   exit 1
         else
             printf "\nFile Number: (${file_count})\t File Name: ${get_fileName}"
-            printf "\nRename actions: mv ${get_fileName} ${file_count}.${ext_type}"
-            mv ${get_fileName} ${file_count}.${ext_type}
+            printf "\nRename actions: mv ${get_fileName} ${tStamp}_${file_count}.${ext_type}"
+            mv ${get_fileName} ${tStamp}_${file_count}.${ext_type}
             printf "\n"
             sleep 3
             file_count=$((file_count+1))
