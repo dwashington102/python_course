@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 # Script changes the Linux Desktop Background using the gsettings command:
-# Backgrounds and stored in MYPATH
 
 # Import required modules
 import os
@@ -19,6 +18,7 @@ from  gi.repository import Gio, Gtk
 
 
 #Define GLOBAL CONSTANTS
+# Location of directory where the pictures are stored
 BACKGROUNDS='/usr/share/backgrounds/various'
 
 #Define variables
@@ -70,14 +70,19 @@ def cinnamon_set_wallpaper(wallpaper):
 
 # Confirm if the WM is GNOME or Cinnamon
 def get_wm(wallpaper):
+    print('Current background image:', '\t')
     wm_type=os.system('gsettings get org.gnome.desktop.background picture-uri  2>/dev/null')
 
     if wm_type==0:
         #print('DEBUG >>>>>> Gnome Found')
         set_wallpaper(wallpaper)
+        print('\n'+'Updated background image:  ')
+        os.system('gsettings get org.gnome.desktop.background picture-uri')
     else:
         #print('DEBUG >>>>>> Gnome NOT FOUND')
         cinnamon_set_wallpaper(wallpaper)
+        print('\n'+'Updated background image:  ')
+        os.system('gsettings get org.cinnamon.desktop.background picture-uri')
 
 
 
