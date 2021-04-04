@@ -38,7 +38,7 @@ for myPhp in `cat php_output.txt`
 # For each php  
 for myFile in `ls -1 ./php | grep --color=NEVER php`
    do
-        grep "source\ src=.*mp4" ${myFile} | awk -F'[""]' '{print $2}' >> mylist.txt
+        grep "source\ src=.*mp4" ./php/${myFile} | awk -F'[""]' '{print $2}' >> mylist.txt
     done
 
 mkdir ./mp4
