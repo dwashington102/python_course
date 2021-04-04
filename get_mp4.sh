@@ -49,7 +49,7 @@ for get_Download in `cat mylist.txt`
 }
 
 clean_up() {
-    rm -rf php_output
+    rm -rf php_output.txt
     rm -rf index.html
     rm -rf mylist.txt
 }
