@@ -32,7 +32,7 @@ grep plugcontent index.html | awk -F"a href" '{print $2}' | awk -F'[""]' '{print
 mkdir ./php
 for myPhp in `cat php_output.txt`
     do
-        wget -P ./php {myPhp}
+        wget -P ./php ${myPhp}
     done
 
 # For each php  
