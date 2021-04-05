@@ -53,6 +53,7 @@ download_files (){
     for hDoc in `ls -1 ./tmp`
     do
         wget -P ./mp4 `grep HD\ Quality ./tmp/$hDoc | awk -F'[""]' '{print $2}'`
+        sleep 10
     done
 }
 
