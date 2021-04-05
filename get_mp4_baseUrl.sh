@@ -52,7 +52,7 @@ download_files (){
     mkdir ./mp4
     for hDoc in `ls -1 ./tmp`
     do
-        wget -P ./mp4 `grep HD\ Quality $hDoc | awk -F'[""]' '{print $2}'`
+        wget -P ./mp4 `grep HD\ Quality ./tmp/$hDoc | awk -F'[""]' '{print $2}'`
     done
 }
 
