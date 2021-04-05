@@ -33,7 +33,7 @@ get_getUrl (){
 }
 
 get_downloadLinks (){
-    grep --color=NEVER href=\"/download index.html | awk -F'[""]' '{print $2' | sort -u >> getUrls.txt
+    grep --color=NEVER href=\"/download index.html | awk -F'[""]' '{print $2}' | sort -u >> getUrls.txt
 }
 
 gen_tmpFiles (){
