@@ -42,6 +42,10 @@ gen_tmpFiles (){
         do
             wget -P ./tmp ${getUrl}${urlPath}
         done
+    else
+        printf "\ngetUrls.txt file is empty...exiting"
+        exit 1
+    fi
 }
 
 download_files (){
