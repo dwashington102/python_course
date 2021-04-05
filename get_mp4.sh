@@ -1,6 +1,9 @@
 #!/usr/bin/env sh
 # Version: 0.1.0
+# Add Comments!!!
 
+#sites: 
+# - daft
 
 MAIN (){
     get_getUrl
@@ -45,10 +48,11 @@ mkdir ./mp4
 for get_Download in `cat mylist.txt`
     do
         wget -P ./mp4 ${get_Download}
+        sleep 10
     done
 }
 
-clean_up() {
+clean_up () {
     rm -rf php_output.txt
     rm -rf index.html
     rm -rf mylist.txt
@@ -56,5 +60,3 @@ clean_up() {
 
 MAIN
 exit 0
-
-

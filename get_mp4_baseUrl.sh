@@ -1,9 +1,14 @@
 #!/usr/bin/env sh
 # Version: 0.1.0
+# Add comments!!!
 
 # Script pulls mp4 files when index.html uses "<a href=/download" along with a baseUrl
 # example:
 # <a href="/download/videos/myfile">Title Here</a>
+
+# Sites
+# - wapbo
+
 
 # Steps taken:
 # 1) Prompt user for URL
@@ -19,6 +24,7 @@ MAIN (){
     get_downloadLinks
     gen_tmpFiles
     download_files
+    clean_up
 }
 
 
@@ -55,6 +61,11 @@ download_files (){
         wget -P ./mp4 `grep HD\ Quality ./tmp/$hDoc | awk -F'[""]' '{print $2}'`
         sleep 10
     done
+}
+
+
+clean_up (){
+    rm -rf index getUrls index* ./tmp
 }
 
 MAIN
