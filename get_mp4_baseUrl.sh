@@ -43,7 +43,7 @@ get_downloadLinks (){
 }
 
 gen_tmpFiles (){
-    if [[ -s getUrls.txt ]]; then
+    if [ -s getUrls.txt ]; then
         for urlPath in `cat getUrls.txt`
         do
             wget -P ./tmp ${getUrl}${urlPath}
