@@ -13,7 +13,7 @@ function get_status_sysd () {
     #set_rc_sysd=1 indicates the script expects the sshd process to be down and will enter the loop to restart sshd if get_rc_sysd == 1
     # The get_rc_sysd confirms if sshd is down
     set_rc_sysd=1
-    systemctl status sshd | grep "Active:.*active.*nope"
+    systemctl status sshd | grep "Active:.*active.*running.*"
     get_rc_sysd=$?
 
     if [[ $get_rc_sysd == $set_rc_sysd ]]; then
