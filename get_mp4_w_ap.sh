@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/sh 
 # Version: 0.1.0
 # Add comments!!!
 
@@ -19,33 +19,54 @@
 # 6) for each file in ./tmp directory grep "HD\ Quality" and wget contents
 
 MAIN (){
+    set_colors
     create_dirs
     get_getIndex
     get_urls
     gen_tmpFiles
     download_files
-    #clean_up
+    clean_up
 }
 
 
 # Functions
+set_colors () {
+    bold=$(tput bold)
+    blink=$(tput blink)
+    boldoff=$(tput sgr0)
+
+    red=$(tput setaf 1)
+    green=$(tput setaf 2)
+    yellow=$(tput setaf 3)
+    cyan=$(tput setaf 6)
+    normal=$(tput setaf 9)
+    boldoff=$(tput sgr0)
+
+}
+
 create_dirs () {
-    echo -e "\033[33;5m WARNING WARNING WARNING WARNING WARNING\033[0m"
-    printf "This script will remove ALL files in current directory\t "
-    echo  "\033[33;5m ($PWD) \033[0m"
-    printf "\nDo you want to remove ALL files (y/n):\t"
-    read choice
-    IFS=$'\n'
-    if [ ${choice} = 'y' ]; then
-        rm -rf *
-        mkdir ./tmp
-        mkdir ./mp4
-        mkdir ./rawfiles
-        mkdir ./logs
-        export grep='grep --color=NEVER'
-    else
-        printf "Ok not removing existing files\n"
-    fi
+    printf "\n${bold}${yellow}WARNING WARNING WARNING WARNING WARNING"
+    printf "\nThis script will remove ALL files in current directory\t ${cyan}${PWD}\n"
+    choice='abc'
+    while [ ${choice} = 'abc' ]
+    do
+        printf "\nDo you want to remove ALL files (y/n):\t${normal}"
+        read choice
+        IFS=$'\n'
+        if [ ${choice} = 'y' ]; then
+            rm -rf *
+            mkdir ./tmp
+            mkdir ./mp4
+            mkdir ./rawfiles
+            mkdir ./logs
+            export grep='grep --color=NEVER'
+        elif [ ${choice} = 'n' ]; then
+            printf "Ok not removing existing files\n"
+        else
+            printf "${bold}${red}Invalid entry...try again${normal}${boldoff}"
+            choice='abc'
+        fi
+    done
 }
 
 get_getIndex (){
@@ -53,14 +74,21 @@ get_getIndex (){
     read getUrl
     IFS=$'\n'
     wget -a ./logs/get_getIndex.log ${getUrl}
-    ls -1 index.html > /dev/null 2>&1
-    if [ $? -ne 0 ]; then
-        printf "\nDownload file name is not index.html"
-        printf "\n"
-        rename_index
+    if [ $? -eq 0 ]; then
+        ls -1 index.html > /dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            printf "\nDownload file name is not index.html"
+            printf "\n"
+            rename_index
+        else
+            printf "\nDownload file name is index.html...beginning to process"
+            printf "\n"
+        fi
     else
-        printf "\nDownload file name is index.html...beginning to process"
+        printf "\nwget failed to pull index file"
+        printf "\nConfirm the correct URL...exiting."
         printf "\n"
+        exit 148
     fi
 }
 
@@ -76,7 +104,15 @@ rename_index (){
 
 get_urls (){
     grep --color=NEVER href=\"/download index.html | awk -F'[""]' '{print $2}' | sort -u > rawUrls
-    baseUrl=`grep "og:url" index.html | awk -F'og:url.*content' '{print $2}' | awk -F'[""]' '{print $2}'`
+    baseUrl=`grep "og:url" index.html | awk -F'og:url.*content' '{print $2}' | awk -F'[""]' '{print $2}' | awk -F".com" '{print $1".com"}'`
+    wget -q --spider ${baseUrl} > /dev/null 2>&1
+    if [ $? -ne 0 ];then
+        printf "Unable to reach ${baseUrl}\n"
+        printf "exiting....\n"
+        exit 4
+    else
+        printf "Successfully reached ${baseUrl}\n"
+    fi
 }
 
 gen_tmpFiles (){
@@ -85,8 +121,13 @@ gen_tmpFiles (){
         do
             IFS=$'\n'
             wget -a ./logs/gen_tmpFiles -P ./tmp ${baseUrl}${urlPath}
-            printf "\nwget rc=$?"
-            sleep 2
+	    if [ $? == 0 ]; then
+                printf "\n${green}wget rc=$?${normal}"
+                sleep 2
+	    else
+		printf "\n${red}wget failed for ${baseUrl}${urlPath}${normal}"
+                sleep 2
+        fi
         done
     else
         printf "\nrawUrls file is empty...exiting"
