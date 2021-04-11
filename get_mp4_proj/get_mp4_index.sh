@@ -2,11 +2,11 @@
 # Version: 0.1.0
 
 MAIN (){
-    set_colors
-    get_dir_userInput
-    get_index_userInput
-    get_index_rc
-    test_index_rc
+    func_set_colors
+    func_get_dir_userInput
+    func_get_index_userInput
+    func_get_index_rc
+    func_test_index_rc
     #clean_up
 
 }
@@ -17,7 +17,7 @@ tStamp=`date +%Y%m%d_%H%M`
 export grep='grep --color=NEVER'
 
 # Functions Section
-set_colors () {
+func_set_colors () {
     bold=$(tput bold)
     blink=$(tput blink)
     boldoff=$(tput sgr0)
@@ -30,14 +30,14 @@ set_colors () {
 }
 
 
-create_dirs () {
+func_create_dirs () {
     mkdir ./tmp > /dev/null 2>&1 
     mkdir ./mp4 > /dev/null 2>&1 
     mkdir ./rawfiles > /dev/null 2>&1 
     mkdir ./logs > /dev/null 2>&1 
 }
 
-get_dir_userInput () {
+func_get_dir_userInput () {
     printf "\n${bold}${yellow}WARNING WARNING WARNING WARNING WARNING"
     printf "\nThis script will remove ALL files in current directory\t ${cyan}${PWD}\n"
     choice='abc'
@@ -75,7 +75,7 @@ get_dir_userInput () {
     done
 }
 
-get_index_userInput () {
+func_get_index_userInput () {
     printf "\nWhich URL: "
     read getUrl
     IFS=$'\n'
@@ -98,7 +98,7 @@ get_index_userInput () {
     fi
 }
 
-rename_index (){
+func_rename_index (){
     list_indexFile=`file * | grep HTML\ document | awk -F':' '{print $1}'`
     printf "\nRenaming $list_indexFile to index.html"
     printf "\n"
@@ -106,13 +106,13 @@ rename_index (){
     printf "\n"
 }
 
-get_index_rc (){
+func_get_index_rc (){
     index_plugcontent=`grep plugcontent index.html | awk -F'a href=' '{print $2}' | awk -F'[""]' '{print $2}' | sort -u |  wc -l`
     index_div_video=`grep div\ id=\"video index.html | awk -F"a href" '{print $2}' | awk -F'[""]' '{print $2}' | sort -u | wc -l`
     index_a_href=`grep href=\"/download index.html | awk -F'[""]' '{print $2}' | sort -u | wc -l`
 }
 
-test_index_rc (){
+func_test_index_rc (){
     #Calls get_mp4_plugcontent.sh
     if [ ${index_plugcontent} -gt 0 ]; then
         #printf "\nDEBUG >>> plugcontent"

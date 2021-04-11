@@ -87,8 +87,7 @@ func_gen_tmpFiles (){
 
 func_download_files (){
     printf "\n${green}Beginning process to extract video file information from rawfiles...${normal}"
-    for finalMp4 in `ls -1 ./tmp | head -2`
-    # for finalMp4 in `ls -1 ./tmp` <<<< DEBUG replace for above with this for statement 
+    for finalMp4 in `ls -1 ./tmp`
     do
         startTime=`date +%Y%m%d-%H:%M`
         printf "\nStart Time\t$startTime\tFilename: ${finalMp4} "

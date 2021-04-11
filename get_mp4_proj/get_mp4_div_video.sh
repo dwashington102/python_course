@@ -52,8 +52,7 @@ func_get_urls () {
     grep div\ id=\"vide index.html |  awk -F"a href" '{print $2}' | awk -F'[""]' '{print $2}' | sort -u > rawUrls
     printf "\nDownloading rawfiles to ./rawfiles directory..."
     printf "\n"
-    for urlPath in `tail -2 rawUrls` 
-    #for urlPath in `cat rawUrls`  <<<<-----DEBUG replace for stament above!!!!
+    for urlPath in `cat rawUrls`
     do
         getBaseUrl=`grep -m 1 slave index.html | awk -F'slave\"' '{print $2}' | awk -F'[""]' '{print $2}'`
         touch ./logs/get_urls.log
