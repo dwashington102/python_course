@@ -85,7 +85,7 @@ func_get_index_userInput () {
         if [ $? -ne 0 ]; then
             printf "\nDownload file name is not index.html"
             printf "\n"
-            rename_index
+            func_rename_index
         else
             printf "\nDownload file name is index.html...beginning to process"
             printf "\n"
