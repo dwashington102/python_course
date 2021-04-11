@@ -53,7 +53,7 @@ func_get_dir_userInput () {
         IFS=$'\n'
         if [ ${choice} = 'yes' ]; then
             rm -rf *
-            create_dirs
+            func_create_dirs
         elif [ ${choice} = 'n' ]; then
             printf "Ok not removing existing files\n"
             current_indexFile=`ls -1 index.html | wc -l`
