@@ -92,7 +92,7 @@ func_download_files (){
     do
         startTime=`date +%Y%m%d-%H:%M`
         printf "\nStart Time\t$startTime\tFilename: ${finalMp4} "
-        #wget  -a ./logs/download_files -P ./mp4 `grep HD\ Quality ./tmp/$finalMp4 | awk -F'[""]' '{print $2}'`
+        wget  -a ./logs/download_files -P ./mp4 `grep HD\ Quality ./tmp/$finalMp4 | awk -F'[""]' '{print $2}'`
         endTime=`date +%Y%m%d-%H:%M`
         printf "\nEnd Time\t$endTime\tFilename: ${finalMp4} ":
         printf "\n======================="
