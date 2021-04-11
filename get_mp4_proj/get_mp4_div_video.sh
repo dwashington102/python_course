@@ -7,73 +7,53 @@
 #  html5player.setVideoUrlHigh('https://mywebsite.com/goatlaughing_a.mp4?')
 
 # Usage
-# 1) Prompt user for the URL
-# 2) using wget pull "index.html" file from the URL
-# 3) Pull the RAWFILE names from index.html and extract video
-
-tStamp=`date +%Y%m%d_%H%M`
-get_ext () {
-    printf "Input Ext.:\t"
-    read ext_type
-
-}
 
 MAIN (){
-    create_dirs
-    get_getIndex
-    get_urls
-    clean_up
+    func_set_colors
+    func_start_time
+    func_get_urls
+    func_end_time
+}
+
+# Functions
+func_set_colors () {
+    bold=$(tput bold)
+    blink=$(tput blink)
+    boldoff=$(tput sgr0)
+
+    red=$(tput setaf 1)
+    green=$(tput setaf 2)
+    yellow=$(tput setaf 3)
+    cyan=$(tput setaf 6)
+    normal=$(tput setaf 9)
+    boldoff=$(tput sgr0)
+
+}
+
+# Constant Variables
+export grep='grep --color=NEVER'
+
+func_start_time () {
+    rawStartTime=`date +%Y%m%d-%H:%M`
+    printf "\n${green}${rawStartTime}\tBeginning process to download raw files...${normal}"
+    printf "\n"
+}
+
+func_end_time () {
+    printf "\n${green}==========Downloads Complete==========="
+    rawEndTime=`date +%Y%m%d-%H:%M`                                                                                                                                                                  
+    printf "\n${green}${rawEndTime}${normal}"
     printf "\n"
 }
 
 
-create_dirs () {
-    echo -e "\033[33;5m WARNING WARNING WARNING WARNING WARNING\033[0m"
-    printf "This script will remove ALL files in current directory ($PWD): \n"
-    printf "Do you want to remove ALL files (y/n):\t"
-    read choice
-    IFS=$'\n'
-    if [ ${choice} == 'y' ]; then
-        rm -rf *
-        mkdir ./tmp
-        mkdir ./mp4
-        mkdir ./rawfiles
-        mkdir ./logs
-        export grep='grep --color=NEVER'
-    else
-        printf "Ok not removing existing files\n"
-    fi
-}
-
-# Gather the website URL from user input  
-get_getIndex (){
-    printf "\nWhich URL: "
-    read getUrl
-    IFS=$'\n'
-    wget -o ./logs/get_getIndex.log ${getUrl}
-    ls -1 index.html > /dev/null 2>&1
-    if [ $? -ne 0 ]; then
-        printf "\nDownload file name is not index.html"
-        printf "\n"
-        rename_index
-    else
-        printf "\nDownload file name is index.html...beginning to process"
-        printf "\n"
-    fi
-}
-
-rename_index (){
-    list_indexFile=`file * | grep HTML\ document | awk -F':' '{print $1}'`
-    printf "\nRenaming $list_indexFile to index.html"
+func_get_urls () {
     printf "\n"
-    mv "${list_indexFile}" index.html
-}
-
-
-get_urls (){
     grep div\ id=\"vide index.html |  awk -F"a href" '{print $2}' | awk -F'[""]' '{print $2}' | sort -u > rawUrls
     printf "\nDownloading rawfiles to ./rawfiles directory..."
-    for urlPath in `cat rawUrls` 
+    printf "\n"
+    for urlPath in `tail -2 rawUrls` 
+    #for urlPath in `cat rawUrls`  <<<<-----DEBUG replace for stament above!!!!
     do
         getBaseUrl=`grep -m 1 slave index.html | awk -F'slave\"' '{print $2}' | awk -F'[""]' '{print $2}'`
         touch ./logs/get_urls.log
@@ -83,40 +63,34 @@ get_urls (){
 
     file ./rawfiles/* | grep -m 1 HTML\ document
     if [ $? -ne 0 ]; then
-        printf "\nNo files were downloaded"
+        printf "\nNo rawfiles were downloaded"
         exit 3
     else
         printf "\nCompleted downloading rawfiles..."
-        download_files
+        func_download_files
     fi
 }
 
 
-download_files (){
-    printf "\nBeginning process to extract video file information from rawfiles..."
+func_download_files (){
+    printf "\n${green}Beginning process to extract video file information from rawfiles...${normal}"
     for finalMp4 in `ls -1 ./rawfiles/*`
     do
         printf "\nDownloading video from file:\t ${finalMp4}\n"
+        startTime=`date +%Y%m%d-%H:%M`
+        printf "\nStart Time\t$startTime\tFilename: ${finalMp4} "
         grep setVideoUrlHigh ${finalMp4}
         if [ $? == 0 ]; then
             wget -a ./logs/download_files.log -P ./mp4 `grep setVideoUrlHigh ${finalMp4} | awk -F"setVideoUrlHigh" '{print $2}' | awk -F"['']" '{print $2}' | sort -u`
         else
             wget -a ./logs/download_files.log -P ./mp4 `grep setVideoUrl ${finalMp4} | awk -F"setVideoUrl" '{print $2}' | awk -F"['']" '{print $2}' | sort -u`
         fi
-        printf "Completed download:\n"
-        date +%Y%m%d
+        endTime=`date +%Y%m%d-%H:%M`
+        printf "\nEnd Time\t$endTime\tFilename: ${finalMp4} ":
         printf "\n======================="
         sleep 2
     done
     printf "\n"
-    echo -e "\033[32;5m ========== Downloads Complete =========== \033[0m"
-}
-
-clean_up (){
-    rm -rf ./tmp
-    rm -rf ./index.html
-    rm -rf ./rawfiles
-    rm -rf ./rawUrls
 }
 
 MAIN

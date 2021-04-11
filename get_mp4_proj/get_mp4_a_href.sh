@@ -11,26 +11,19 @@
 
 
 # Steps taken:
-# 1) Prompt user for URL
-# 2) wget URL --> downloads index.html
-# 3) set baseUrl equal to user provided URL
-# 4) grep download links from index.html save each link to a text file
-# 5) wget for each link in the text file saving each file to ./tmp directory
-# 6) for each file in ./tmp directory grep "HD\ Quality" and wget contents
 
 MAIN (){
-    set_colors
-    create_dirs
-    get_getIndex
-    get_urls
-    gen_tmpFiles
-    download_files
-    clean_up
+    func_set_colors
+    func_start_time
+    func_get_urls
+    func_gen_tmpFiles
+    func_download_files
+    func_end_time
 }
 
 
 # Functions
-set_colors () {
+func_set_colors () {
     bold=$(tput bold)
     blink=$(tput blink)
     boldoff=$(tput sgr0)
@@ -41,68 +34,25 @@ set_colors () {
     cyan=$(tput setaf 6)
     normal=$(tput setaf 9)
     boldoff=$(tput sgr0)
-
 }
 
-create_dirs () {
-    printf "\n${bold}${yellow}WARNING WARNING WARNING WARNING WARNING"
-    printf "\nThis script will remove ALL files in current directory\t ${cyan}${PWD}\n"
-    choice='abc'
-    while [ ${choice} = 'abc' ]
-    do
-        printf "\nDo you want to remove ALL files (y/n):\t${normal}"
-        read choice
-        IFS=$'\n'
-        if [ ${choice} = 'y' ]; then
-            rm -rf *
-            mkdir ./tmp
-            mkdir ./mp4
-            mkdir ./rawfiles
-            mkdir ./logs
-            export grep='grep --color=NEVER'
-        elif [ ${choice} = 'n' ]; then
-            printf "Ok not removing existing files\n"
-        else
-            printf "${bold}${red}Invalid entry...try again${normal}${boldoff}"
-            choice='abc'
-        fi
-    done
-}
+# Constant Variables
+export grep='grep --color=NEVER'
 
-get_getIndex (){
-    printf "\nWhich URL: "
-    read getUrl
-    IFS=$'\n'
-    wget -a ./logs/get_getIndex.log ${getUrl}
-    if [ $? -eq 0 ]; then
-        ls -1 index.html > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            printf "\nDownload file name is not index.html"
-            printf "\n"
-            rename_index
-        else
-            printf "\nDownload file name is index.html...beginning to process"
-            printf "\n"
-        fi
-    else
-        printf "\nwget failed to pull index file"
-        printf "\nConfirm the correct URL...exiting."
-        printf "\n"
-        exit 148
-    fi
-}
-
-rename_index (){
-    list_indexFile=`file * | grep HTML\ document | awk -F':' '{print $1}'`
-    printf "\nRenaming $list_indexFile to index.html"
-    printf "\n"
-    mv "${list_indexFile}" index.html
+func_start_time () {
+    rawStartTime=`date +%Y%m%d-%H:%M`
+    printf "\n${green}${rawStartTime}\tBeginning process to download raw files...${normal}"
     printf "\n"
 }
 
+func_end_time () {
+    printf "\n${green}==========Downloads Complete==========="
+    rawEndTime=`date +%Y%m%d-%H:%M`                                                                                                                                                                  
+    printf "\n${green}${rawEndTime}${normal}"
+    printf "\n"
+}
 
-
-get_urls (){
+func_get_urls (){
     grep --color=NEVER href=\"/download index.html | awk -F'[""]' '{print $2}' | sort -u > rawUrls
     baseUrl=`grep "og:url" index.html | awk -F'og:url.*content' '{print $2}' | awk -F'[""]' '{print $2}' | awk -F".com" '{print $1".com"}'`
     wget -q --spider ${baseUrl} > /dev/null 2>&1
@@ -115,14 +65,14 @@ get_urls (){
     fi
 }
 
-gen_tmpFiles (){
+func_gen_tmpFiles (){
     if [ -s rawUrls ]; then
     for urlPath in `cat rawUrls`
         do
             IFS=$'\n'
             wget -a ./logs/gen_tmpFiles -P ./tmp ${baseUrl}${urlPath}
 	    if [ $? == 0 ]; then
-                printf "\n${green}wget rc=$?${normal}"
+                printf "\n${green}wget rc=$?${normal}:\t${baseUrl}${urlPath}"
                 sleep 2
 	    else
 		printf "\n${red}wget failed for ${baseUrl}${urlPath}${normal}"
@@ -135,24 +85,20 @@ gen_tmpFiles (){
     fi
 }
 
-download_files (){
-    for hDoc in `ls -1 ./tmp`
+func_download_files (){
+    printf "\n${green}Beginning process to extract video file information from rawfiles...${normal}"
+    for finalMp4 in `ls -1 ./tmp | head -2`
+    # for finalMp4 in `ls -1 ./tmp` <<<< DEBUG replace for above with this for statement 
     do
-        wget  -a ./logs/download_files -P ./mp4 `grep HD\ Quality ./tmp/$hDoc | awk -F'[""]' '{print $2}'`
+        startTime=`date +%Y%m%d-%H:%M`
+        printf "\nStart Time\t$startTime\tFilename: ${finalMp4} "
+        #wget  -a ./logs/download_files -P ./mp4 `grep HD\ Quality ./tmp/$finalMp4 | awk -F'[""]' '{print $2}'`
+        endTime=`date +%Y%m%d-%H:%M`
+        printf "\nEnd Time\t$endTime\tFilename: ${finalMp4} ":
+        printf "\n======================="
         sleep 2
     done
 }
 
-
-clean_up (){
-    rm -rf ./tmp
-    rm -rf ./index.html
-    rm -rf ./rawfiles
-    rm -rf ./rawUrls
-}
-
 MAIN
 exit 0
-
-
-
