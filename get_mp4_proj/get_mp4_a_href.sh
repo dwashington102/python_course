@@ -16,7 +16,7 @@ MAIN (){
     func_set_colors
     func_start_time
     func_get_urls
-    func_gen_tmpFiles
+    func_gen_rawFiles
     func_download_files
     func_end_time
 }
@@ -65,18 +65,22 @@ func_get_urls (){
     fi
 }
 
-func_gen_tmpFiles (){
+func_gen_rawFiles (){
     if [ -s rawUrls ]; then
+    printf "\nGenerating files in ./rawfiles"
+    printf "\n"
     for urlPath in `cat rawUrls`
         do
             IFS=$'\n'
-            wget -a ./logs/gen_tmpFiles -P ./tmp ${baseUrl}${urlPath}
+            wget -a ./logs/gen_tmpFiles -P ./rawfiles ${baseUrl}${urlPath}
 	    if [ $? == 0 ]; then
-                printf "\n${green}wget rc=$?${normal}:\t${baseUrl}${urlPath}"
-                sleep 2
+            #printf "\n${green}wget rc=$?${normal}:\t${baseUrl}${urlPath}"
+            printf "${green}.${normal}"
+            sleep 2
 	    else
-		printf "\n${red}wget failed for ${baseUrl}${urlPath}${normal}"
-                sleep 2
+		    #printf "\n${red}wget failed for ${baseUrl}${urlPath}${normal}"
+            printf "${red}.${normal}"
+            sleep 2
         fi
         done
     else
@@ -87,13 +91,19 @@ func_gen_tmpFiles (){
 
 func_download_files (){
     printf "\n${green}Beginning process to extract video file information from rawfiles...${normal}"
-    for finalMp4 in `ls -1 ./tmp`
+    for finalMp4 in `ls -1 ./rawfiles`
     do
+        printf "\nDownloading video from file:\t ${finalMp4}\n"
         startTime=`date +%Y%m%d-%H:%M`
         printf "\nStart Time\t$startTime\tFilename: ${finalMp4} "
-        wget  -a ./logs/download_files -P ./mp4 `grep HD\ Quality ./tmp/$finalMp4 | awk -F'[""]' '{print $2}'`
-        endTime=`date +%Y%m%d-%H:%M`
-        printf "\nEnd Time\t$endTime\tFilename: ${finalMp4} ":
+        wget  -a ./logs/download_files -P ./mp4 `grep HD\ Quality ./rawfiles/$finalMp4 | awk -F'[""]' '{print $2}'`
+        if [ $? == 0 ]; then
+            endTime=`date +%Y%m%d-%H:%M`
+            printf "\nEnd Time\t$endTime\tFilename: ${finalMp4}"
+        else
+            endTime=`date +%Y%m%d-%H:%M`
+            printf "\n${red}End Time\t$endTime\tFilename: ${finalMp4}${normal}"
+        fi
         printf "\n======================="
         sleep 2
     done

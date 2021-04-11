@@ -52,7 +52,7 @@ wget -a ./logs/get_plugcontent_rawfiles -P ./rawfiles `grep plugcontent index.ht
 printf "\nBeginning process to extract video file information from rawfiles..."
 
 # For each php  
-for finalMp4 in `ls -1 ./rawfiles | grep php`
+for finalMp4 in `ls -1 ./rawfiles | grep php | head -2`
     do
         printf "\nDownloading video from file:\t ${finalMp4}\n"
         grep "source\ src=.*mp4" ./rawfiles/${finalMp4} 

@@ -53,11 +53,11 @@ func_get_dir_userInput () {
         IFS=$'\n'
         if [ ${choice} = 'yes' ]; then
             rm -rf *
-            func_create_dirs
         elif [ ${choice} = 'n' ]; then
             printf "Ok not removing existing files\n"
-            current_indexFile=`ls -1 index.html | wc -l`
-            if [ ${current_indexFile} -eq 1 ]; then
+            ls -1 index.html > /dev/null 2>&1
+            if [ $? -eq 0 ]; then
+                current_indexFile=`ls -1 index.html` 
                 printf "\nExisting index.html file being renamed index.html_${tStamp}"
                 printf "\n"
                 mv index.html index.html_${tStamp}
@@ -76,6 +76,7 @@ func_get_dir_userInput () {
 }
 
 func_get_index_userInput () {
+    func_create_dirs
     printf "\nWhich URL: "
     read getUrl
     IFS=$'\n'
