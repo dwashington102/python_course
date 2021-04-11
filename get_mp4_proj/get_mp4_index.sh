@@ -7,8 +7,7 @@ MAIN (){
     func_get_index_userInput
     func_get_index_rc
     func_test_index_rc
-    #clean_up
-
+    func_clean_up
 }
 
 # Constant Variables
@@ -141,6 +140,12 @@ func_test_index_rc (){
     fi
 }
 
+func_clean_up () {
+    rm -rf ./rawfiles > /dev/null 2>&1
+    rm -rf ./index.html > /dev/null 2>&1
+    rm -rf ./tmp > /dev/null 2>&1
+    rm -rf ./rawUrls > /dev/null 2>&1
+}
 
 MAIN
 exit 0
