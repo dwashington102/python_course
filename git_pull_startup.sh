@@ -10,6 +10,18 @@ dotfiles=$HOME/GIT_REPO/dotfiles
 timeStamp=`date +%Y%m%d_%H%M`
 currDir=$HOME/GIT_REPO
 
+func_set_colors () {
+    bold=$(tput bold)
+    blink=$(tput blink)
+    boldoff=$(tput sgr0)
+    red=$(tput setaf 1)
+    green=$(tput setaf 2)
+    yellow=$(tput setaf 3)
+    cyan=$(tput setaf 6)
+    normal=$(tput setaf 9)
+    boldoff=$(tput sgr0)
+}
+
 function print_spacer (){
 	printf "\n\n\n"
 }
