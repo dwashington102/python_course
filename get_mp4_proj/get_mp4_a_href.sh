@@ -1,6 +1,7 @@
 #!/usr/bin/sh 
 # Version: 0.1.0
 # Add comments!!!
+# Testing
 
 # Script pulls mp4 files when index.html uses "<a href=/download" along with a baseUrl
 # example:
