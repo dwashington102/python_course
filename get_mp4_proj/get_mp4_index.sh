@@ -30,22 +30,7 @@ func_set_colors () {
 
 
 func_create_dirs () {
-    currentDir=$PWD
-    if [ ${currentDir} = $HOME ]; then
-        printf "${red}Current directory is $HOME\n"
-        printf "${bold}Script should not be ran in $HOME${normal}\n"
-        exit 1
-    elif [ ${currentDir} == "/root" ]; then
-        printf "${red}Current directory is /root\n"
-        printf "${bold}Script should not be ran in /root${normal}\n"
-        exit 1
-    elif [ ${currentDir == "/tmp"} ]; then
-        printf "${red}Current directory is /root\n"
-        printf "${bold}Script should not be ran in /root${normal}\n"
-        exit 1
-    else 
-        printf "\n${bold}${red}About to delete directories...${normal}${boldoff}"
-        sleep 60
+
         mkdir ./tmp > /dev/null 2>&1 
         mkdir ./mp4 > /dev/null 2>&1 
         mkdir ./rawfiles > /dev/null 2>&1 
@@ -68,7 +53,24 @@ func_get_dir_userInput () {
         read choice
         IFS=$'\n'
         if [ ${choice} = 'yes' ]; then
-            rm -rf *
+            currentDir=$PWD
+            printf "\nDEBUG >>> currentDir = ${currentDir}"
+            if [ ${currentDir} = $HOME ]; then
+                printf "${red}\nCurrent directory is $HOME"
+                printf "${bold}\nScript should not be ran in $HOME${normal}"
+                exit 1
+            elif [ ${currentDir} == "/root" ]; then
+                printf "${red}\nCurrent directory is /root"
+                printf "${bold}\nScript should not be ran in /root${normal}"
+                exit 1
+            elif [ ${currentDir} == "/tmp"} ]; then
+                printf "${red}\nCurrent directory is /root"
+                printf "${bold}\nScript should not be ran in /root${normal}"
+                exit 1
+            else 
+        printf "\n${bold}${red}About to delete directories...${normal}${boldoff}"
+        sleep 60
+        rm -rf *
         elif [ ${choice} = 'n' ]; then
             printf "Ok not removing existing files\n"
             ls -1 index.html > /dev/null 2>&1
