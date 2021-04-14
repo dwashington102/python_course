@@ -70,7 +70,7 @@ func_get_dir_userInput () {
                 exit 1
             else 
                 printf "\n${bold}${red}About to delete directories...${normal}${boldoff}"
-                sleep 60
+                sleep 5
                 rm -rf *
             fi
         elif [ ${choice} = 'n' ]; then
@@ -136,21 +136,16 @@ func_get_index_rc (){
 func_test_index_rc (){
     #Calls get_mp4_plugcontent.sh
     if [ ${index_plugcontent} -gt 0 ]; then
-        #printf "\nDEBUG >>> plugcontent"
-        #sleep 10
         get_mp4_plugcontent.sh
         printf "\n"
 
     # Calls get_mp4_div_video.sh
     elif [ ${index_div_video} -gt 0 ]; then
-        #printf "\nDEBUG >>> div_video"
-        #sleep 10
         get_mp4_div_video.sh
         printf "\n"
 
     # Calls get_mp4_a_href.sh
     elif [ ${index_a_href} -gt 0 ]; then
-        #printf "\nDEBUG >>> a_href"
         get_mp4_a_href.sh
         printf "\n"
 
