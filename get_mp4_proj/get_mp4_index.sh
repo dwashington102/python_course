@@ -66,7 +66,7 @@ func_get_dir_userInput () {
                 exit 1
             elif [ ${currentDir} == ${tmpDir} ]; then
                 printf "${red}\nCurrent directory is /tmp"
-                printf "${bold}\nScript cannot be ran in /root${normal}"
+                printf "${bold}\nScript cannot be ran in /tmp${normal}"
                 exit 1
             else 
                 printf "\n${bold}${red}About to delete directories...${normal}${boldoff}"
