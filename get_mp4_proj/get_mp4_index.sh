@@ -14,6 +14,9 @@ MAIN (){
 # tStamp variable is added to log files generated
 tStamp=`date +%Y%m%d_%H%M`
 export grep='grep --color=NEVER'
+export tmpDir='/tmp'
+export rootDir='/root'
+export homeDir=$HOME
 
 # Functions Section
 func_set_colors () {
@@ -53,17 +56,17 @@ func_get_dir_userInput () {
         if [ ${choice} = 'yes' ]; then
             currentDir=$PWD
             printf "\nDEBUG >>> currentDir = ${currentDir}"
-            if [ ${currentDir} = $HOME ]; then
+            if [ ${currentDir} = ${homeDir} ]; then
                 printf "${red}\nCurrent directory is $HOME"
-                printf "${bold}\nScript should not be ran in $HOME${normal}"
+                printf "${bold}\nScript cannot be ran in $HOME${normal}"
                 exit 1
-            elif [ ${currentDir} == "/root" ]; then
+            elif [ ${currentDir} == ${rootDir} ]; then
                 printf "${red}\nCurrent directory is /root"
-                printf "${bold}\nScript should not be ran in /root${normal}"
+                printf "${bold}\nScript cannot be ran in /root${normal}"
                 exit 1
-            elif [ ${currentDir} == "/tmp"} ]; then
-                printf "${red}\nCurrent directory is /root"
-                printf "${bold}\nScript should not be ran in /root${normal}"
+            elif [ ${currentDir} == ${tmpDir} ]; then
+                printf "${red}\nCurrent directory is /tmp"
+                printf "${bold}\nScript cannot be ran in /root${normal}"
                 exit 1
             else 
                 printf "\n${bold}${red}About to delete directories...${normal}${boldoff}"
