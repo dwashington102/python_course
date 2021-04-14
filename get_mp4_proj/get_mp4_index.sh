@@ -66,9 +66,9 @@ func_get_dir_userInput () {
                 printf "${bold}\nScript should not be ran in /root${normal}"
                 exit 1
             else 
-        printf "\n${bold}${red}About to delete directories...${normal}${boldoff}"
-        sleep 60
-        rm -rf *
+                printf "\n${bold}${red}About to delete directories...${normal}${boldoff}"
+                sleep 60
+                rm -rf *
         elif [ ${choice} = 'n' ]; then
             printf "Ok not removing existing files\n"
             ls -1 index.html > /dev/null 2>&1
