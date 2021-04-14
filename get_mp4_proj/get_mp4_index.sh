@@ -59,17 +59,21 @@ func_get_dir_userInput () {
             if [ ${currentDir} = ${homeDir} ]; then
                 printf "${red}\nCurrent directory is $HOME"
                 printf "${bold}\nScript cannot be ran in $HOME${normal}"
-                exit 1
+                printf "\n"
+                exit 13
             elif [ ${currentDir} == ${rootDir} ]; then
                 printf "${red}\nCurrent directory is /root"
                 printf "${bold}\nScript cannot be ran in /root${normal}"
-                exit 1
+                printf "\n"
+                exit 13
             elif [ ${currentDir} == ${tmpDir} ]; then
                 printf "${red}\nCurrent directory is /tmp"
                 printf "${bold}\nScript cannot be ran in /tmp${normal}"
-                exit 1
+                printf "\n"
+                exit 13
             else 
                 printf "\n${bold}${red}About to delete directories...${normal}${boldoff}"
+                printf "\n"
                 sleep 5
                 rm -rf *
             fi
