@@ -30,10 +30,27 @@ func_set_colors () {
 
 
 func_create_dirs () {
-    mkdir ./tmp > /dev/null 2>&1 
-    mkdir ./mp4 > /dev/null 2>&1 
-    mkdir ./rawfiles > /dev/null 2>&1 
-    mkdir ./logs > /dev/null 2>&1 
+    currentDir=$PWD
+    if [ ${currentDir} = $HOME ]; then
+        printf "${red}Current directory is $HOME\n"
+        printf "${bold}Script should not be ran in $HOME${normal}\n"
+        exit 1
+    elif [ ${currentDir} == "/root" ]; then
+        printf "${red}Current directory is /root\n"
+        printf "${bold}Script should not be ran in /root${normal}\n"
+        exit 1
+    elif [ ${currentDir == "/tmp"} ]; then
+        printf "${red}Current directory is /root\n"
+        printf "${bold}Script should not be ran in /root${normal}\n"
+        exit 1
+    else 
+        printf "\n${bold}${red}About to delete directories...${normal}${boldoff}"
+        sleep 60
+        mkdir ./tmp > /dev/null 2>&1 
+        mkdir ./mp4 > /dev/null 2>&1 
+        mkdir ./rawfiles > /dev/null 2>&1 
+        mkdir ./logs > /dev/null 2>&1 
+    fi
 }
 
 func_get_dir_userInput () {
