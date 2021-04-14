@@ -30,12 +30,10 @@ func_set_colors () {
 
 
 func_create_dirs () {
-
         mkdir ./tmp > /dev/null 2>&1 
         mkdir ./mp4 > /dev/null 2>&1 
         mkdir ./rawfiles > /dev/null 2>&1 
         mkdir ./logs > /dev/null 2>&1 
-    fi
 }
 
 func_get_dir_userInput () {
