@@ -69,6 +69,7 @@ func_get_dir_userInput () {
                 printf "\n${bold}${red}About to delete directories...${normal}${boldoff}"
                 sleep 60
                 rm -rf *
+            fi
         elif [ ${choice} = 'n' ]; then
             printf "Ok not removing existing files\n"
             ls -1 index.html > /dev/null 2>&1
