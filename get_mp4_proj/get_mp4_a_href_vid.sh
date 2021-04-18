@@ -5,13 +5,10 @@
 
 # Script pulls mp4 files when index.html uses "<a href=/download" along with a baseUrl
 # example:
-# <a href="/download/videos/myfile">Title Here</a>
+# <a href="/videos/myfile">
 
 # Sites
-# - wapbo
-
-
-# Steps taken:
+# - xra
 
 MAIN (){
     func_set_colors
@@ -54,8 +51,8 @@ func_end_time () {
 }
 
 func_get_urls (){
-    grep --color=NEVER href=\"/download index.html | awk -F'[""]' '{print $2}' | sort -u > rawUrls
-    baseUrl=`grep "og:url" index.html | awk -F'og:url.*content' '{print $2}' | awk -F'[""]' '{print $2}' | awk -F".com" '{print $1".com"}'`
+    grep '<a href="/video' index.html | awk -F'[""]' '{print $2}' | sort -u > rawUrls
+    baseUrl=`grep -m 1 "base_url.*=" index.html | awk -F'=' '{print $2}' | awk -F'[""]' '{print $2}'`
     wget -q --spider ${baseUrl} > /dev/null 2>&1
     if [ $? -ne 0 ];then
         printf "Unable to reach ${baseUrl}\n"
@@ -90,6 +87,7 @@ func_gen_rawFiles (){
     fi
 }
 
+
 func_download_files (){
     printf "\n${green}Beginning process to extract video file information from rawfiles...${normal}"
     for finalMp4 in `ls -1 ./rawfiles`
@@ -97,7 +95,7 @@ func_download_files (){
         printf "\nDownloading video from file:\t ${finalMp4}\n"
         startTime=`date +%Y%m%d-%H:%M`
         printf "\nStart Time\t$startTime\tFilename: ${finalMp4} "
-        wget  -a ./logs/download_files -P ./mp4 `grep HD\ Quality ./rawfiles/$finalMp4 | awk -F'[""]' '{print $2}'`
+        wget  --no-check-certificate -a ./logs/download_files -P ./mp4 `grep -m 1 source\ src= ./rawfiles/$finalMp4 | awk -F'[""]' '{print $2}'`
         if [ $? == 0 ]; then
             endTime=`date +%Y%m%d-%H:%M`
             printf "\nEnd Time\t$endTime\tFilename: ${finalMp4}"

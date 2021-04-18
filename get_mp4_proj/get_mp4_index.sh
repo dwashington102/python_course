@@ -7,7 +7,7 @@ MAIN (){
     func_get_index_userInput
     func_get_index_rc
     func_test_index_rc
-    func_clean_up
+#    func_clean_up
 }
 
 # Constant Variables
@@ -55,7 +55,6 @@ func_get_dir_userInput () {
         IFS=$'\n'
         if [ ${choice} = 'yes' ]; then
             currentDir=$PWD
-            printf "\nDEBUG >>> currentDir = ${currentDir}"
             if [ ${currentDir} = ${homeDir} ]; then
                 printf "${red}\nCurrent directory is $HOME"
                 printf "${bold}\nScript cannot be ran in $HOME${normal}"
@@ -135,6 +134,8 @@ func_get_index_rc (){
     index_plugcontent=`grep plugcontent index.html | awk -F'a href=' '{print $2}' | awk -F'[""]' '{print $2}' | sort -u |  wc -l`
     index_div_video=`grep div\ id=\"video index.html | awk -F"a href" '{print $2}' | awk -F'[""]' '{print $2}' | sort -u | wc -l`
     index_a_href=`grep href=\"/download index.html | awk -F'[""]' '{print $2}' | sort -u | wc -l`
+    index_a_href_vid=`grep ^'<a href="/video' index.html | awk -F'[""]' '{print $2}' | sort -u | wc -l`
+    index_a_href_vid_title=`grep 'a href=.*title=' index.html | awk -F'[""]' '{print $2}' | sort -u | wc -l`
 }
 
 func_test_index_rc (){
@@ -151,6 +152,14 @@ func_test_index_rc (){
     # Calls get_mp4_a_href.sh
     elif [ ${index_a_href} -gt 0 ]; then
         get_mp4_a_href.sh
+        printf "\n"
+
+    elif [ ${index_a_href_vid} -gt 0 ]; then
+        get_mp4_a_href_vid.sh
+        printf "\n"
+
+    elif [ ${index_a_href_vid_title} -gt 0 ]; then
+        get_mp4_a_href_vid_title.sh
         printf "\n"
 
     else
