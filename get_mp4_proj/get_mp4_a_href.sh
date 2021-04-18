@@ -55,7 +55,7 @@ func_end_time () {
 
 func_get_urls (){
     grep --color=NEVER href=\"/download index.html | awk -F'[""]' '{print $2}' | sort -u > rawUrls
-    baseUrl=`grep "og:url" index.html | awk -F'og:url.*content' '{print $2}' | awk -F'[""]' '{print $2}' | awk -F".com" '{print $1".com"}'`
+    baseUrl=`grep "og:url" index.html | awk -F'og:url.*content' '{print $2}' | awk -F'[""]' '{print $2}' | awk -F".com" '{print $1".com"}' | sort -u`
     wget -q --spider ${baseUrl} > /dev/null 2>&1
     if [ $? -ne 0 ];then
         printf "Unable to reach ${baseUrl}\n"
