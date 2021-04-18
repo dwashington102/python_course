@@ -4,6 +4,7 @@
 # 
 #
 # 2020-01-16: Updated trash_empty() providing FQpath to trash-empty in order to avoid rc=127
+# 2021-04-18: Updated cp cmd in clear_files_recent to redirect STDOUT & STDERR to /dev/null
 
 tStamp=`date +%Y%m%d_%H%M`
 logfile=$HOME/cronlogs/cron_run_$tStamp
@@ -12,7 +13,7 @@ spacer='------------//------------------'
 
 clear_files_recent (){
 	printf "Starting ${FUNCNAME}\n"
-	cp $HOME/bin/static/recently-used.xbel $HOME/.local/share/recently-used.xbel
+	cp $HOME/bin/static/recently-used.xbel $HOME/.local/share/recently-used.xbel > /dev/null 2>&1
 	printf "cp command rc=$?"
 	printf "\n"
 }
