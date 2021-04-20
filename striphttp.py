@@ -23,6 +23,7 @@ import re
 import subprocess
 from time import sleep
 import wget
+import colorama
 
 # Custom modules/python file that sits in the same directory as the striphttp.py script
 
