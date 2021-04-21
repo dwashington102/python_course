@@ -11,13 +11,17 @@ import wget
 import colorama
 
 # Define CONSTANTS
-tStamp = datetime.now()
+now = datetime.now()
+tStamp = now.strftime("%Y%m%d%H%M%S")
 homeDir = Path.home()
 curDir = Path.cwd()
+
+# Set curDir to a string variable
+s_curDir = str(curDir)
+
 cyanColor = colorama.Fore.CYAN
 redColor = colorama.Fore.RED
 yellowColor = colorama.Fore.YELLOW                                                                    
-# resetColor = colorama.Fore.RESET
 boldColor = colorama.Style.BRIGHT
 resetColor = colorama.Style.RESET_ALL
 
@@ -40,17 +44,15 @@ def func_getUserUrl():
         get_userChoice=str(input('>>> '))
         if get_userChoice == 'yes':
             print('Delete files')
-            print('DEBUG curDir',curDir)
-            print('DEBUG homeDir',homeDir)
             if curDir == homeDir:
                 print(boldColor,redColor,'Script cannot be ran in $HOME',resetColor) 
                 print('\n')
                 exit 
-            elif curDir ==  '/root':
+            elif s_curDir ==  '/root':
                 print(boldColor,redColor,'Script cannot be ran in /root',resetColor) 
                 print('\n')
                 exit 
-            elif curDir ==  '/tmp':
+            elif s_curDir ==  '/tmp':
                 print(boldColor,redColor,'Script cannot be ran in /tmp',resetColor) 
                 print('\n')
                 exit 
@@ -58,7 +60,14 @@ def func_getUserUrl():
                 print(boldColor,redColor,'About to delete directories....',resetColor)
                 sleep(10)
         elif get_userChoice == 'n':
-            print('DO NOT DELETE FILES')
+            print('Ok not removing existing files\n')
+            if Path('index.html').is_file():
+                indexRename = 'index.html_'+tStamp
+                print('\nExisting index.html file being renamed index.html_'+tStamp)
+                os.rename('index.html', indexRename)
+            else:
+                print('\nNo existing index.html file found')
+
         elif get_userChoice == 'exit':
             print('Exit script')
             exit
@@ -66,15 +75,9 @@ def func_getUserUrl():
             print(boldColor,redColor,'Invalid entry...try again',resetColor)
             get_userChoice = 'abc'
 
-    
 
 
-# Text color functions
-def print_yellow():
-    print(ycolor)
 
-def reset_tex():
-    print(resetcolor)
 
 
 if __name__ == '__main__':
