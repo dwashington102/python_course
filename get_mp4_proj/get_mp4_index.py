@@ -10,6 +10,9 @@ from time import sleep
 import wget
 import colorama
 
+# Custom modules
+import get_mp4_mkdir as get_mp4_mkdir
+
 # Define CONSTANTS
 now = datetime.now()
 tStamp = now.strftime("%Y%m%d%H%M%S")
@@ -43,7 +46,7 @@ def func_getUserUrl():
         print('\n')
         get_userChoice=str(input('>>> '))
         if get_userChoice == 'yes':
-            print('Delete files')
+            print('Delete files....')
             if curDir == homeDir:
                 print(boldColor,redColor,'Script cannot be ran in $HOME',resetColor) 
                 print('\n')
@@ -57,7 +60,9 @@ def func_getUserUrl():
                 print('\n')
                 exit 
             else:
-                print(boldColor,redColor,'About to delete directories....',resetColor)
+                print(boldColor,redColor,'Create dir....')
+                print('About to delete directories....',resetColor)
+                get_mp4_mkdir.func_createDirs
                 sleep(10)
         elif get_userChoice == 'n':
             print('Ok not removing existing files\n')
@@ -65,6 +70,7 @@ def func_getUserUrl():
                 indexRename = 'index.html_'+tStamp
                 print('\nExisting index.html file being renamed index.html_'+tStamp)
                 os.rename('index.html', indexRename)
+                get_mp4_mkdir.func_createDirs
             else:
                 print('\nNo existing index.html file found')
 
@@ -74,9 +80,6 @@ def func_getUserUrl():
         else:
             print(boldColor,redColor,'Invalid entry...try again',resetColor)
             get_userChoice = 'abc'
-
-
-
 
 
 
