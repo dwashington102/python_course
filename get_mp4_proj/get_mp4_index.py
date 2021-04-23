@@ -4,6 +4,7 @@ from datetime import datetime
 import os
 from os import path
 from pathlib import Path
+import shutil
 import re
 import subprocess
 from time import sleep
@@ -62,8 +63,14 @@ def func_getUserUrl():
             else:
                 print(boldColor,redColor,'Create dir....')
                 print('About to delete directories....',resetColor)
-                get_mp4_mkdir.func_createDirs
                 sleep(10)
+                for s_file in os.listdir(s_curDir):
+                    pathDir = os.path.join(curDir, s_file) 
+                    try:
+                        shutil.rmtree(pathDir)
+                    except OSError:
+                        os.remove(pathDir)
+                #get_mp4_mkdir.func_createDirs
         elif get_userChoice == 'n':
             print('Ok not removing existing files\n')
             if Path('index.html').is_file():
