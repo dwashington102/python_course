@@ -46,7 +46,7 @@ func_get_dir_userInput () {
     while [ ${choice} = 'abc' ]
     do
         printf "\nDo you want to remove ALL files:\n${normal}"
-        printf 'Type "yes" to DELETE ALL FILES IN CURRENT DIRECORY before adding directories created by script\n' 
+        printf 'Type "yes" to DELETE ALL FILES IN CURRENT DIRECTORY before adding directories created by script\n' 
         printf 'Type "n" to leave existing files and add directories created by script\n'
         printf 'Type "exit" to exit the script\n'
         printf '\n>>> '

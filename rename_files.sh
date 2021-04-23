@@ -22,8 +22,8 @@ func_get_choice () {
     choice='abc'
     while [ ${choice} = 'abc' ]
     do
-        printf "\nDo you want to remove ALL files that include the text ${ext_type}:\n${normal}"
-        printf 'Type "yes" to DELETE ALL FILES IN CURRENT DIRECTORY that include the text "${ext_type}\n' 
+        printf "\nDo you want to rename ALL files that include the text ${ext_type}:\n${normal}"
+        printf "Type "yes" to RENAME ALL FILES IN CURRENT DIRECTORY that include the text \"${ext_type}\"\n" 
         printf 'Type "exit" to exit the script\n'
         printf '\n>>> '
         read choice
