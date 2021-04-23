@@ -1,4 +1,4 @@
-#!/usr/bin/sh 
+#!/usr/bin/env bash
 # Version: 0.1.0
 # Add comments!!!
 # Testing

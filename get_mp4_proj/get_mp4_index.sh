@@ -7,7 +7,7 @@ MAIN (){
     func_get_index_userInput
     func_get_index_rc
     func_test_index_rc
-#    func_clean_up
+    func_clean_up
 }
 
 # Constant Variables
@@ -103,7 +103,7 @@ func_get_index_userInput () {
     printf "\nWhich URL: "
     read getUrl
     IFS=$'\n'
-    wget -a ./logs/get_getIndex.log ${getUrl}
+    wget -a ./logs/get_getIndex.log ${getUrl} -O index.html
     if [ $? -eq 0 ]; then
         ls -1 index.html > /dev/null 2>&1
         if [ $? -ne 0 ]; then
