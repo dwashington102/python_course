@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
+# Import Python functions
 from datetime import datetime
 import os
-from os import path
 from pathlib import Path
 import shutil
 import re
@@ -11,8 +11,9 @@ from time import sleep
 import wget
 import colorama
 
-# Custom modules
+# Import Custom modules
 import get_mp4_mkdir as get_mp4_mkdir
+import get_mp4_url
 
 # Define CONSTANTS
 now = datetime.now()
@@ -32,10 +33,12 @@ resetColor = colorama.Style.RESET_ALL
 
 def main():
     func_getUserUrl()
+    get_mp4_url.func_getUserUrl()
 
 def func_getUserUrl():
     print('\n')
-    print(boldColor,yellowColor+"WARNING "*4)
+    print(boldColor,yellowColor)
+    print("WARNING ".ljust(0)*4)
     print("This script will remove ALL files in the current directory --- ",cyanColor,curDir)
     print("\nDo you want to remove ALL files:",resetColor)
 
@@ -47,22 +50,24 @@ def func_getUserUrl():
         print('\n')
         get_userChoice=str(input('>>> '))
         if get_userChoice == 'yes':
-            print('Delete files....')
             if curDir == homeDir:
-                print(boldColor,redColor,'Script cannot be ran in $HOME',resetColor) 
+                print(boldColor,redColor)
+                print('Script cannot be ran in $HOME',resetColor) 
                 print('\n')
                 exit 
             elif s_curDir ==  '/root':
-                print(boldColor,redColor,'Script cannot be ran in /root',resetColor) 
+                print(boldColor,redColor)
+                print('Script cannot be ran in /root',resetColor) 
                 print('\n')
                 exit 
             elif s_curDir ==  '/tmp':
-                print(boldColor,redColor,'Script cannot be ran in /tmp',resetColor) 
+                print(boldColor,redColor)
+                print('Script cannot be ran in /tmp',resetColor) 
                 print('\n')
                 exit 
             else:
-                print(boldColor,redColor,'Create dir....')
-                print('About to delete directories....',resetColor)
+                print(boldColor,redColor)
+                print('Preparing to delete directories....',resetColor)
                 sleep(10)
                 for s_file in os.listdir(s_curDir):
                     pathDir = os.path.join(curDir, s_file) 
@@ -70,7 +75,8 @@ def func_getUserUrl():
                         shutil.rmtree(pathDir)
                     except OSError:
                         os.remove(pathDir)
-                #get_mp4_mkdir.func_createDirs
+                get_mp4_mkdir.func_createDirs()
+
         elif get_userChoice == 'n':
             print('Ok not removing existing files\n')
             if Path('index.html').is_file():
@@ -92,5 +98,4 @@ def func_getUserUrl():
 
 if __name__ == '__main__':
     main()
-    print()
     print('end of program')

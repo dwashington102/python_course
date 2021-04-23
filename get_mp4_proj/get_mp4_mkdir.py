@@ -11,7 +11,6 @@ logDir = './logdir'
 
 
 def main ():
-    print('DEBUG >>>> enter main mp4_mkdir\n')
     func_createDirs()
 
 
