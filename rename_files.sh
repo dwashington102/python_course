@@ -58,7 +58,7 @@ fi
 
 func_rename_files() {
     file_count=1
-    for func_get_fileName in `ls -1 *.${ext_type}`
+    for get_fileName in `ls -1 *.${ext_type}`
     do
         if [ $? -eq 1 ]; then
             printf "\nThe ls command failed after initially running successfully"
