@@ -40,11 +40,13 @@ func_get_ext () {
 
 func_get_files() {
 IFS=$'\n'
-ls -1 *.${ext_type}  > /dev/null 2>&1
+#ls -1 *.${ext_type}  > /dev/null 2>&1
+find . -maxdepth 1 -type f -name "*.${ext_type}"
 if [ $? -eq 0 ]; then
     func_rename_files
 else
-    ls -1 *${ext_type}* > /dev/null 2>&1 
+    #ls -1 *${ext_type}* > /dev/null 2>&1 
+    find . -maxdepth 1 -type f -name "*${ext_type}*"
     if [ $? -eq "0" ]; then
         func_rename_files_wildcard
     else
@@ -68,6 +70,7 @@ func_rename_files() {
         else
             printf "\nFile Number: (${file_count})\t File Name: ${get_fileName}"
             printf "\nRename actions: mv ${get_fileName} ${tStamp}_${file_count}.${ext_type}"
+            printf "\n"
             mv ${get_fileName} ${tStamp}_${file_count}.${ext_type}
             printf "\n"
             file_count=$((file_count + 1))
@@ -91,6 +94,7 @@ func_rename_files_wildcard() {
             else
                 printf "\nFile Number: (${file_count})\t File Name: ${get_fileName}"
                 printf "\nRename actions: mv ${get_fileName} ${tStamp}_${file_count}.${ext_type}"
+                printf "\n"
                 mv ${get_fileName} ${tStamp}_${file_count}.${ext_type}
                 printf "\n"
                 file_count=$((file_count + 1))
