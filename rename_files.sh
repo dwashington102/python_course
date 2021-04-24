@@ -58,6 +58,7 @@ fi
 
 func_rename_files() {
     file_count=1
+    tot_files=1
     for get_fileName in `ls -1 *.${ext_type}`
     do
         if [ $? -eq 1 ]; then
@@ -70,12 +71,15 @@ func_rename_files() {
             mv ${get_fileName} ${tStamp}_${file_count}.${ext_type}
             printf "\n"
             file_count=$((file_count + 1))
+            tot_files=$((tot_files + 1))
         fi
     done
+    printf "\nTotal Files Renamed: ${tot_files}"
 }
 
 func_rename_files_wildcard() {
     file_count=1
+    tot_files=1
     func_get_choice
     if [ ${choice} = 'yes' ]; then
         for get_fileName in `ls -1 *${ext_type}*`
@@ -90,8 +94,10 @@ func_rename_files_wildcard() {
                 mv ${get_fileName} ${tStamp}_${file_count}.${ext_type}
                 printf "\n"
                 file_count=$((file_count + 1))
+                tot_files=$((tot_files + 1))
             fi
         done
+    printf "\nTotal Files Renamed: ${tot_files}"
     elif [ ${choice} = 'exit' ]; then
         printf "\nNo files in the current directory were renamed...exiting"
     else
