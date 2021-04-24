@@ -58,7 +58,7 @@ fi
 
 func_rename_files() {
     file_count=1
-    tot_files=1
+    tot_files=0
     for get_fileName in `ls -1 *.${ext_type}`
     do
         if [ $? -eq 1 ]; then
@@ -79,7 +79,7 @@ func_rename_files() {
 
 func_rename_files_wildcard() {
     file_count=1
-    tot_files=1
+    tot_files=0
     func_get_choice
     if [ ${choice} = 'yes' ]; then
         for get_fileName in `ls -1 *${ext_type}*`
