@@ -50,7 +50,7 @@ func_get_plugcontent_rawfiles () {
 printf "\n"
 wget -a ./logs/get_plugcontent_rawfiles -P ./rawfiles `grep plugcontent index.html | awk -F"a href" '{print $2}' | awk -F'[""]' '{print $2}' | sort -u`  
 printf "\nBeginning process to extract video file information from rawfiles..."
-
+tot_files=0
 # For each php  
 for finalMp4 in `ls -1 ./rawfiles | grep php | head -2`
     do
@@ -60,6 +60,7 @@ for finalMp4 in `ls -1 ./rawfiles | grep php | head -2`
         printf "\nStart Time\t$startTime\tFilename: ${finalMp4} "
         if [ $? == 0 ]; then
             wget -a ./logs/get_plugcontent_downloads -P ./mp4 `grep "source\ src=.*mp4" ./rawfiles/${finalMp4} | awk -F'[""]' '{print $2}'`
+            tot_files=$((tot_files))
         else
             printf "\nNo MP4 files found in ${finalMp4}"
             printf "\n"
@@ -68,6 +69,8 @@ for finalMp4 in `ls -1 ./rawfiles | grep php | head -2`
         printf "\nEnd Time\t$endTime\tFilename: ${finalMp4} "
         sleep 2
     done
+    printf "\nTotal Files Downloaded: ${tot_files}"
+    printf "\n"
 }
 
 MAIN
