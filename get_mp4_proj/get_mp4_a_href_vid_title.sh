@@ -94,7 +94,7 @@ func_gen_rawFiles (){
 
 func_download_files (){
     printf "\n${green}Beginning process to extract video file information from rawfiles...${normal}"
-    tot_files=1
+    tot_files=0
     for remoteFilename in `ls -1 ./rawfiles`
     do
         finalMp4=`grep 'video_url' ./rawfiles/${remoteFilename} | awk -F"video_url" '{print $2}' | awk -F"['']" '{print $2}'`
