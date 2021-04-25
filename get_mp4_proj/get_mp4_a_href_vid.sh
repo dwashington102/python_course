@@ -89,6 +89,7 @@ func_gen_rawFiles (){
 
 
 func_download_files (){
+    tot_files=0
     printf "\n${green}Beginning process to extract video file information from rawfiles...${normal}"
     for finalMp4 in `ls -1 ./rawfiles`
     do
@@ -99,6 +100,7 @@ func_download_files (){
         if [ $? == 0 ]; then
             endTime=`date +%Y%m%d-%H:%M`
             printf "\nEnd Time\t$endTime\tFilename: ${finalMp4}"
+            tot_files=$((tot_files+1))
         else
             endTime=`date +%Y%m%d-%H:%M`
             printf "\n${red}End Time\t$endTime\tFilename: ${finalMp4}${normal}"
@@ -106,6 +108,7 @@ func_download_files (){
         printf "\n======================="
         sleep 2
     done
+    printf "\nTotal Files Downloaded: ${tot_files}"
 }
 
 MAIN
