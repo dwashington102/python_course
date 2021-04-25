@@ -72,6 +72,7 @@ func_get_urls () {
 
 
 func_download_files (){
+    tot_files=1
     printf "\n${green}Beginning process to extract video file information from rawfiles...${normal}"
     for finalMp4 in `ls -1 ./rawfiles/*`
     do
@@ -81,14 +82,17 @@ func_download_files (){
         grep setVideoUrlHigh ${finalMp4}
         if [ $? == 0 ]; then
             wget -a ./logs/download_files.log -P ./mp4 `grep setVideoUrlHigh ${finalMp4} | awk -F"setVideoUrlHigh" '{print $2}' | awk -F"['']" '{print $2}' | sort -u`
+            tot_files=$((tot_files + 1))
         else
             wget -a ./logs/download_files.log -P ./mp4 `grep setVideoUrl ${finalMp4} | awk -F"setVideoUrl" '{print $2}' | awk -F"['']" '{print $2}' | sort -u`
+            tot_files=$((tot_files + 1))
         fi
         endTime=`date +%Y%m%d-%H:%M`
         printf "\nEnd Time\t$endTime\tFilename: ${finalMp4} ":
         printf "\n======================="
         sleep 2
     done
+    printf "\nTotal Files Downloaded: ${tot_files}"
     printf "\n"
 }
 
