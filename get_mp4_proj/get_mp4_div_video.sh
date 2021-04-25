@@ -72,7 +72,7 @@ func_get_urls () {
 
 
 func_download_files (){
-    tot_files=1
+    tot_files=0
     printf "\n${green}Beginning process to extract video file information from rawfiles...${normal}"
     for finalMp4 in `ls -1 ./rawfiles/*`
     do
