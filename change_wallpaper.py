@@ -8,7 +8,6 @@ import sys
 import random
 import time
 from os import path
-import os.path
 
 
 # Import module required to run gsettings command
@@ -25,8 +24,10 @@ BACKGROUNDS='/usr/share/backgrounds/various'
 
 
 def main():
+    get_current_bg()
     check_mypath()
     get_wallpaper()
+    get_updated_bg()
 
 
 # Function will confirm if directory defined by BACKGROUNDS exists.  If not the program exits
@@ -38,6 +39,7 @@ def check_mypath():
         print('PATH:', BACKGROUNDS, " does not exists")
         print('Exiting...')
         exit(1)
+
 
 # Function builds a random list of backgrounds in BACKGROUNDS
 def get_wallpaper():    
@@ -70,20 +72,21 @@ def cinnamon_set_wallpaper(wallpaper):
 
 # Confirm if the WM is GNOME or Cinnamon
 def get_wm(wallpaper):
-    print('Current background image:', '\t')
-    wm_type=os.system('gsettings get org.gnome.desktop.background picture-uri  2>/dev/null')
-
-    if wm_type==0:
-        #print('DEBUG >>>>>> Gnome Found')
-        set_wallpaper(wallpaper)
-        print('\n'+'Updated background image:  ')
-        os.system('gsettings get org.gnome.desktop.background picture-uri')
-    else:
-        #print('DEBUG >>>>>> Gnome NOT FOUND')
+    wm_type=os.system('gsettings get org.gnome.desktop.background picture-uri > /dev/null  2>&1')
+    if wm_type!=0:
         cinnamon_set_wallpaper(wallpaper)
-        print('\n'+'Updated background image:  ')
-        os.system('gsettings get org.cinnamon.desktop.background picture-uri')
+    else:
+        set_wallpaper(wallpaper)
 
+
+def get_current_bg():
+    print('\n'+'1. Current background image:  ')
+    os.system('gsettings get org.gnome.desktop.background picture-uri')
+
+
+def get_updated_bg():
+    print('\n'+'2. Updated background image:  ')
+    os.system('gsettings get org.gnome.desktop.background picture-uri')
 
 
 if __name__ == '__main__':
