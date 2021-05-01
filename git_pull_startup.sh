@@ -10,7 +10,7 @@ dotfiles=$HOME/GIT_REPO/dotfiles
 timeStamp=`date +%Y%m%d_%H%M`
 currDir=$HOME/GIT_REPO
 
-func_set_colors () {
+function func_set_colors () {
     bold=$(tput bold)
     blink=$(tput blink)
     boldoff=$(tput sgr0)
@@ -33,6 +33,11 @@ function remove_30day_dirs (){
                 printf "${mydirs}"
                 rm -f "\nMyFile: ${myDirs}"
 	    done
+}
+
+function func_pull_zsh_syntax {
+	cd $GIT_DIR
+	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
 }
 
 
@@ -105,6 +110,7 @@ cd $GITDIR
 check_pythoncourse
 print_spacer
 check_dotfiles
+func_pull_zsh_syntax
 remove_30day_dirs
 }
 

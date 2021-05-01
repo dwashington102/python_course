@@ -6,12 +6,13 @@
 # 2020-01-16: Updated trash_empty() providing FQpath to trash-empty in order to avoid rc=127
 # 2021-04-18: Updated cp cmd in clear_files_recent to redirect STDOUT & STDERR to /dev/null
 
+# Constant Variables
 tStamp=`date +%Y%m%d_%H%M`
 logfile=$HOME/cronlogs/cron_run_$tStamp
 spacer='------------//------------------'
 
 
-clear_files_recent (){
+func_clear_files_recent (){
 	printf "Starting ${FUNCNAME}\n"
 	cp $HOME/bin/static/recently-used.xbel $HOME/.local/share/recently-used.xbel > /dev/null 2>&1
 	printf "cp command rc=$?"
@@ -19,7 +20,7 @@ clear_files_recent (){
 }
 
 
-bleachbit_cron_logs (){
+func_bleachbit_cron_logs (){
 	# only the printf statements in this function write to log file. Output of bleachbit command not included in log file
 	printf "\nStarting ${FUNCNAME}\n" >> $logfile
 	cd $HOME/cronlogs
@@ -29,7 +30,7 @@ bleachbit_cron_logs (){
 }
 
 
-delete_history (){
+func_delete_history (){
 	printf "\nStarting ${FUNCNAME}\n"
  	sed -i '/mp4/d' $HOME/.zsh_history
 	printf "$FUNCNAME rc=$?\n" 
@@ -37,7 +38,7 @@ delete_history (){
 }
 
 
-run_bleachbit_cleaners (){
+func_run_bleachbit_cleaners (){
 	# only the printf statements in this function write to log file. Output of bleachbit command not included in log file
 	printf "\nStarting ${FUNCNAME}\n"  >> $logfile
 	bleachbit -c system.trash firefox.cache google_chrome.cache opera.cache chromium.cache chromium.history chromium.cookies google_chrome.history vlc.mru
@@ -45,7 +46,7 @@ run_bleachbit_cleaners (){
 	printf "\n"
 }
 
-run_bleachbit_targeted (){
+func_run_bleachbit_targeted (){
 	# only the printf statements in this function write to log file. Output of bleachbit command not included in log file
 	printf "\nStarting ${FUNCNAME}\n"  >> $logfile
 	cd $HOME/.cache/thumbnails
@@ -54,7 +55,7 @@ run_bleachbit_targeted (){
 	printf "\n"
 }
 
-trash_empty (){
+func_trash_empty (){
 	printf "Starting ${FUNCNAME}\n"
 	$HOME/.local/bin/trash-empty 3
 	printf "$FUNCNAME rc=$?\n" 
@@ -62,7 +63,7 @@ trash_empty (){
 	
 }
 
-truncate_vlc_history (){
+func_truncate_vlc_history (){
 	printf "Starting ${FUNCNAME}\n"
 	truncate -s 0 $HOME/.config/vlc/vlc-qt-interface.conf
 	printf "$FUNCNAME rc=$?\n" 
@@ -74,15 +75,15 @@ truncate_vlc_history (){
 MAIN() {
 touch $logfile
 echo $spacer >> $logfile
-clear_files_recent >> $logfile
-delete_history >> $logfile
-trash_empty >> $logfile 
-truncate_vlc_history >> $logfile
+func_clear_files_recent >> $logfile
+func_delete_history >> $logfile
+func_trash_empty >> $logfile 
+func_truncate_vlc_history >> $logfile
 
 #bleachbit functions should not append to $logfile here
-bleachbit_cron_logs 
-run_bleachbit_cleaners
-run_bleachbit_targeted
+func_bleachbit_cron_logs 
+func_run_bleachbit_cleaners
+func_run_bleachbit_targeted
 echo $spacer >> $logfile
 }
 
