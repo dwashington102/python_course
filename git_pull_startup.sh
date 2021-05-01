@@ -110,7 +110,9 @@ cd $GITDIR
 check_pythoncourse
 print_spacer
 check_dotfiles
+print_spacer
 func_pull_zsh_syntax
+print_spacer
 remove_30day_dirs
 }
 
