@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+
 tStamp=`date +%Y%m%d_%H%M`
 
 func_set_colors () {
@@ -41,13 +42,13 @@ func_get_ext () {
 func_get_files() {
 IFS=$'\n'
 #ls -1 *.${ext_type}  > /dev/null 2>&1
-find . -maxdepth 1 -type f -name "*.${ext_type}"
-if [ $? -eq 0 ]; then
+file_count=`find . -maxdepth 1 -type f -name "*.${ext_type}" | wc -l`
+if [ ${file_count} -gt 0 ]; then
     func_rename_files
 else
     #ls -1 *${ext_type}* > /dev/null 2>&1 
-    find . -maxdepth 1 -type f -name "*${ext_type}*"
-    if [ $? -eq "0" ]; then
+    wildcard_file_count=`find . -maxdepth 1 -type f -name "*${ext_type}*"  | wc -l`
+    if [ ${wildcard_file_count} -gt 0 ]; then
         func_rename_files_wildcard
     else
         printf "\nNo files with the extension ${ext_type} found in current directory"
@@ -61,9 +62,12 @@ fi
 func_rename_files() {
     file_count=1
     tot_files=0
-    for get_fileName in `ls -1 *.${ext_type}`
+    for get_fileName in `ls -1 *.${ext_type} | wc -l`
     do
-        if [ $? -eq 1 ]; then
+	printf "DEBUG >>> ${get_fileName}\n"
+        sleep 10
+        if [ ${get_fileName} -lt 1 ]; then
+        #if [ $? -eq 1 ]; then
             printf "\nThe ls command failed after initially running successfully"
             printf '\n'
             exit 1
