@@ -24,7 +24,7 @@ func_bleachbit_cron_logs (){
 	# only the printf statements in this function write to log file. Output of bleachbit command not included in log file
 	printf "\nStarting ${FUNCNAME}\n" >> $logfile
 	cd $HOME/cronlogs
-	bleachbit -s `find . -type f -mtime +5`
+	bleachbit -s `find . -type f -mtime +5` > /dev/null 2>&1
 	printf "$FUNCNAME rc=$?\n" >> $logfile
 	printf "\n"
 }
@@ -46,7 +46,7 @@ func_delete_history (){
 func_run_bleachbit_cleaners (){
 	# only the printf statements in this function write to log file. Output of bleachbit command not included in log file
 	printf "\nStarting ${FUNCNAME}\n"  >> $logfile
-	bleachbit -c system.trash firefox.cache google_chrome.cache opera.cache chromium.cache chromium.history chromium.cookies google_chrome.history vlc.mru
+	bleachbit -c system.trash firefox.cache google_chrome.cache opera.cache chromium.cache chromium.history chromium.cookies google_chrome.history vlc.mru > /dev/null 2>&1
 	printf "$FUNCNAME rc=$?\n" >> $logfile
 	printf "\n"
 }
@@ -55,14 +55,14 @@ func_run_bleachbit_targeted (){
 	# only the printf statements in this function write to log file. Output of bleachbit command not included in log file
 	printf "\nStarting ${FUNCNAME}\n"  >> $logfile
 	cd $HOME/.cache/thumbnails
-	bleachbit -s `find . -type f -name "*.png"`
+	bleachbit -s `find . -type f -name "*.png"` > /dev/null 2>&1
 	printf "$FUNCNAME rc=$?\n" >> $logfile
 	printf "\n"
 }
 
 func_trash_empty (){
 	printf "Starting ${FUNCNAME}\n"
-	$HOME/.local/bin/trash-empty 3
+	$HOME/.local/bin/trash-empty 3 > /dev/null 2>&1
 	printf "$FUNCNAME rc=$?\n" 
 	printf "\n"
 	
@@ -70,7 +70,7 @@ func_trash_empty (){
 
 func_truncate_vlc_history (){
 	printf "Starting ${FUNCNAME}\n"
-	truncate -s 0 $HOME/.config/vlc/vlc-qt-interface.conf
+	truncate -s 0 $HOME/.config/vlc/vlc-qt-interface.conf > /dev/null 2>&1
 	printf "$FUNCNAME rc=$?\n" 
 	printf "\n"
 }
@@ -81,18 +81,18 @@ MAIN() {
 touch $logfile
 start_tStamp=`date +%Y%m%d_%H:%M`
 echo $spacer >> $logfile
-printf "Start Time: ${start_tStamp}\n"
+printf "Start Time: ${start_tStamp}\n" >> $logfile
 func_clear_files_recent >> $logfile
 func_delete_history >> $logfile
 func_trash_empty >> $logfile 
 func_truncate_vlc_history >> $logfile
 
 #bleachbit functions should not append to $logfile here
-func_bleachbit_cron_logs 
+func_bleachbit_cron_logs  
 func_run_bleachbit_cleaners
 func_run_bleachbit_targeted
 end_tStamp=`date +%Y%m%d_%H:%M`
-printf "End Time: ${end_tStamp}\n"
+printf "End Time: ${end_tStamp}\n" >> $logfile
 echo $spacer >> $logfile
 }
 
