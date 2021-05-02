@@ -3,6 +3,8 @@
 
 # Script run on startup to pull git projects.
 
+# 05-02-2021:  Added func_pull_zsh_syntax  
+
 # Set variables
 GITDIR=$HOME/GIT_REPO
 pythonCourse=$HOME/GIT_REPO/python_course
@@ -109,9 +111,9 @@ function MAIN (){
 cd $GITDIR
 check_pythoncourse
 print_spacer
-check_dotfiles
-print_spacer
 func_pull_zsh_syntax
+print_spacer
+check_dotfiles
 print_spacer
 remove_30day_dirs
 }
