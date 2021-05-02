@@ -32,7 +32,12 @@ func_bleachbit_cron_logs (){
 
 func_delete_history (){
 	printf "\nStarting ${FUNCNAME}\n"
- 	sed -i '/mp4/d' $HOME/.zsh_history
+	echo $SHELL | grep zsh
+	if [ $? == 0 ]; then
+ 		sed -i '/mp4/d' $HOME/.zsh_history
+	else
+		sed -i '/mp4/d' $HOME/.bash_history
+	fi
 	printf "$FUNCNAME rc=$?\n" 
 	printf "\n"
 }
@@ -74,7 +79,9 @@ func_truncate_vlc_history (){
 
 MAIN() {
 touch $logfile
+start_tStamp=`date +%Y%m%d_%H:%M`
 echo $spacer >> $logfile
+printf "Start Time: ${start_tStamp}\n"
 func_clear_files_recent >> $logfile
 func_delete_history >> $logfile
 func_trash_empty >> $logfile 
@@ -84,6 +91,8 @@ func_truncate_vlc_history >> $logfile
 func_bleachbit_cron_logs 
 func_run_bleachbit_cleaners
 func_run_bleachbit_targeted
+end_tStamp=`date +%Y%m%d_%H:%M`
+printf "End Time: ${end_tStamp}\n"
 echo $spacer >> $logfile
 }
 
