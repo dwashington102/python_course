@@ -49,7 +49,6 @@ export grep='grep --color=NEVER'
 func_get_plugcontent_rawfiles () {
 printf "\n"
 wget -a ./logs/get_plugcontent_rawfiles -P ./rawfiles `grep plugcontent index.html | awk -F"a href" '{print $2}' | awk -F'[""]' '{print $2}' | sort -u`  
-printf "\nBeginning process to extract video file information from rawfiles..."
 tot_files=0
 # For each php  
 for finalMp4 in `ls -1 ./rawfiles | grep php`
