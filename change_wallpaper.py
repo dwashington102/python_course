@@ -80,12 +80,12 @@ def get_wm(wallpaper):
 
 
 def get_current_bg():
-    print('\n'+'1. Current background image:  ')
+    print('\n'+'Current background image:  ')
     os.system('gsettings get org.gnome.desktop.background picture-uri')
 
 
 def get_updated_bg():
-    print('\n'+'2. Updated background image:  ')
+    print('\n'+'Updated background image:  ')
     os.system('gsettings get org.gnome.desktop.background picture-uri')
 
 
