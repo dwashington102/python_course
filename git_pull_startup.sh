@@ -133,7 +133,7 @@ func_print_spacer
 func_pull_zsh_syntax
 func_print_spacer
 check_dotfiles
-print_spacer
+func_print_spacer
 func_remove_30day_dirs
 }
 
