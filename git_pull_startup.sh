@@ -119,6 +119,7 @@ func_check_conn_github () {
     else
 	printf "${green}"
         printf "\nConnection to Github confirmed"
+		func_print_spacer
 	printf "${normal}"
     fi
 }
