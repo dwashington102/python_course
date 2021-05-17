@@ -9,6 +9,7 @@
 GITDIR=$HOME/GIT_REPO
 pythonCourse=$HOME/GIT_REPO/python_course
 dotfiles=$HOME/GIT_REPO/dotfiles
+zshdir=$GITDIR/zsh-syntax-highlighting
 timeStamp=`date +%Y%m%d_%H%M`
 currDir=$HOME/GIT_REPO
 
@@ -40,8 +41,14 @@ func_remove_30day_dirs (){
 }
 
 function func_pull_zsh_syntax {
-	cd $GIT_DIR
-	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
+	cd $GITDIR
+	mv $zshdir $zshdir.$timeStamp
+	if [[ $? != 0 ]]; then
+	    printf "$zshdir NOT COPIED\n"
+	    printf "No git clone will be attempted for $zshdir\n"
+	else
+		git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
+    fi
 }
 
 
