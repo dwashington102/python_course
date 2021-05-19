@@ -31,20 +31,20 @@ func_print_spacer (){
 }
 
 func_remove_30day_dirs (){
-	IFS='\n'
+	IFS=$'\n'
 	cd  $GITDIR
 	myDirs=`find . -maxdepth 1 -mtime +30  -name "*202*" -type  d`
 	for dirName in ${myDirs}
 	do
-        rm -rf ${myDirs}
+        rm -rf ${dirName}
 		if [[ $? == 0 ]]; then
 			printf "${green}"
-			printf "Deleted Directory ${myDirs} succcessful"
+			printf "Deleted Directory ${dirName} succcessful"
 			printf "${normal}"
 			sleep 1
 		else
 			printf "${red}"
-			printf "Deleted Directory ${myDirs} FAILED"
+			printf "Deleted Directory ${dirName} FAILED"
 			printf "${normal}"
 		fi
 	printf "\n"
