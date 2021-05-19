@@ -46,6 +46,8 @@ func_remove_30day_dirs (){
 			    printf "${red}"
 				printf "\nDeleted Directory ${myDirs} FAILED"
 				printf "${normal}"
+			fi
+			printf "\n"
 	    done
 }
 
