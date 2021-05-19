@@ -32,11 +32,11 @@ func_print_spacer (){
 
 func_remove_30day_dirs (){
 	cd  $GITDIR
-	printf "\nDEBUG >>> entered $@"
 	for myDirs in `find . -maxdepth 1 -mtime +30  -name "*202*" -type  d`
 	    do
-		printf "\nDEBUG >>> ${myDirs}"
-                #rm -f "\nMyFile: ${myDirs}"
+		    printf "\nDeleting directory: ${myDirs}"
+            rm -f ${myDirs}
+			sleep 2
 	    done
 }
 
