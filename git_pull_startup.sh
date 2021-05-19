@@ -39,12 +39,12 @@ func_remove_30day_dirs (){
             rm -rf ${myDirs}
 			if [[ $? == 0 ]]; then
 			    printf "${green}"
-				printf "\nDeleted Directory ${myDirs} succcessful"
+				printf "Deleted Directory ${myDirs} succcessful"
 				printf "${normal}"
-				sleep 2
+				sleep 1
 			else
 			    printf "${red}"
-				printf "\nDeleted Directory ${myDirs} FAILED"
+				printf "Deleted Directory ${myDirs} FAILED"
 				printf "${normal}"
 			fi
 			printf "\n"
