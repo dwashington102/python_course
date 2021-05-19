@@ -33,7 +33,7 @@ func_print_spacer (){
 func_remove_30day_dirs (){
 	cd  $GITDIR
 	myDirs=`find . -maxdepth 1 -mtime +30  -name "*202*" -type  d`
-	if [[ ${#myDirs[@]} != 0 ]]; then
+	if [[ ${#myDirs[@]} -gt 0 ]]; then
 	    do
 		    printf "\nDeleting directory: ${myDirs}"
 			printf "\n"
