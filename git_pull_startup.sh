@@ -35,8 +35,16 @@ func_remove_30day_dirs (){
 	for myDirs in `find . -maxdepth 1 -mtime +30  -name "*202*" -type  d`
 	    do
 		    printf "\nDeleting directory: ${myDirs}"
-            rm -f ${myDirs}
-			sleep 2
+            rm -rf ${myDirs}
+			if [[ $? == 0 ]]; then
+			    printf "${green}"
+				printf "\nDeleted Directory ${myDirs} succcessful"
+				printf "${normal}"
+				sleep 2
+			else
+			    printf "${red}"
+				printf "\nDeleted Directory ${myDirs} FAILED"
+				printf "${normal}"
 	    done
 }
 
@@ -148,5 +156,7 @@ func_remove_30day_dirs
 
 # Where the magic happens
 MAIN
+printf "${yellow}"
 printf "\ngit pull actions completed\n"
+printf "${normal}"
 exit 0
