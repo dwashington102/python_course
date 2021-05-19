@@ -32,7 +32,8 @@ func_print_spacer (){
 
 func_remove_30day_dirs (){
 	cd  $GITDIR
-	for myDirs in `find . -maxdepth 1 -mtime +30  -name "*202*" -type  d`
+	myDirs=`find . -maxdepth 1 -mtime +30  -name "*202*" -type  d`
+	if [[ ${#myDirs[@]} != 0 ]]; then
 	    do
 		    printf "\nDeleting directory: ${myDirs}"
 			printf "\n"
@@ -49,6 +50,9 @@ func_remove_30day_dirs (){
 			fi
 			printf "\n"
 	    done
+	else
+		printf "\nNo directories older than 30 days found in ${GITDIR}"
+    fi
 }
 
 function func_pull_zsh_syntax {
