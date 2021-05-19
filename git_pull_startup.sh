@@ -35,6 +35,7 @@ func_remove_30day_dirs (){
 	for myDirs in `find . -maxdepth 1 -mtime +30  -name "*202*" -type  d`
 	    do
 		    printf "\nDeleting directory: ${myDirs}"
+			printf "\n"
             rm -rf ${myDirs}
 			if [[ $? == 0 ]]; then
 			    printf "${green}"
