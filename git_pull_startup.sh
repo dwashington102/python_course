@@ -34,7 +34,7 @@ func_remove_30day_dirs (){
 	IFS=$'\n'
 	cd  $GITDIR
 	listDirs=($(find . -maxdepth 1 -mtime +20  -name "*202*" -type  d))
-	printf "\nDEUBG >>> ${#listDirs[@]\n"
+	printf '\nDEUBG >>> ${listDirs[@]}'
 	if [[ ${#listDirs[@]} -ne 0 ]]; then
 	for dirName in ${myDirs}
 	do
