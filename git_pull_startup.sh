@@ -11,7 +11,6 @@ pythonCourse=$HOME/GIT_REPO/python_course
 dotfiles=$HOME/GIT_REPO/dotfiles
 zshdir=$GITDIR/zsh-syntax-highlighting
 timeStamp=`date +%Y%m%d_%H%M`
-currDir=$HOME/GIT_REPO
 
 
 func_set_colors () {
@@ -75,7 +74,7 @@ function pull_dotfiles (){
 
 
 function rename_pythoncourse (){
-	cd $currDir
+	cd $GITDIR
 	mv $pythonCourse $pythonCourse.$timeStamp
 	if [[ $? != 0 ]]; then
 	    printf "$pythonCourse NOT COPIED\n"
@@ -87,7 +86,7 @@ function rename_pythoncourse (){
 
 
 function rename_dotfiles (){
-	cd $currDir
+	cd $GITDIR
 	mv $dotfiles $dotfiles.$timeStamp
 	if [[ $? != 0 ]]; then
 	    printf "$dotfiles NOT COPIED\n"
