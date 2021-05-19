@@ -31,9 +31,11 @@ func_print_spacer (){
 }
 
 func_remove_30day_dirs (){
+	printf "\nDEBUG >>> Entered func_remove_30day_dirs()"
 	cd  $GITDIR
 	for myDirs in `find . -maxdepth 1 -mtime +30  -name "*202*" -type  d`
 	    do
+		printf "\nDEBUG >>> entered for loop"
                 printf "${mydirs}"
                 rm -f "\nMyFile: ${myDirs}"
 	    done
@@ -140,6 +142,7 @@ func_pull_zsh_syntax
 func_print_spacer
 check_dotfiles
 func_print_spacer
+printf "\nDEBUG >>> are we calling func_remove_30day_dirs?"
 func_remove_30day_dirs
 }
 
