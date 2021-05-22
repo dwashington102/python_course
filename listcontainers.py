@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+
+import subprocess
+from sys import exit 
+
+def print_header():
+    print_blank()
+    print("=============================================")
+    print("Begin Here.....")
+
+def print_footer():
+    print_blank()
+    print("End Here.....")
+    print("=============================================")
+
+def print_blank():
+    print("\n" * 2)
+
+def get_dkrcontain():
+    print("List of Running Docker Containers:")
+    subprocess.check_call(['docker', 'ps'])
+
+def main():
+    print_header()
+    get_dkrcontain()
+    print_footer()
+
+# Do work
+main()
+
+if __name__ == "main":
+    main()
