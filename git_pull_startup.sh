@@ -33,9 +33,7 @@ func_print_spacer (){
 func_remove_30day_dirs (){
 	IFS=$'\n'
 	pushd $GITDIR
-	printf "\nDEBUG PWD: $PWD"
-	#listDirs=($(find . -maxdepth 1 -mtime +20 -name "*202*" -type d))
-	listdirs=($(find . -maxdepth 1 -mtime +20 -name "*202*" -type d))
+	listDirs=($(find . -maxdepth 1 -mtime +20 -name "*202*" -type d))
 	printf "DEBUG TOTAL: ${#listDirs[@]}"
 	sleep 10
 	if [[ ${#listDirs[@]} -ne 0 ]]; then
