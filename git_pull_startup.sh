@@ -32,24 +32,24 @@ func_print_spacer (){
 
 func_remove_30day_dirs (){
 	IFS=$'\n'
-	pushd $GITDIR
+	cd $GITDIR
 	listDirs=($(find . -maxdepth 1 -mtime +20 -name "*202*" -type d))
 	if [[ ${#listDirs[@]} -ne 0 ]]; then
 	for dirName in ${listDirs}
 	do
 		printf "\nDEBUG >>> Remove dir: ${dirName}"
 		sleep 2
-        rm -rf ${dirName}
-		if [[ $? == 0 ]]; then
-			printf "${green}"
-			printf "Deleted Directory ${dirName} succcessful"
-			printf "${normal}"
-			sleep 1
-		else
-			printf "${red}"
-			printf "Deleted Directory ${dirName} FAILED"
-			printf "${normal}"
-		fi
+        #rm -rf ${dirName}
+#		if [[ $? == 0 ]]; then
+#			printf "${green}"
+#			printf "\nDeleted Directory ${dirName} succcessful"
+#			printf "${normal}"
+#			sleep 1
+#		else
+#			printf "${red}"
+#			printf "\nDeleted Directory ${dirName} FAILED"
+#			printf "${normal}"
+#		fi
 	printf "\n"
 	done
 	else
