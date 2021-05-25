@@ -34,12 +34,11 @@ func_remove_30day_dirs (){
 	IFS=$'\n'
 	pushd $GITDIR
 	listDirs=($(find . -maxdepth 1 -mtime +20 -name "*202*" -type d))
-	printf "DEBUG TOTAL: ${#listDirs[@]}"
-	sleep 10
 	if [[ ${#listDirs[@]} -ne 0 ]]; then
-
-	for dirName in ${myDirs}
+	for dirName in ${listDirs}
 	do
+		printf "\nDEBUG >>> Remove dir: ${dirName}"
+		sleep 2
         rm -rf ${dirName}
 		if [[ $? == 0 ]]; then
 			printf "${green}"
