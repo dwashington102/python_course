@@ -136,11 +136,16 @@ func_get_index_rc (){
     index_a_href=`grep href=\"/download index.html | awk -F'[""]' '{print $2}' | sort -u | wc -l`
     index_a_href_vid=`grep ^'<a href="/video' index.html | awk -F'[""]' '{print $2}' | sort -u | wc -l`
     index_a_href_vid_title=`grep 'a href=.*title=' index.html | awk -F'[""]' '{print $2}' | sort -u | wc -l`
+    index_a_href_fileurl=`grep 'a href=.*http.*title=.*class' index.html | awk -F'[""]' '{print $2}' | sort -u | wc -l`
 }
 
 func_test_index_rc (){
+    if [ ${index_a_href_fileurl} -gt 0 ]; then
+        get_mp4_fileurl.sh
+        printf "\n"
+
     #Calls get_mp4_plugcontent.sh
-    if [ ${index_plugcontent} -gt 0 ]; then
+    elif [ ${index_plugcontent} -gt 0 ]; then
         get_mp4_plugcontent.sh
         printf "\n"
 
