@@ -51,6 +51,7 @@ func_end_time () {
 
 func_get_urls () {
     grep "a href.*https.*title=.*class=" index.html  | awk -F'[""]' '{print $2}' | sort -u > ./rawfiles/rawUrls
+    printf "\nDEBUG >>> Check rawfiles/rawUrls"
 }
 
 func_dl_mp4 () {
