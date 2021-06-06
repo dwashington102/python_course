@@ -3,9 +3,9 @@
 # Add comments!!!
 # Testing
 
-# Script pulls mp4 files when index.html uses "<a href=/download" along with a baseUrl
+# Script pulls mp4 files when files contain the text "__fileurl.*http"
 # example:
-# <a href="/download/videos/myfile">Title Here</a>
+# __fileurl = 'https://cdn5-videos.com/videos/JELLYROLL.mp4'
 
 # Sites
 # - m_ot
@@ -14,6 +14,7 @@ MAIN (){
     func_set_colors
     func_start_time
     func_get_urls
+    func_download_files
     func_end_time
 }
 
