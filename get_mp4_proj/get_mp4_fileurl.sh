@@ -57,7 +57,7 @@ func_dl_mp4 () {
     if [ -s ./rawfiles/rawUrls ]; then
         printf "\nDownloading mp4 files."
         printf "\n"
-        for urlPath in `cat ./rawfiles/rawUlrs`
+        for urlPath in `cat ./rawfiles/rawUrls`
         do
             IF=$'\n'
             wget -a ./logs/get_mp4_filename_${tStamp}.log -P ./mp4 $urlPath
