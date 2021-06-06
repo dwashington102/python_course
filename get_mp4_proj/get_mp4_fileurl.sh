@@ -60,7 +60,7 @@ func_dl_mp4 () {
         for urlPath in `cat ./rawfiles/rawUlrs`
         do
             IF=$'\n'
-            wget -a ./logs/get_mp4_filename_$tStamp}.log -P ./mp4 $urlPath
+            wget -a ./logs/get_mp4_filename_${tStamp}.log -P ./mp4 $urlPath
             sleep 2
         else
             printf "\nrawUrls file is empty...exiting"
