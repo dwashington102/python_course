@@ -14,7 +14,7 @@ MAIN (){
     func_set_colors
     func_start_time
     func_get_urls
-    func func_dl_mp4
+    func_dl_mp4
     func_end_time
 }
 
@@ -63,9 +63,9 @@ func_dl_mp4 () {
             wget -a ./logs/get_mp4_filename_${tStamp}.log -P ./mp4 $urlPath
             sleep 2
         done
-        else
-            printf "\nrawUrls file is empty...exiting"
-            exit 1
+    else
+        printf "\nrawUrls file is empty...exiting"
+        exit 1
     fi
 }
 
