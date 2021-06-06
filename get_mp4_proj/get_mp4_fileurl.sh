@@ -14,7 +14,6 @@ MAIN (){
     func_set_colors
     func_start_time
     func_get_urls
-    func_dl_mp4
     func_end_time
 }
 
@@ -50,25 +49,57 @@ func_end_time () {
 }
 
 func_get_urls () {
-    grep "a href.*https.*title=.*class=" index.html  | awk -F'[""]' '{print $2}' | sort -u > ./rawfiles/rawUrls
-    printf "\nDEBUG >>> Check rawfiles/rawUrls"
-    sleep 15
+    printf "\nExtracting URLs to ./tmp/rawUrls file..."
+    printf "\n"
+    grep "a href.*https.*title=.*class=" index.html  | awk -F'[""]' '{print $2}' | sort -u > ./tmp/rawUrls
+    if [ -s ./tmp/rawUrls ]; then
+        func_gen_rawFiles
+    else
+        printf "\nIndex.html does not contain URLS"
+        exit 3
+    fi
 }
 
-func_dl_mp4 () {
-    if [ -s ./rawfiles/rawUrls ]; then
-        printf "\nDownloading mp4 files."
-        printf "\n"
-        for urlPath in `cat ./rawfiles/rawUrls`
+
+func_gen_rawFiles (){
+    printf "\nGenerating files in ./rawfiles"
+    printf "\n"
+    for urlPath in `cat ./tmp/rawUrls`
         do
-            IF=$'\n'
-            wget -a ./logs/get_mp4_filename_${tStamp}.log -P ./mp4 $urlPath
-            sleep 2
+            IFS=$'\n'
+            wget -a ./logs/gen_tmpFiles -P ./rawfiles ${urlPath}
+	        if [ $? == 0 ]; then
+                printf "${green}.${normal}"
+                sleep 2
+	        else
+                printf "${red}.${normal}"
+                sleep 2
+            fi
         done
-    else
-        printf "\nrawUrls file is empty...exiting"
-        exit 1
-    fi
+}
+
+func_download_files (){
+    tot_files=0
+    printf "\n${green}Beginning process to extract video file information from rawfiles...${normal}"
+    for finalMp4 in `ls -1 ./rawfiles`
+    do
+        printf "\nDownloading video from file:\t ${finalMp4}\n"
+        startTime=`date +%Y%m%d-%H:%M`
+        printf "\nStart Time\t$startTime\tFilename: ${finalMp4} "
+        wget  -a ./logs/download_files -P ./mp4 `grep "__fileurl.*http" ./rawfiles/$finalMp4 | awk -F"['']" '{print $2}'`
+        if [ $? == 0 ]; then
+            endTime=`date +%Y%m%d-%H:%M`
+            printf "\nEnd Time\t$endTime\tFilename: ${finalMp4}"
+            tot_files=$((tot_files + 1))
+        else
+            endTime=`date +%Y%m%d-%H:%M`
+            printf "\n${red}End Time\t$endTime\tFilename: ${finalMp4}${normal}"
+        fi
+        printf "\n======================="
+        sleep 2
+    done
+    printf "\nTotal Files Downloaded: ${tot_files}"
+    printf "\n"
 }
 
 MAIN

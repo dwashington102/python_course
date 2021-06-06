@@ -54,9 +54,9 @@ tot_files=0
 for finalMp4 in `ls -1 ./rawfiles | grep php`
     do
         printf "\nDownloading video from file:\t ${finalMp4}\n"
-        grep "source\ src=.*mp4" ./rawfiles/${finalMp4} 
         startTime=`date +%Y%m%d-%H:%M`
         printf "\nStart Time\t$startTime\tFilename: ${finalMp4} "
+        grep "source\ src=.*mp4" ./rawfiles/${finalMp4} 
         if [ $? == 0 ]; then
             wget -a ./logs/get_plugcontent_downloads -P ./mp4 `grep "source\ src=.*mp4" ./rawfiles/${finalMp4} | awk -F'[""]' '{print $2}'`
             tot_files=$((tot_files + 1))
