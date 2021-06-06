@@ -62,10 +62,10 @@ func_dl_mp4 () {
             IF=$'\n'
             wget -a ./logs/get_mp4_filename_${tStamp}.log -P ./mp4 $urlPath
             sleep 2
+        done
         else
             printf "\nrawUrls file is empty...exiting"
             exit 1
-        done
     fi
 }
 
