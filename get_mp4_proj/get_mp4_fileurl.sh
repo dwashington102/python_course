@@ -96,7 +96,7 @@ func_download_files (){
         else
             endTime=`date +%Y%m%d-%H:%M`
             printf "\n${red}End Time\t$endTime\tFilename: ${finalMp4}${normal}"
-            tot_fail_dl=$((tot_fail_dl+ 1))
+            tot_fail_dl=$((tot_fail_dl + 1))
         fi
         printf "\n======================="
         sleep 2
