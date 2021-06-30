@@ -1,14 +1,26 @@
 #!/usr/bin/env bash
-# Version: 0.1.0
+# Version: 0.1.6
+# 2021-06-29: Updated to accept URL via CLI
 
-MAIN (){
+if [ "$1" == "" ]; then
+    MAIN (){
+        func_set_colors
+        func_get_dir_userInput
+        func_get_index_userInput
+        func_get_index_rc
+        func_test_index_rc
+        func_clean_up
+    }
+else
+    getUrl=$1
+    MAIN (){
     func_set_colors
-    func_get_dir_userInput
-    func_get_index_userInput
+    func_start
     func_get_index_rc
     func_test_index_rc
     func_clean_up
-}
+    }
+fi
 
 # Constant Variables
 # tStamp variable is added to log files generated
@@ -29,6 +41,28 @@ func_set_colors () {
     cyan=$(tput setaf 6)
     normal=$(tput setaf 9)
     boldoff=$(tput sgr0)
+}
+
+func_start () {
+
+    func_create_dirs
+    wget -a ./logs/get_getIndex.log ${getUrl} -O index.html
+    if [ $? -eq 0 ]; then
+            ls -1 index.html > /dev/null 2>&1
+            if [ $? -ne 0 ]; then
+                printf "\nDownload file name is not index.html"
+                printf "\n"
+                func_rename_index
+            else
+                printf "\nDownload file name is index.html...beginning to process"
+                printf "\n"
+            fi
+    else
+            printf "\nwget failed to pull index file"
+            printf "\nConfirm the correct URL...exiting."
+            printf "\n"
+            exit 148 
+    fi  
 }
 
 
