@@ -10,6 +10,11 @@
 # Sites
 # - wapbo
 
+: '
+Sat 03 Jul 2021 01:01:46 PM CDT
+Updated wget statement used to download final file including
+--no-check-certificate
+'
 
 # Steps taken:
 
@@ -99,7 +104,7 @@ func_download_files (){
         printf "\nDownloading video from file:\t ${finalMp4}\n"
         startTime=`date +%Y%m%d-%H:%M`
         printf "\nStart Time\t$startTime\tFilename: ${finalMp4} "
-        wget  -a ./logs/download_files -P ./mp4 `grep HD\ Quality ./rawfiles/$finalMp4 | awk -F'[""]' '{print $2}'`
+        wget --no-check-certificate  -a ./logs/download_files -P ./mp4 `grep HD\ Quality ./rawfiles/$finalMp4 | awk -F'[""]' '{print $2}'`
         if [ $? == 0 ]; then
             endTime=`date +%Y%m%d-%H:%M`
             printf "\nEnd Time\t$endTime\tFilename: ${finalMp4}"
