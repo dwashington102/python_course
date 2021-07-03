@@ -14,7 +14,7 @@ logDir=/root/cronlogs/
 logfile=${logDir}/${tStamp}_NetworkManager_DOWN.log
 
 # get_status_sysd function: Used to confirm status of NetworkManager and restart NetworkManager when the server uses systemd
-func_get_status_sysd () {
+funcget_status_sysd () {
     # Variable set_rc_sysd=1 indicates the script expects the service to be down and will enter the loop to restart the service if VARIABLE get_rc_sysd=1
     set_rc_sysd=1
     systemctl status sshd | grep "Active:.*active.*running.*since" 
@@ -31,6 +31,11 @@ func_get_status_sysd () {
             printf "\nAs root start NetworkManager"
             printf "\ncommand: systemctl start NetworkManager"
             exit 3
+        fi
+    elif [[ $get_rc_sysd == 0 ]]; then
+        printf "\nNetwork Manager is currently running" 
+    else
+        printf "ERROR encountered unable to retrieve NetworkManager status"
     fi
 }
 
@@ -51,6 +56,7 @@ func_get_status_initd () {
             printf "command: service start NetworkManager"
             exit 3
         fi
+    fi
 }
 
 function confirm_daemon() {
@@ -60,10 +66,10 @@ function confirm_daemon() {
     get_sysd_pid=`ps aux | grep -v grep | grep -m 1 systemd | awk '{print $2}'`
     if [[ $get_sysd_pid == $set_sysd_pid ]]; then
         # Calling function when server uses systemd
-        get_status_sysd
+        func_get_status_sysd
     elif [[ $get_sys_pid != $set_sysd_pid ]]; then
         # Calling function when server uses initd
-        get_status_initd
+        func_get_status_initd
     else
         printf "Invalid result '$get_sys_pid' in function: ${FUNCNAME[0]}"
         printf "Unexpected results encountered...exiting now\n"
