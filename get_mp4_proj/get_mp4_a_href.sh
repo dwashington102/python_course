@@ -61,10 +61,10 @@ func_end_time () {
 func_get_urls (){
     grep --color=NEVER href=\"/download index.html | awk -F'[""]' '{print $2}' | sort -u > rawUrls
     baseUrl=`grep "og:url" index.html | awk -F'og:url.*content' '{print $2}' | awk -F'[""]' '{print $2}' | awk -F".com" '{print $1".com"}' | sort -u`
-    wget -q --spider ${baseUrl} > /dev/null 2>&1
+    wget -q --no-check-certificate --spider ${baseUrl} > /dev/null 2>&1
     if [ $? -ne 0 ];then
         printf "Unable to reach ${baseUrl}\n"
-        printf "exiting....\n"
+        printf "exiting....[get_mp4_a_href]\n"
         exit 101
     else
         printf "Successfully reached ${baseUrl}\n"
@@ -78,7 +78,7 @@ func_gen_rawFiles (){
     for urlPath in `cat rawUrls`
         do
             IFS=$'\n'
-            wget -a ./logs/gen_tmpFiles -P ./rawfiles ${baseUrl}${urlPath}
+            wget --no-check-certificate -a ./logs/gen_tmpFiles -P ./rawfiles ${baseUrl}${urlPath}
 	    if [ $? == 0 ]; then
             #printf "\n${green}wget rc=$?${normal}:\t${baseUrl}${urlPath}"
             printf "${green}.${normal}"
