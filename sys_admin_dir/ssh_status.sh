@@ -73,12 +73,10 @@ function confirm_daemon() {
     get_sysd_pid=`ps aux | grep -v grep | grep -m 1 systemd | awk '{print $2}'`
     if [[ $get_sysd_pid == $set_sysd_pid ]]; then
         # Calling function when server uses systemd
-        printf "\nDEBUG >>> calling sysd()"
         sleep 10
         get_status_sysd
     elif [[ $get_sys_pid != $set_sysd_pid ]]; then
         # Calling function when server uses initd
-        printf "\nDEBUG >>> calling initd()"
         sleep 10
         get_status_initd
     else
