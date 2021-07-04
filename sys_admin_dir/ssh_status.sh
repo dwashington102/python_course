@@ -17,19 +17,19 @@ function get_status_sysd () {
     get_rc_sysd=$?
 
     if [[ $get_rc_sysd == $set_rc_sysd ]]; then
-        printf "SSH currently not running...restarting\n"
+        printf "SSH (sysd) currently not running...restarting\n"
         systemctl start sshd
         start_rc_sysd=$?
         if [[ $start_rc_sysd == 0 ]]; then
-            printf "SSH successfully started\n"
+            printf "SSH (sysd) successfully started\n"
         else
-            printf "Problem encountered starting sshd rc($start_rc_sysd)\n"
+            printf "Problem encountered starting sshd (sysd) rc($start_rc_sysd)\n"
             printf "As root start sshd\n"
             printf "systemctl start sshd"
             exit 3
         fi
     elif [[ $get_rc_sysd == 0 ]]; then
-        printf "SSH currently running.\n"
+        printf "SSH (sysd) currently running.\n"
     else
         printf "Invalid result '$get_rc_sysd' in function: ${FUNCNAME[0]}"
         printf "Unexpected results encountered...exiting now\n"
@@ -73,9 +73,13 @@ function confirm_daemon() {
     get_sysd_pid=`ps aux | grep -v grep | grep -m 1 systemd | awk '{print $2}'`
     if [[ $get_sysd_pid == $set_sysd_pid ]]; then
         # Calling function when server uses systemd
+        printf "\nDEBUG >>> calling sysd()"
+        sleep 10
         get_status_sysd
     elif [[ $get_sys_pid != $set_sysd_pid ]]; then
         # Calling function when server uses initd
+        printf "\nDEBUG >>> calling initd()"
+        sleep 10
         get_status_initd
     else
         printf "Invalid result '$get_sys_pid' in function: ${FUNCNAME[0]}"
