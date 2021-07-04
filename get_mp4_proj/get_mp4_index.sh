@@ -46,7 +46,7 @@ func_set_colors () {
 func_start () {
 
     func_create_dirs
-    wget --no-check-certifcate -a ./logs/get_getIndex.log ${getUrl} -O index.html
+    wget --no-check-certificate -a ./logs/get_getIndex.log ${getUrl} -O index.html
     if [ $? -eq 0 ]; then
             ls -1 index.html > /dev/null 2>&1
             if [ $? -ne 0 ]; then
@@ -137,7 +137,7 @@ func_get_index_userInput () {
     printf "\nWhich URL: "
     read getUrl
     IFS=$'\n'
-    wget --no-check-certifcate -a ./logs/get_getIndex.log ${getUrl} -O index.html
+    wget --no-check-certificate -a ./logs/get_getIndex.log ${getUrl} -O index.html
     if [ $? -eq 0 ]; then
         ls -1 index.html > /dev/null 2>&1
         if [ $? -ne 0 ]; then
