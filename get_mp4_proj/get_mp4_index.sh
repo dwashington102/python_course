@@ -175,34 +175,40 @@ func_get_index_rc (){
 
 func_test_index_rc (){
     if [ ${index_a_href_fileurl} -gt 0 ]; then
+        echo "Calling get_mp4_fileurl.sh" > ./logs/get_mp4_index.log
         get_mp4_fileurl.sh
         printf "\n"
 
     #Calls get_mp4_plugcontent.sh
     elif [ ${index_plugcontent} -gt 0 ]; then
+        echo "Calling get_mp4_plugcontent.sh" > ./logs/get_mp4_index.log
         get_mp4_plugcontent.sh
         printf "\n"
 
     # Calls get_mp4_div_video.sh
     elif [ ${index_div_video} -gt 0 ]; then
+        echo "Calling get_mp4_div_video.sh" > ./logs/get_mp4_index.log
         get_mp4_div_video.sh
         printf "\n"
 
     # Calls get_mp4_a_href.sh
     elif [ ${index_a_href} -gt 0 ]; then
+        echo "Calling get_mp4_a_href.sh" > ./logs/get_mp4_index.log
         get_mp4_a_href.sh
         printf "\n"
 
     elif [ ${index_a_href_vid} -gt 0 ]; then
+        echo "Calling get_mp4_a_href_vid.sh" > ./logs/get_mp4_index.log
         get_mp4_a_href_vid.sh
         printf "\n"
 
     elif [ ${index_a_href_vid_title} -gt 0 ]; then
+        echo "Calling get_mp4_a_href_vid_title.sh" > ./logs/get_mp4_index.log
         get_mp4_a_href_vid_title.sh
         printf "\n"
 
     else
-        printf "\nIndex type: NOT FOUND"
+        printf "\nIndex type: NOT FOUND" > ./logs/get_mp4_index.log
         printf "\n"
         exit 1
     fi
