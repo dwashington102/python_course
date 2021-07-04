@@ -68,7 +68,7 @@ func_gen_rawFiles (){
     for urlPath in `cat ./tmp/rawUrls`
         do
             IFS=$'\n'
-            wget -a ./logs/gen_tmpFiles -P ./rawfiles ${urlPath}
+            wget --no-check-certificate -a ./logs/gen_tmpFiles -P ./rawfiles ${urlPath}
 	        if [ $? == 0 ]; then
                 printf "${green}.${normal}"
                 sleep 2
