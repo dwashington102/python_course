@@ -88,7 +88,7 @@ func_download_files (){
         printf "\nDownloading video from file:\t ${finalMp4}\n"
         startTime=`date +%Y%m%d-%H:%M`
         printf "\nStart Time\t$startTime\tFilename: ${finalMp4} "
-        wget  --no-check-certifcate -a ./logs/download_files -P ./mp4 `grep "__fileurl.*http.*mp4" ./rawfiles/$finalMp4 | awk -F"['']" '{print $2}'`
+        wget  --no-check-certificate -a ./logs/download_files -P ./mp4 `grep "__fileurl.*http.*mp4" ./rawfiles/$finalMp4 | awk -F"['']" '{print $2}'`
         if [ $? == 0 ]; then
             endTime=`date +%Y%m%d-%H:%M`
             printf "\nEnd Time\t$endTime\tFilename: ${finalMp4}"
