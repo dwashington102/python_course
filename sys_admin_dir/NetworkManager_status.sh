@@ -21,13 +21,13 @@ funcget_status_sysd () {
     get_rc_sysd=$?
 
     if [[ $get_rc_sysd == $set_rc_sysd ]]; then
-        printf "\nNetwork Manager currently not running...restarting" > ${logfile}
+        printf "\nNetwork Manager (sysd) currently not running...restarting" > ${logfile}
         systemctl start NetworkManager
         start_rc_sysd=$?
         if [[ $start_rc_sysd == 0 ]]; then
-            printf "\nNetworkManager successfully started"
+            printf "\nNetworkManager (sysd) successfully started"
         else
-            printf "\nProblem encountered starting NetworkManager rc($start_rc_sysd)"
+            printf "\nProblem encountered starting NetworkManager (sysd) rc($start_rc_sysd)"
             printf "\nAs root start NetworkManager"
             printf "\ncommand: systemctl start NetworkManager"
             exit 3
