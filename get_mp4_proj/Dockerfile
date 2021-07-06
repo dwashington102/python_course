@@ -2,7 +2,7 @@
 #
 # Requirements: 
 # - Create Docker volume in order to map /data from container
-# ---> docker create --driver local --opt type=none --opt device=/data --opt o=bind myVolume
+# ---> docker volume create --driver local --opt type=none --opt device=/data --opt o=bind myVolume
 #
 # 
 # 
