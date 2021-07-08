@@ -56,7 +56,7 @@ func_end_time () {
 
 func_get_urls (){
     grep 'a href=.*videos.*title' index.html | awk -F'[""]' '{print $2}' | sort -u > rawUrls
-    baseUrl=`grep canonical index.html | awk -F'[""]' '{print $2}'`
+    baseUrl=`grep canonical index.html | awk -F'[""]' '{print $2}' | awk -F".com" '{print $1".com"}'`
     wget -q --no-check-certificate --spider ${baseUrl} > /dev/null 2>&1
     if [ $? -ne 0 ];then
         printf "Unable to reach ${baseUrl}\n"
