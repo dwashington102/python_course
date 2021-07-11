@@ -1,15 +1,17 @@
 #!/bin/sh 
-# Version 0.0.3
+# Version 0.0.4
 
 # Script run on startup to pull git projects.
 
 # 05-02-2021:  Added func_pull_zsh_syntax  
+# 07-11-2021:  Added func_pull_Docker_build
 
 # Set variables
 GITDIR=$HOME/GIT_REPO
 pythonCourse=$HOME/GIT_REPO/python_course
 dotfiles=$HOME/GIT_REPO/dotfiles
 zshdir=$GITDIR/zsh-syntax-highlighting
+dockerBuild=$GITDIR/Docker_build
 timeStamp=`date +%Y%m%d_%H%M`
 
 
@@ -90,6 +92,16 @@ function pull_dotfiles (){
         fi
 }
 
+func_pull_Docker_build (){
+	    printf "git clone attempt for $dockerBuild\n"
+	    git clone https://github.com/dwashington102/Docker_build
+	    if [[ $? != 0 ]]; then
+		    printf "git clone attempted, but failed for $dockerBuild\n"
+	    else
+		    printf "git clone succeeded for $dockerBuild\n"
+        fi
+}
+
 
 function rename_pythoncourse (){
 	cd $GITDIR
@@ -157,6 +169,8 @@ func_print_spacer
 func_pull_zsh_syntax
 func_print_spacer
 check_dotfiles
+func_print_spacer
+func_pull_Docker_build
 func_print_spacer
 func_remove_30day_dirs
 }
