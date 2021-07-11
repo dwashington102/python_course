@@ -7,13 +7,14 @@
 # 07-11-2021:  Added func_pull_Docker_build
 
 # Set variables
+timeStamp=`date +%Y%m%d_%H%M`
 GITDIR=$HOME/GIT_REPO
-pythonCourse=$HOME/GIT_REPO/python_course
-dotfiles=$HOME/GIT_REPO/dotfiles
+
+# git repo directories
+pythonCourse=$GITDIR/python_course
+dotfiles=$GITDIR/dotfiles
 zshdir=$GITDIR/zsh-syntax-highlighting
 dockerBuild=$GITDIR/Docker_build
-timeStamp=`date +%Y%m%d_%H%M`
-
 
 func_set_colors () {
     bold=$(tput bold)
@@ -126,6 +127,18 @@ function rename_dotfiles (){
     fi
 }
 
+func_rename_Docker_build (){
+	cd $GITDIR
+	mv $dockerBuild $dockerBuild.$timeStamp
+	if [[ $? != 0 ]]; then
+	    printf "$dockerBuild NOT COPIED\n"
+	    printf "No git clone will be attempted for $dockerBuild"
+	else
+	    func_pull_Docker_build
+	fi
+
+}
+
 
 function check_pythoncourse (){
 	if [ -d "$pythonCourse" ]; then
@@ -170,7 +183,7 @@ func_pull_zsh_syntax
 func_print_spacer
 check_dotfiles
 func_print_spacer
-func_pull_Docker_build
+func_rename_Docker_build
 func_print_spacer
 func_remove_30day_dirs
 }
