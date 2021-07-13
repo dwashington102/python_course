@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
 
+'''
+Add global DOCKERCMD=docker ---> test if rc != 0
+Change global DOCKERCMD=podman ---> test if rc != 0
+---> Something went wrong
+
+'''
+
 import os
 import subprocess
 from sys import exit 
