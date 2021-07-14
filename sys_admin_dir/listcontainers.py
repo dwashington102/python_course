@@ -18,7 +18,7 @@ def print_blank():
 
 def get_dkrcontain():
     print("List of Running Docker Containers:")
-    subprocess.check_call(['docker', 'ps'])
+    subprocess.check_call(['podman', 'ps'])
 
 def main():
     print_header()

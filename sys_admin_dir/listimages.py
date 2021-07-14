@@ -18,7 +18,7 @@ def print_blank():
 
 def get_dkrimages():
     print("List of Docker Images:")
-    subprocess.check_call(['docker',  'images'])
+    subprocess.check_call(['podman',  'images'])
 
 def main():
     print_header()
