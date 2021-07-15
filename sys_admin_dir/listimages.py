@@ -16,13 +16,13 @@ def print_footer():
 def print_blank():
     print("\n" * 2)
 
-def get_dkrimages():
+def get_imges():
     print("List of Docker Images:")
     subprocess.check_call(['podman',  'images'])
 
 def main():
     print_header()
-    get_dkrimages()
+    get_images()
     print_footer()
 
 # Do work

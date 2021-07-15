@@ -8,18 +8,33 @@ Purpose: Test if the server is using docker or podman to manage containers
 
 import os
 import subprocess
-from sys import exit
+from sys import exit, stdout
 from time import sleep
 
 
 def docker_test():
-    get_dockerCmd = "docker"
     print('DEBUG >>> get_dockerCmd')
     #get_dockerCmd = subprocess.call(get_dockerCmd, shell=True)
-    return_value = os.system('docker &> /dev/null')
+    docker_cmd=subprocess.run(['docker', 'images'], stdout=subprocess.DEVNULL) 
+    docker_rc=docker_cmd.returncode
+    if docker_rc == 0:
+        print('docker command was successful')
+    elif docker_rc !=0:
+        print("docker command failed to return imges.")
+        print("Running podman command...")
+        sleep 10
+        podman_cmd=subprocess.run(['podman', 'images'], stdout=subprocess.DEVNULL)
+        podman_rc=podman_cmd.returncode
+        if podman_rc ==0:
+            print('podman command was successful')
+        else:
+            print('podman command was succesful')
+    else:
+        print('Both commands failed to return available images')
+        print('Exiting...')
+        exit 3
+
     sleep(10)
-    print("\nDocker Test Returns: ", get_dockerCmd)
-    print('returned value:  ', return_value)
     
 
 def podman_test():

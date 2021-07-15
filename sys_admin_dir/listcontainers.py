@@ -16,13 +16,13 @@ def print_footer():
 def print_blank():
     print("\n" * 2)
 
-def get_dkrcontain():
+def get_containers():
     print("List of Running Docker Containers:")
     subprocess.check_call(['podman', 'ps'])
 
 def main():
     print_header()
-    get_dkrcontain()
+    get_containers()
     print_footer()
 
 # Do work
