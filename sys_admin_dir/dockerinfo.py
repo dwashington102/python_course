@@ -4,7 +4,6 @@
 Add global DOCKERCMD=docker ---> test if rc != 0
 Change global DOCKERCMD=podman ---> test if rc != 0
 ---> Something went wrong
-
 '''
 
 import os
