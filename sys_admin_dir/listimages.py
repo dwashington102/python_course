@@ -7,7 +7,6 @@ from sys import exit
 from set_docker_cmd import docker_test
 
 
-
 def print_header():
     print_blank()
     print("=============================================")
@@ -22,6 +21,7 @@ def print_blank():
 
 def get_images():
     print("List of Docker Images:")
+    docker_test()
     subprocess.run(dockercmd)
 
 
