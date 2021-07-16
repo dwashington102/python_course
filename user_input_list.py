@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 '''
 Step 1: Create flowchart / pseudocode and Python for a program that stores numbers in an
 array. 

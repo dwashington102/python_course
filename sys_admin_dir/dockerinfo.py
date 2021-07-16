@@ -11,13 +11,13 @@ import subprocess
 from sys import exit 
 
 # Custom modules/functions
-import set_docker_cmd 
+#import set_docker_cmd 
 #from listcontainers import get_containers
 #from listimages import get_images
 
 def main():
     print('\nEnter dockerinfo main')
-    set_docker_cmd
+    #set_docker_cmd
     #get_containers
     #get_images
     myscript = os.__file__
