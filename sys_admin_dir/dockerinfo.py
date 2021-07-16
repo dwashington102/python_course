@@ -9,12 +9,17 @@ Change global DOCKERCMD=podman ---> test if rc != 0
 import os
 import subprocess
 from sys import exit 
-from listcontainers import get_containers
-from listimages import get_images
+
+# Custom modules/functions
+import set_docker_cmd 
+#from listcontainers import get_containers
+#from listimages import get_images
 
 def main():
-    get_containers
-    get_images
+    print('\nEnter dockerinfo main')
+    set_docker_cmd
+    #get_containers
+    #get_images
     myscript = os.__file__
     print("Entering Main for "+myscript)
 

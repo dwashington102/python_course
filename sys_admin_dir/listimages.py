@@ -4,25 +4,26 @@
 '''
 import subprocess
 from sys import exit 
-import set_docker_cmd
+from set_docker_cmd import docker_test
+
 
 
 def print_header():
     print_blank()
     print("=============================================")
-    print("Begin Here.....")
+    print("Images.....")
 
 def print_footer():
     print_blank()
-    print("End Here.....")
     print("=============================================")
 
 def print_blank():
     print("\n" * 2)
 
-def get_imges():
+def get_images():
     print("List of Docker Images:")
-    subprocess.check_call(['podman',  'images'])
+    subprocess.run(dockercmd)
+
 
 def main():
     print_header()
