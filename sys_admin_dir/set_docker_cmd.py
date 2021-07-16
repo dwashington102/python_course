@@ -9,44 +9,33 @@ Purpose: Test if the server is using docker or podman to manage containers
 import os
 import subprocess
 from sys import exit, stdout
-from time import sleep
+from time import sleep, time
 
 
 def docker_test():
-    print('DEBUG >>> get_dockerCmd')
-    #get_dockerCmd = subprocess.call(get_dockerCmd, shell=True)
-    docker_cmd=subprocess.run(['docker', 'images'], stdout=subprocess.DEVNULL) 
-    docker_rc=docker_cmd.returncode
-    if docker_rc == 0:
-        print('docker command was successful')
-    elif docker_rc !=0:
-        print("docker command failed to return imges.")
-        print("Running podman command...")
-        sleep 10
-        podman_cmd=subprocess.run(['podman', 'images'], stdout=subprocess.DEVNULL)
-        podman_rc=podman_cmd.returncode
-        if podman_rc ==0:
-            print('podman command was successful')
-        else:
-            print('podman command was succesful')
+    #capture_output=True : blocks stderr from being returned to console
+    docker_cmd=subprocess.run(['which', 'docker'], capture_output=True)
+    if docker_cmd.returncode==0:
+        print('docker command found was successful')
+        dockercmd='docker'
     else:
-        print('Both commands failed to return available images')
-        print('Exiting...')
-        exit 3
-
-    sleep(10)
+        print("Unable to find docker command")
+        print("Testing podman command...")
+        sleep(10)
+        podman_cmd=subprocess.run(['which', 'podman'], stdout=subprocess.DEVNULL)
+        if podman_cmd.returncode==0:
+            print('podman command found was successful')
+            dockercmd='podman'
+        else:
+            print("Unable to find docker command")
+            print('Exiting...')
+            exit
+    sleep(5)
+    print('DEBUG DOCKERCMD: ', dockercmd)
     
 
-def podman_test():
-    get_podmanCmd = "podman"
-    return_value = subprocess.call(get_podmanCmd, shell=True)
-    print("\nPodman Test Returns: ", return_value)
-    print('returned value:  ', return_value)
-
 def main():
-    print('DEBUG >>> in main')
     docker_test()
-    podman_test()
 
 # Do work
 main()

@@ -4,6 +4,8 @@
 '''
 import subprocess
 from sys import exit 
+import set_docker_cmd
+
 
 def print_header():
     print_blank()
