@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
-'''
+#
 
-'''
 import subprocess
 from sys import exit 
-from set_docker_cmd import docker_test
+from time import sleep
 
 
 def print_header():
     print_blank()
     print("=============================================")
-    print("Images.....")
+    print("Container List.....")
 
 def print_footer():
     print_blank()
@@ -19,19 +18,19 @@ def print_footer():
 def print_blank():
     print("\n" * 2)
 
-def get_images():
-    print("List of Docker Images:")
-    docker_test()
-    subprocess.run(dockercmd)
-
-
-def main():
+def get_containers(dockercmd):
     print_header()
-    get_images()
+    print("List of Running Docker Containers:")
+    subprocess.run([dockercmd, 'container', 'ps'])
     print_footer()
 
-# Do work
-main()
+#def main():
+#    print_header()
+#    get_containers(dockercmd)
+#    print_footer()
 
-if __name__ == "main":
-    main()
+# Do work
+#main()
+
+#if __name__ == "main":
+#    main()
