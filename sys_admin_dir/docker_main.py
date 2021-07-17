@@ -5,7 +5,7 @@ import subprocess
 
 # Calling functions for other py scripts
 from docker_listcontainers import get_containers
-from docker_listimages  import get_images
+from docker_listimages import get_images
 
 
 def docker_test():
@@ -38,5 +38,3 @@ main()
 
 if __name__ == "main":
     main()
-
-
