@@ -22,7 +22,13 @@ def get_containers(dockercmd):
     print_header()
     print("List of Running Docker Containers:")
     subprocess.run([dockercmd, 'container', 'ps'])
+    get_exit_containers(dockercmd)
     print_footer()
+
+def get_exit_containers(dockercmd):
+    print('\nExited Containers')
+    subprocess.run([dockercmd, 'container', 'ps', '-a'])
+
 
 #def main():
 #    print_header()
