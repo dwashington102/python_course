@@ -107,25 +107,33 @@ func_pull_Docker_build (){
 
 function rename_pythoncourse (){
 	cd $GITDIR
-	mv $pythonCourse $pythonCourse.$timeStamp
-	if [[ $? != 0 ]]; then
-	    printf "$pythonCourse NOT COPIED\n"
-	    printf "No git clone will be attempted for $pythonCourse\n"
+	if [ -d $pythonCourse ]; then
+    	mv $pythonCourse $pythonCourse.$timeStamp
+    	if [[ $? != 0 ]]; then
+    	    printf "$pythonCourse NOT COPIED\n"
+    	    printf "No git clone will be attempted for $pythonCourse\n"
+    	else
+    		pull_pythoncourse
+        fi
 	else
-		pull_pythoncourse
-    fi
+    	pull_pythoncourse
+	fi
 }
 
 
 function rename_dotfiles (){
 	cd $GITDIR
-	mv $dotfiles $dotfiles.$timeStamp
-	if [[ $? != 0 ]]; then
-	    printf "$dotfiles NOT COPIED\n"
-	    printf "No git clone will be attempted for $dotfiles\n"
+	if [ -d $dotfiles ]; then
+    	mv $dotfiles $dotfiles.$timeStamp
+    	if [[ $? != 0 ]]; then
+    	    printf "$dotfiles NOT COPIED\n"
+    	    printf "No git clone will be attempted for $dotfiles\n"
+    	else
+            pull_dotfiles
+        fi
 	else
         pull_dotfiles
-    fi
+	fi
 }
 
 func_rename_Docker_build (){
