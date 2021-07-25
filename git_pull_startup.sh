@@ -129,14 +129,17 @@ function rename_dotfiles (){
 
 func_rename_Docker_build (){
 	cd $GITDIR
-	mv $dockerBuild $dockerBuild.$timeStamp
-	if [[ $? != 0 ]]; then
-	    printf "$dockerBuild NOT COPIED\n"
-	    printf "No git clone will be attempted for $dockerBuild"
+	if [ -d $dockerBuild ]; then
+    	mv $dockerBuild $dockerBuild.$timeStamp
+    	if [[ $? != 0 ]]; then
+    	    printf "$dockerBuild NOT COPIED\n"
+    	    printf "No git clone will be attempted for $dockerBuild"
+    	else
+    	    func_pull_Docker_build
+    	fi
 	else
-	    func_pull_Docker_build
+    	func_pull_Docker_build
 	fi
-
 }
 
 
