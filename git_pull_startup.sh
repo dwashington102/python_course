@@ -133,7 +133,20 @@ function pull_dotfiles (){
     fi
 }
 
-func_pull_Docker_build (){
+func_rename_dockerbuild (){
+	cd $GITDIR
+	mv $dockerBuild $dockerBuild.$timeStamp	
+	if [[ $? != 0 ]]; then
+	    printf "${red}"
+		printf "$dockerBuild NOT COPIED\n"
+		printf "No git clone will be attempted"
+	else
+	    func_pull_dockerbuild
+	fi
+}
+
+
+func_pull_dockerbuild (){
 	printf "${green}"
 	printf "git clone attempt for $dockerBuild\n"
 	printf "${normal}"
@@ -151,7 +164,7 @@ func_pull_Docker_build (){
 }
 
 
-function rename_pythoncourse (){
+func_rename_pythoncourse (){
 	cd $GITDIR
 	if [ -d $pythonCourse ]; then
     	mv $pythonCourse $pythonCourse.$timeStamp
@@ -159,15 +172,15 @@ function rename_pythoncourse (){
     	    printf "$pythonCourse NOT COPIED\n"
     	    printf "No git clone will be attempted for $pythonCourse\n"
     	else
-    		pull_pythoncourse
+    		func_pull_pythoncourse
         fi
 	else
-    	pull_pythoncourse
+    	func_pull_pythoncourse
 	fi
 }
 
 
-function rename_dotfiles (){
+func_rename_dotfiles (){
 	cd $GITDIR
 	if [ -d $dotfiles ]; then
     	mv $dotfiles $dotfiles.$timeStamp
@@ -175,10 +188,10 @@ function rename_dotfiles (){
     	    printf "$dotfiles NOT COPIED\n"
     	    printf "No git clone will be attempted for $dotfiles\n"
     	else
-            pull_dotfiles
+            func_pull_dotfiles
         fi
 	else
-        pull_dotfiles
+        func_pull_dotfiles
 	fi
 }
 
@@ -198,20 +211,20 @@ func_rename_Docker_build (){
 }
 
 
-function check_pythoncourse (){
+func_check_pythoncourse (){
 	if [ -d "$pythonCourse" ]; then
-		rename_pythoncourse
+		func_rename_pythoncourse
     else
-	    pull_pythoncourse
+	    func_pull_pythoncourse
     fi
 }
 
 
-function check_dotfiles (){
+func_check_dotfiles (){
 	if [ -d "$dotfiles" ]; then
-		rename_dotfiles
+		func_rename_dotfiles
 	else
-		pull_dotfiles
+		func_pull_dotfiles
     fi
 }
 
@@ -233,18 +246,22 @@ func_check_conn_github () {
 }
 
 function MAIN (){
-func_set_colors
-func_check_conn_github
-cd $GITDIR
-check_pythoncourse
-func_print_spacer
-func_check_zshsyntax
-func_print_spacer
-check_dotfiles
-func_print_spacer
-func_rename_Docker_build
-func_print_spacer
-func_remove_30day_dirs
+    func_set_colors
+    func_check_conn_github
+    cd $GITDIR
+    func_check_pythoncourse
+    func_print_spacer
+    
+    func_check_zshsyntax
+    func_print_spacer
+    
+    func_check_dotfiles
+    func_print_spacer
+    
+    func_rename_Docker_build
+    func_print_spacer
+    
+    func_remove_30day_dirs
 }
 
 
