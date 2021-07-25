@@ -84,16 +84,16 @@ func_rename_zshsyntax (){
 
 func_pull_zshsyntax (){
     printf "${green}"
-    printf "git clone attempt for $pythonCourse\n"
+    printf "git clone attempt for $zshdir\n"
     printf "${normal}"
 	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
         if [[ $? != 0 ]]; then
         	printf "${red}"
-        	printf "git clone attempted, but failed for $pythonCourse\n"
+        	printf "git clone attempted, but failed for $zshdir\n"
         	printf "${normal}"
         else
         	printf "${green}"
-        	printf "git clone succeeded for $pythonCourse\n"
+        	printf "git clone succeeded for $zshdir\n"
         	printf "${normal}"
         fi
 }
