@@ -82,7 +82,7 @@ func_rename_zshsyntax (){
 	fi
 }
 
-function func_pull_zshsyntax (){
+func_pull_zshsyntax (){
     printf "${green}"
     printf "git clone attempt for $pythonCourse\n"
     printf "${normal}"
@@ -99,7 +99,7 @@ function func_pull_zshsyntax (){
 }
 
 
-function pull_pythoncourse (){
+func_pull_pythoncourse (){
 	cd $GITDIR
 	printf "${green}"
 	printf "git clone attempt for $pythonCourse\n"
@@ -117,7 +117,7 @@ function pull_pythoncourse (){
 }
 
 
-function pull_dotfiles (){
+func_pull_dotfiles (){
 	printf "${green}"
 	printf "git clone attempt for $dotfiles\n"
 	printf "${normal}"
@@ -202,10 +202,10 @@ func_rename_Docker_build (){
     	    printf "$dockerBuild NOT COPIED\n"
     	    printf "No git clone will be attempted for $dockerBuild"
     	else
-    	    func_pull_Docker_build
+    	    func_pull_dockerbuild
     	fi
 	else
-    	func_pull_Docker_build
+    	func_pull_dockerbuild
 	fi
 }
 
