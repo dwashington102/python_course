@@ -66,6 +66,7 @@ func_check_zshsyntax () {
 	    func_rename_zshsyntax
 	else
 		func_pull_zshsyntax
+	fi
 
 }
 
