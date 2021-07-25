@@ -60,48 +60,93 @@ func_remove_30day_dirs (){
 	fi
 }
 
-function func_pull_zsh_syntax {
-	cd $GITDIR
-	mv $zshdir $zshdir.$timeStamp
-	if [[ $? != 0 ]]; then
-	    printf "$zshdir NOT COPIED\n"
-	    printf "No git clone will be attempted for $zshdir\n"
+
+func_check_zshsyntax () {
+	if [ -d "$zshdir" ]; then
+	    func_rename_zshsyntax
 	else
-		git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
-    fi
+		func_pull_zshsyntax
+
+}
+
+func_rename_zshsyntax (){
+	cd $GITDIR
+	mv $zshdir $zshdir.$timeStamp	
+	if [[ $? != 0 ]]; then
+	    printf "${red}"
+		printf "$zshdir NOT COPIED\n"
+		printf "No git clone will be attempted"
+	else
+	    func_pull_zshsyntax
+	fi
+}
+
+function func_pull_zshsyntax (){
+    printf "${green}"
+    printf "git clone attempt for $pythonCourse\n"
+    printf "${normal}"
+	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
+        if [[ $? != 0 ]]; then
+        	printf "${red}"
+        	printf "git clone attempted, but failed for $pythonCourse\n"
+        	printf "${normal}"
+        else
+        	printf "${green}"
+        	printf "git clone succeeded for $pythonCourse\n"
+        	printf "${normal}"
+        fi
 }
 
 
 function pull_pythoncourse (){
-	    printf "git clone attempt for $pythonCourse\n"
-	    git clone https://github.com/dwashington102/python_course
-	    if [[ $? != 0 ]]; then
-		    printf "git clone attempted, but failed for $pythonCourse\n"
-	    else
-		    printf "git clone succeeded for $pythonCourse\n"
-        fi
+	cd $GITDIR
+	printf "${green}"
+	printf "git clone attempt for $pythonCourse\n"
+	printf "${normal}"
+	git clone https://github.com/dwashington102/python_course
+	if [[ $? != 0 ]]; then
+		printf "${red}"
+		printf "git clone attempted, but failed for $pythonCourse\n"
+		printf "${normal}"
+	else
+		printf "${green}"
+		printf "git clone succeeded for $pythonCourse\n"
+		printf "${normal}"
+    fi
 }
 
 
 function pull_dotfiles (){
-	    printf "git clone attempt for $dotfiles\n"
-	    #git clone https://github.com/dwashington102/dotfiles
-		gh repo clone dwashington102/dotfiles
-	    if [[ $? != 0 ]]; then
-		    printf "git clone attempted, but failed for $dotfiles\n"
-	    else
-		    printf "git clone succeeded for $dotfiles\n"
-        fi
+	printf "${green}"
+	printf "git clone attempt for $dotfiles\n"
+	printf "${normal}"
+	gh repo clone dwashington102/dotfiles
+	if [[ $? != 0 ]]; then
+		printf "${red}"
+		printf "git clone attempted, but failed for $dotfiles\n"
+		printf "${normal}"
+	else
+		printf "${green}"
+		printf "git clone succeeded for $dotfiles\n"
+		printf "${normal}"
+    fi
 }
 
 func_pull_Docker_build (){
-	    printf "git clone attempt for $dockerBuild\n"
-	    git clone https://github.com/dwashington102/Docker_build
-	    if [[ $? != 0 ]]; then
-		    printf "git clone attempted, but failed for $dockerBuild\n"
-	    else
-		    printf "git clone succeeded for $dockerBuild\n"
-        fi
+	printf "${green}"
+	printf "git clone attempt for $dockerBuild\n"
+	printf "${normal}"
+	printf "git clone attempt for $dockerBuild\n"
+	git clone https://github.com/dwashington102/Docker_build
+	if [[ $? != 0 ]]; then
+		printf "${red}"
+		printf "git clone attempted, but failed for $dockerBuild\n"
+		printf "${normal}"
+	else
+		printf "${green}"
+		printf "git clone succeeded for $dockerBuild\n"
+		printf "${normal}"
+    fi
 }
 
 
@@ -176,6 +221,7 @@ func_check_conn_github () {
         printf "\nNetwork connection to github cannot be established."
 	printf "\nCheck network connection...exiting"
 	func_print_spacer
+	printf "${normal}"
 	exit 100
     else
 	printf "${green}"
@@ -191,7 +237,7 @@ func_check_conn_github
 cd $GITDIR
 check_pythoncourse
 func_print_spacer
-func_pull_zsh_syntax
+func_check_zshsyntax
 func_print_spacer
 check_dotfiles
 func_print_spacer
