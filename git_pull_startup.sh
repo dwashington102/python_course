@@ -20,6 +20,7 @@ func_set_colors () {
     bold=$(tput bold)
     blink=$(tput blink)
     boldoff=$(tput sgr0)
+	reverse=$(tput rev)
     red=$(tput setaf 1)
     green=$(tput setaf 2)
     yellow=$(tput setaf 3)
@@ -33,7 +34,13 @@ func_print_spacer (){
 	printf "\n\n\n"
 }
 
-func_remove_30day_dirs (){
+
+####################### Remove 30day dir Function
+'''
+Function will remove all directories from $GITDIR older than 20days
+Directory name will include the timestamp "*202*"
+'''
+func_remove_20day_dirs (){
 	IFS=$'\n'
 	cd $GITDIR
 	listDirs=($(find . -maxdepth 1 -mtime +20 -name "*202*" -type d))
@@ -61,6 +68,11 @@ func_remove_30day_dirs (){
 }
 
 
+########################## ZSHSYNTAX Functions
+'''
+Functions does a git clone for repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
+Used by the zsh shell
+'''
 func_check_zshsyntax () {
 	if [ -d "$zshdir" ]; then
 	    func_rename_zshsyntax
@@ -98,6 +110,30 @@ func_pull_zshsyntax (){
         fi
 }
 
+########################## Python Course Functions
+'''
+Functions does a git clone for repo: https://github.com/dwashington102/python_course
+The majority of scripts used on a daily basis are stored here
+'''
+
+func_check_pythoncourse (){
+	if [ -d "$pythonCourse" ]; then
+		func_rename_pythoncourse
+    else
+	    func_pull_pythoncourse
+    fi
+}
+
+func_rename_pythoncourse (){
+	cd $GITDIR
+    mv $pythonCourse $pythonCourse.$timeStamp
+    if [[ $? != 0 ]]; then
+    	printf "$pythonCourse NOT COPIED\n"
+    	printf "No git clone will be attempted for $pythonCourse\n"
+    else
+    	func_pull_pythoncourse
+     fi
+}
 
 func_pull_pythoncourse (){
 	cd $GITDIR
@@ -117,6 +153,33 @@ func_pull_pythoncourse (){
 }
 
 
+########################## Dot Files Functions
+'''
+Functions does a git clone for repo: https://github.com/dwashington102/dotfiles
+Private registry requries "gh clone" along with private API key
+Used for various $HOME dotfiles (.vimrc, .inputrc, .zshrc...)
+'''
+
+func_check_dotfiles (){
+	if [ -d "$dotfiles" ]; then
+		func_rename_dotfiles
+	else
+		func_pull_dotfiles
+    fi
+}
+
+
+func_rename_dotfiles (){
+	cd $GITDIR
+    mv $dotfiles $dotfiles.$timeStamp
+    if [[ $? != 0 ]]; then
+    	printf "$dotfiles NOT COPIED\n"
+    	printf "No git clone will be attempted for $dotfiles\n"
+    else
+        func_pull_dotfiles
+    fi
+}
+
 func_pull_dotfiles (){
 	printf "${green}"
 	printf "git clone attempt for $dotfiles\n"
@@ -133,18 +196,34 @@ func_pull_dotfiles (){
     fi
 }
 
+
+########################## Docker Build Functions
+#func_rename_dockerbuild (){
+#	cd $GITDIR
+#	mv $dockerBuild $dockerBuild.$timeStamp	
+#	if [[ $? != 0 ]]; then
+#	    printf "${red}"
+#		printf "$dockerBuild NOT COPIED\n"
+#		printf "No git clone will be attempted"
+#	else
+#	    func_pull_dockerbuild
+#	fi
+#}
+
 func_rename_dockerbuild (){
 	cd $GITDIR
-	mv $dockerBuild $dockerBuild.$timeStamp	
-	if [[ $? != 0 ]]; then
-	    printf "${red}"
-		printf "$dockerBuild NOT COPIED\n"
-		printf "No git clone will be attempted"
+	if [ -d $dockerBuild ]; then
+    	mv $dockerBuild $dockerBuild.$timeStamp
+    	if [[ $? != 0 ]]; then
+    	    printf "$dockerBuild NOT COPIED\n"
+    	    printf "No git clone will be attempted for $dockerBuild"
+    	else
+    	    func_pull_dockerbuild
+    	fi
 	else
-	    func_pull_dockerbuild
+    	func_pull_dockerbuild
 	fi
 }
-
 
 func_pull_dockerbuild (){
 	printf "${green}"
@@ -162,67 +241,11 @@ func_pull_dockerbuild (){
     fi
 }
 
-
-func_rename_pythoncourse (){
-	cd $GITDIR
-    mv $pythonCourse $pythonCourse.$timeStamp
-    if [[ $? != 0 ]]; then
-    	printf "$pythonCourse NOT COPIED\n"
-    	printf "No git clone will be attempted for $pythonCourse\n"
-    else
-    	func_pull_pythoncourse
-     fi
-}
-
-
-func_rename_dotfiles (){
-	cd $GITDIR
-	if [ -d $dotfiles ]; then
-    	mv $dotfiles $dotfiles.$timeStamp
-    	if [[ $? != 0 ]]; then
-    	    printf "$dotfiles NOT COPIED\n"
-    	    printf "No git clone will be attempted for $dotfiles\n"
-    	else
-            func_pull_dotfiles
-        fi
-	else
-        func_pull_dotfiles
-	fi
-}
-
-func_rename_Docker_build (){
-	cd $GITDIR
-	if [ -d $dockerBuild ]; then
-    	mv $dockerBuild $dockerBuild.$timeStamp
-    	if [[ $? != 0 ]]; then
-    	    printf "$dockerBuild NOT COPIED\n"
-    	    printf "No git clone will be attempted for $dockerBuild"
-    	else
-    	    func_pull_dockerbuild
-    	fi
-	else
-    	func_pull_dockerbuild
-	fi
-}
-
-
-func_check_pythoncourse (){
-	if [ -d "$pythonCourse" ]; then
-		func_rename_pythoncourse
-    else
-	    func_pull_pythoncourse
-    fi
-}
-
-
-func_check_dotfiles (){
-	if [ -d "$dotfiles" ]; then
-		func_rename_dotfiles
-	else
-		func_pull_dotfiles
-    fi
-}
-
+##################### Check GITHUB Connection Functions
+'''
+Function confirms a valid network connection to github.  If not network is avaiable, 
+no need to continue
+'''
 func_check_conn_github () {
     wget -q --spider www.github.com
     if [ $? -ne 0 ]; then
@@ -255,10 +278,10 @@ function MAIN (){
     func_check_dotfiles
     func_print_spacer
     
-    func_rename_Docker_build
+    func_rename_dockerbuild
     func_print_spacer
     
-    func_remove_30day_dirs
+    func_remove_20day_dirs
 }
 
 
@@ -266,6 +289,7 @@ function MAIN (){
 # Where the magic happens
 MAIN
 printf "${yellow}"
+printf "${reverse}"
 printf "\ngit pull actions completed\n"
 printf "${normal}"
 exit 0
