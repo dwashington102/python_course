@@ -14,7 +14,7 @@ logDir=/root/cronlogs/
 logfile=${logDir}/${tStamp}_NetworkManager_DOWN.log
 
 # get_status_sysd function: Used to confirm status of NetworkManager and restart NetworkManager when the server uses systemd
-funcget_status_sysd () {
+func_get_status_sysd () {
     # Variable set_rc_sysd=1 indicates the script expects the service to be down and will enter the loop to restart the service if VARIABLE get_rc_sysd=1
     set_rc_sysd=1
     systemctl status sshd | grep "Active:.*active.*running.*since" 
