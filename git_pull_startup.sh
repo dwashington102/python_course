@@ -85,7 +85,8 @@ function pull_pythoncourse (){
 
 function pull_dotfiles (){
 	    printf "git clone attempt for $dotfiles\n"
-	    git clone https://github.com/dwashington102/dotfiles
+	    #git clone https://github.com/dwashington102/dotfiles
+		gh repo clone dwashington102/dotfiles
 	    if [[ $? != 0 ]]; then
 		    printf "git clone attempted, but failed for $dotfiles\n"
 	    else
