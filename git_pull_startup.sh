@@ -36,10 +36,8 @@ func_print_spacer (){
 
 
 ####################### Remove 30day dir Function
-'''
-Function will remove all directories from $GITDIR older than 20days
-Directory name will include the timestamp "*202*"
-'''
+# Function will remove all directories from $GITDIR older than 20days
+# Directory name will include the timestamp "*202*"
 func_remove_20day_dirs (){
 	IFS=$'\n'
 	cd $GITDIR
@@ -69,10 +67,8 @@ func_remove_20day_dirs (){
 
 
 ########################## ZSHSYNTAX Functions
-'''
-Functions does a git clone for repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
-Used by the zsh shell
-'''
+# Functions does a git clone for repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
+# Used by the zsh shell
 func_check_zshsyntax () {
 	if [ -d "$zshdir" ]; then
 	    func_rename_zshsyntax
@@ -111,10 +107,8 @@ func_pull_zshsyntax (){
 }
 
 ########################## Python Course Functions
-'''
-Functions does a git clone for repo: https://github.com/dwashington102/python_course
-The majority of scripts used on a daily basis are stored here
-'''
+# Functions does a git clone for repo: https://github.com/dwashington102/python_course
+# The majority of scripts used on a daily basis are stored here
 
 func_check_pythoncourse (){
 	if [ -d "$pythonCourse" ]; then
@@ -154,11 +148,9 @@ func_pull_pythoncourse (){
 
 
 ########################## Dot Files Functions
-'''
-Functions does a git clone for repo: https://github.com/dwashington102/dotfiles
-Private registry requries "gh clone" along with private API key
-Used for various $HOME dotfiles (.vimrc, .inputrc, .zshrc...)
-'''
+# Functions does a git clone for repo: https://github.com/dwashington102/dotfiles
+# Private registry requries "gh clone" along with private API key
+# Used for various $HOME dotfiles (.vimrc, .inputrc, .zshrc...)
 
 func_check_dotfiles (){
 	if [ -d "$dotfiles" ]; then
@@ -198,17 +190,6 @@ func_pull_dotfiles (){
 
 
 ########################## Docker Build Functions
-#func_rename_dockerbuild (){
-#	cd $GITDIR
-#	mv $dockerBuild $dockerBuild.$timeStamp	
-#	if [[ $? != 0 ]]; then
-#	    printf "${red}"
-#		printf "$dockerBuild NOT COPIED\n"
-#		printf "No git clone will be attempted"
-#	else
-#	    func_pull_dockerbuild
-#	fi
-#}
 
 func_rename_dockerbuild (){
 	cd $GITDIR
@@ -242,10 +223,9 @@ func_pull_dockerbuild (){
 }
 
 ##################### Check GITHUB Connection Functions
-'''
-Function confirms a valid network connection to github.  If not network is avaiable, 
-no need to continue
-'''
+#Function confirms a valid network connection to github.  If not network is avaiable, 
+#no need to continue
+
 func_check_conn_github () {
     wget -q --spider www.github.com
     if [ $? -ne 0 ]; then
