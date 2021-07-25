@@ -150,7 +150,6 @@ func_pull_dockerbuild (){
 	printf "${green}"
 	printf "git clone attempt for $dockerBuild\n"
 	printf "${normal}"
-	printf "git clone attempt for $dockerBuild\n"
 	git clone https://github.com/dwashington102/Docker_build
 	if [[ $? != 0 ]]; then
 		printf "${red}"
