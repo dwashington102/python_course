@@ -165,17 +165,13 @@ func_pull_dockerbuild (){
 
 func_rename_pythoncourse (){
 	cd $GITDIR
-	if [ -d $pythonCourse ]; then
-    	mv $pythonCourse $pythonCourse.$timeStamp
-    	if [[ $? != 0 ]]; then
-    	    printf "$pythonCourse NOT COPIED\n"
-    	    printf "No git clone will be attempted for $pythonCourse\n"
-    	else
-    		func_pull_pythoncourse
-        fi
-	else
+    mv $pythonCourse $pythonCourse.$timeStamp
+    if [[ $? != 0 ]]; then
+    	printf "$pythonCourse NOT COPIED\n"
+    	printf "No git clone will be attempted for $pythonCourse\n"
+    else
     	func_pull_pythoncourse
-	fi
+     fi
 }
 
 
@@ -247,7 +243,9 @@ func_check_conn_github () {
 function MAIN (){
     func_set_colors
     func_check_conn_github
+
     cd $GITDIR
+
     func_check_pythoncourse
     func_print_spacer
     
