@@ -1,14 +1,38 @@
 #!/usr/bin/env bash
 # Sets the container name (ex: TESTDB_v1, TESTDB_v2....)
 loopCount=1
+trap cleanup EXIT
 
 #declare -a my_arrlist=("tag1" "tag2" "tag3" "tag4" "tag5")
 
 MAIN() {
+    trap func_cleanup EXIT
+    func_set_dockercmd
     func_test_index
     func_geturl
     func_get_imageId
     func_run
+}
+
+func_cleanup() {
+    rm -rf ./url.txt
+    rm -rf ./index.html
+}
+
+func_set_dockercmd () {
+    which docker > /dev/null 2>&1
+    if [ "$?" == "0" ]; then
+        DOCKERCMD='docker'
+    else
+        which podman > /dev/null 2>&1                                                                                                                                       
+        if [ "$?" == "0" ]; then
+            DOCKERCMD='podman'
+        else
+            printf "docker nor pomand commands found on server"
+            printf "Install the required packages...exiting"
+            exit 2
+        fi
+    fi
 }
 
 
@@ -64,10 +88,10 @@ func_geturl() {
 
 func_get_imageId() {
     # Gather a list of docker images repo name "getmp4"
-    docker images getmp4 | grep -m1 -v ^REPO  > /dev/null 2>&1
+    $DOCKERCMD images getmp4 | grep -m1 -v ^REPO  > /dev/null 2>&1
     if [ "$?"  == "0" ]; then
 	# Added grep -m1 in order to restrict the number of images being returned
-        get_imgId=`docker images | grep -v ^REPO | grep -m1 getmp4 | awk '{print $3}'`
+        get_imgId=`$DOCKERCMD images | grep -v ^REPO | grep -m1 getmp4 | awk '{print $3}'`
         printf "\nContainer being built with image: ${get_imgId}"
 	    printf "\n"
     else
@@ -89,14 +113,14 @@ func_run() {
         sleep 1
         #printf "\nCreating Docker Container"
         # docker run statement is adding an arguement after the Image-ID
-        docker container run -d --env TERM=dumb --rm --name ${getUserUrl}v${loopCount} -w "/data/today/`date +%Y%m%d_%H%M%S`_${searchtag}" -v opendb:/data ${get_imgId} ${getUrl}/${get_category}/${searchtag}
+        $DOCKERCMD container run -d --env TERM=dumb --rm --name ${getUserUrl}v${loopCount} -w "/data/today/`date +%Y%m%d_%H%M%S`_${searchtag}" -v opendb:/data ${get_imgId} ${getUrl}/${get_category}/${searchtag}
         # Line below is working as designed
         #docker container run -d --env TERM=dumb --rm --name ${getUserUrl}v${loopCount} -w "/data/today/`date +%Y%m%d_%H%M%S`_${searchtag}" -v opendb:/data ${get_imgId} ${getUrl}/tags/${searchtag}
         loopCount=$((loopCount + 1))
         sleep 3
         printf "\n"
     done
-    docker ps
+    $DOCKERCMD ps
     printf "\n"
 }
 
