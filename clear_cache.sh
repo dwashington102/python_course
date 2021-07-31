@@ -9,7 +9,7 @@
 # Constant Variables
 tStamp=`date +%Y%m%d_%H%M`
 logfile=$HOME/cronlogs/cron_run_$tStamp
-spacer='------------//------------------'
+spacer='------------//-------------------'
 
 
 func_clear_files_recent (){
