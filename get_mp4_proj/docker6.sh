@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Sets the container name (ex: TESTDB_v1, TESTDB_v2....)
 loopCount=1
-trap cleanup EXIT
+trap func_cleanup EXIT
 
 #declare -a my_arrlist=("tag1" "tag2" "tag3" "tag4" "tag5")
 
@@ -28,7 +28,7 @@ func_set_dockercmd () {
         if [ "$?" == "0" ]; then
             DOCKERCMD='podman'
         else
-            printf "docker nor pomand commands found on server"
+            printf "docker nor podmand commands found on server"
             printf "Install the required packages...exiting"
             exit 2
         fi
