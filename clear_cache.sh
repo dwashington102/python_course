@@ -91,7 +91,7 @@ func_truncate_vlc_history >> $logfile
 func_bleachbit_cron_logs  
 func_run_bleachbit_cleaners
 func_run_bleachbit_targeted
-end_tStamp=`date +%Y%m%d_%H:%M`
+end_tStamp=$(date +%Y%m%d_%H:%M)
 printf "End Time: ${end_tStamp}\n" >> $logfile
 echo $spacer >> $logfile
 }

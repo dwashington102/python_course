@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 
-tStamp=`date +%Y%m%d_%H%M`
+tStamp=$(date +%Y%m%d_%H%M)
 
 func_set_colors () {
     bold=$(tput bold)

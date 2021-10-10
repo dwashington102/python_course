@@ -4,7 +4,7 @@
 # if the ping fails a restart NetworkManager.service takes place 
 # 2021-09-27
 
-timeStamp=`date +%Y%m%d_%H%M`
+timeStamp=$(date +%Y%m%d_%H%M)
 
 func_test_network (){
     ping -i 1 -c3 www.yahoo.com
