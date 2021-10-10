@@ -7,7 +7,7 @@
 # 07-11-2021:  Added func_pull_Docker_build
 
 # Set variables
-timeStamp=`date +%Y%m%d_%H%M`
+timeStamp=$(date +%Y%m%d_%H%M)
 GITDIR=$HOME/GIT_REPO
 
 # git repo directories
