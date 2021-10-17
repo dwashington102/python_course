@@ -61,7 +61,7 @@ func_remove_20day_dirs (){
 	printf "\n"
 	done
 	else
-		printf "\nNo directories older than 30 days found"
+		printf "\nNo directories older than 20 days found"
 	fi
 }
 
