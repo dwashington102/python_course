@@ -5,9 +5,20 @@
 #This script will check the Storage declaritive in the  /etc/systemd/journald.conf file to confirm the value is not set to "none".
 #If the value is set to "none" --> Send an email alert --> Isolate when the change was made using journal or audit logs --> Revert the setting to "auto" --> Restart systemd-journald.
 
-now_timestamp=$(date +%Y%m%d_%H%M)
-INFO_LOG=/root/cron_journald_${now_timestamp}.log
-CRIT_LOG=/root/CRIT_cron_journald_${now_timestamp}.log
+
+func_check_uid (){
+    userId=$(id -u)
+    if [ $userId == 0 ]; then
+        now_timestamp=$(date +%Y%m%d_%H%M) 
+        INFO_LOG=/root/cron_journald_${now_timestamp}.log
+        CRIT_LOG=/root/CRIT_cron_journald_${now_timestamp}.log
+        timeStamp=`date +%Y%m%d_%H%M`
+    else
+        printf "\nUserID is non-root...exiting\n"
+        exit 1
+    fi
+}
+
 
 # Confirm the /etc/systed/journald.conf file exists before calling func_check_storage
 func_check_journal (){
@@ -51,6 +62,7 @@ func_check_storage (){
 
 
 MAIN (){
+	func_check_uid
     func_check_journal
 }
 

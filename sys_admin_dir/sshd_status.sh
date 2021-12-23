@@ -3,9 +3,19 @@
 # Script checks the status of sshd service
 # if the status is not "active" a restart sshd.service takes place 
 
+# 2021-12 23 - Added func_check_uid to confirm the userid running the script is the root user
 # 2021-09-27
 
-timeStamp=`date +%Y%m%d_%H%M`
+
+func_check_uid (){
+    userId=$(id -u)
+    if [ $userId == 0 ]; then
+        timeStamp=`date +%Y%m%d_%H%M`
+    else
+        printf "\nUserID is non-root...exiting\n"
+        exit 1
+    fi
+}
 
 func_test_sshd (){
     get_status=`systemctl is-active sshd`
@@ -28,6 +38,7 @@ func_restart_sshd (){
 }
 
 MAIN (){
+    func_check_uid
     func_test_sshd
 }
 

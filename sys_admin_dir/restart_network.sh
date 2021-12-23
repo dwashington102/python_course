@@ -3,7 +3,16 @@
 # Script checks the network connection sending a ping to www.yahoo.com
 # if the ping fails a restart NetworkManager.service takes place 
 
-timeStamp=$(date +%Y%m%d_%H%M)
+
+func_check_uid (){
+    userId=$(id -u)
+    if [ $userId == 0 ]; then
+        timeStamp=$(date +%Y%m%d_%H%M)
+    else
+        printf "\nUserID is non-root...exiting\n"
+        exit 1
+    fi
+}
 
 func_test_network (){
     ping -i 1 -c3 8.8.8.8
@@ -38,6 +47,7 @@ func_remove_logs_gt_10day (){
 }
 
 MAIN (){
+    func_check_uid
     func_test_network
     func_remove_logs_gt_10day
 }
