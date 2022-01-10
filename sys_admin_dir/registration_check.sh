@@ -20,7 +20,6 @@ func_test_py3 (){
         printf "Python3 is installed"
     else
         printf "Python3 is not installed"
-        printf "DEBUG >>> Testing for python2"
         func_test_py2
     fi
     printf "\n"
