@@ -8,7 +8,8 @@ func_test_xwin (){
         printf "Running"
         func_running_reg_gui
     else
-        printf "NOT Running"
+        printf "NOT Running...attempting the wall command"
+        wall -n 'This computer is not registered.  Registration is required when accessing internal IBM resources' &>/dev/null
     fi
     printf "\n"
 }
@@ -22,7 +23,6 @@ func_running_reg_gui (){
         printf "Running"
     else
         printf "NOT Running"
-        #wall -n 'This computer is not registered.  Registration is required when accessing internal IBM resources' &>/dev/null
         zenity --warning --width=400 --height=200 --text 'This computer is not registered.  Registration is required when accessing internal IBM resources.' &>/dev/null
     fi
     printf "\n"
