@@ -3,8 +3,9 @@
 
 # Script run on startup to pull git projects.
 
-# 05-02-2021:  Added func_pull_zsh_syntax  
+# 01-10-2022:  Updated func_check_pythoncourse to check/confirm git updates are not pending
 # 07-11-2021:  Added func_pull_Docker_build
+# 05-02-2021:  Added func_pull_zsh_syntax  
 
 # Set variables
 timeStamp=$(date +%Y%m%d_%H%M)
@@ -112,9 +113,15 @@ func_pull_zshsyntax (){
 
 func_check_pythoncourse (){
 	if [ -d "$pythonCourse" ]; then
-		func_rename_pythoncourse
-    else
-	    func_pull_pythoncourse
+		cd "$pythonCourse"
+		git status . | grep 'working tree clean' &>/dev/null
+		if [ $? == 0 ]; then
+		    func_rename_pythoncourse
+		else
+	        func_pull_pythoncourse
+		fi
+	else
+		printf '\ngit status indicates "$pythonCourse" has uncommited changes'
     fi
 }
 
