@@ -112,10 +112,12 @@ func_pull_zshsyntax (){
 # The majority of scripts used on a daily basis are stored here
 
 func_check_pythoncourse (){
+	printf "\n"
 	if [ -d "$pythonCourse" ]; then
 		cd "$pythonCourse"
 		git status . | grep 'working tree clean' &>/dev/null
 		if [ $? == 0 ]; then
+			printf "git status did not detect any uncommitted changes...creating backup of local repo directory and pulling repo from github"
 		    func_rename_pythoncourse
 		else
 	        func_pull_pythoncourse
@@ -123,6 +125,7 @@ func_check_pythoncourse (){
 	else
 		printf '\ngit status indicates "$pythonCourse" has uncommited changes'
     fi
+	printf "\n"
 }
 
 func_rename_pythoncourse (){
