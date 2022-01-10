@@ -54,6 +54,7 @@ func_test_py2 (){
         printf "NOT Installed"
         printf "\nPython2 nor Python3 is installed"
         printf "\nPython is required to run the registration.py script "
+        printf "\n"
         exit 0
     fi
     printf "\n"
@@ -72,12 +73,14 @@ func_test_regpy (){
         else
             printf "INVALID"
             printf "\nregistration.py is invalid"
-            printf "\nInstall latest version of ibm-anaconda pkg"
+            printf "\nInstall latest version of ibm-anaconda package"
+            printf "\n"
             exit 0
         fi
     else
         printf "\nregistration.py does not exists"
         printf "\nInstall latest version of ibm-anaconda pkg"
+        printf "\n"
         exit 0
     fi
     printf "\n"
