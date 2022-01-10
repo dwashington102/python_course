@@ -23,7 +23,7 @@ func_running_reg_gui (){
         printf "Running"
     else
         printf "NOT Running"
-        zenity --warning --width=400 --height=200 --text 'THIS COMPUTER IS NOT REGISTERED.\nRegistration is required when accessing internal IBM resources.\n\nTo register the compture: python3 /opt/ibm/registration/registration.py' &>/dev/null
+        zenity --warning --width=400 --height=200 --text 'THIS COMPUTER IS NOT REGISTERED.\nRegistration is required when accessing internal IBM resources.\n\nTo register the computer:\npython3 /opt/ibm/registration/registration.py' &>/dev/null
     fi
     printf "\n"
 }
