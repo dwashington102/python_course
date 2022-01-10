@@ -7,6 +7,7 @@ func_test_xwin (){
     if [ $? == 0 ]; then
         printf "Running"
         func_running_reg_gui
+        python3 /opt/ibm/registration/registration.py
     else
         printf "NOT Running...attempting the wall command"
         wall -n 'This computer is not registered.  Registration is required when accessing internal IBM resources' &>/dev/null
