@@ -61,6 +61,7 @@ func_test_py2 (){
 
 func_test_regpy (){
 # Confirm if IBM register.py is installed on the server
+# If the register.py is invalid or does not exist the script will exit
 # The register.py is included in ibm-anaconda package
     printf "\n"
     IBMREG=/opt/ibm/registration/registration.py
@@ -77,6 +78,7 @@ func_test_regpy (){
     else
         printf "\nregistration.py does not exists"
         printf "\nInstall latest version of ibm-anaconda pkg"
+        exit 0
     fi
     printf "\n"
 }
