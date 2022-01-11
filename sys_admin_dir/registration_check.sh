@@ -2,10 +2,11 @@
 
 func_test_xwin (){
 # This function will launch the registration.py GUI if XWindows is running
-# If XWindows is not running, use wall to nag user
+# If XWindows is not running, the wall command is used to nag user
 # Calls functions: 
 # > func_running_reg_gui
 # 
+    printf "\n"
     printf "Checking XWindows Status:\t"
     ps -e | grep tty | grep Xorg &>/dev/null
     if [ $? == 0 ]; then
@@ -15,7 +16,8 @@ func_test_xwin (){
     else
         printf "NOT Running...attempting the wall command"
         sleep 5
-        wall -n 'This computer is not registered.  Registration is required when accessing internal IBM resources' &>/dev/null
+        wall -n 'THIS COMPUTER IS NOT REGISTERED.\nRegistration is required when accessing internal IBM resources' &>/dev/null
+        wall -n 'To register the computer:\npython3 /opt/ibm/registration/registration.py' &>/dev/null
     fi
     printf "\n"
 }
