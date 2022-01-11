@@ -14,12 +14,12 @@ spacer='------------//------------------'
 
 func_clear_files_recent (){
 	printf "\n"
-	if [ -f $HOME/bin/static/recently-used.xbel ]; then
+	if [ -f $HOME/.local/share/recently-used.xbel ]; then
 	    printf "Starting ${FUNCNAME}\n"
 	    cp $HOME/bin/static/recently-used.xbel $HOME/.local/share/recently-used.xbel &>/dev/null
 	    printf "cp command rc=$?"
 	else
-	    printf "${FUNCNAME} results:  $HOME/bin/static/recently-used.xbel does not exist." >> $logfile
+	    printf "${FUNCNAME} results:  $HOME/static/recently-used.xbel does not exist." >> $logfile
 	fi
 	printf "\n"
 }
@@ -81,7 +81,9 @@ func_trash_empty (){
 func_truncate_vlc_history (){
 	printf "\n"
 	printf "Starting ${FUNCNAME}\n"
+	date +%H:%M:%S
 	truncate -s 0 $HOME/.config/vlc/vlc-qt-interface.conf &>/dev/null
+	date +%H:%M:%S
 	printf "$FUNCNAME rc=$?\n" 
 	printf "\n"
 }
