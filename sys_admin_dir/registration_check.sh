@@ -14,6 +14,7 @@ func_test_xwin (){
         python3 /opt/ibm/registration/registration.py
     else
         printf "NOT Running...attempting the wall command"
+        sleep 5
         wall -n 'This computer is not registered.  Registration is required when accessing internal IBM resources' &>/dev/null
     fi
     printf "\n"
