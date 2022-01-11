@@ -1,7 +1,11 @@
 #!/bin/bash
 
 func_test_xwin (){
-# Calls functions: func_running_reg_gui
+# This function will launch the registration.py GUI if XWindows is running
+# If XWindows is not running, use wall to nag user
+# Calls functions: 
+# > func_running_reg_gui
+# 
     printf "Checking XWindows Status:\t"
     ps -e | grep tty | grep Xorg &>/dev/null
     if [ $? == 0 ]; then
@@ -16,6 +20,10 @@ func_test_xwin (){
 }
 
 func_running_reg_gui (){                                                                                                                                                                      
+# This function checks to see if the registration.py GUI is already running
+# Calls functions:
+# > 
+#
     printf "\n\n\n\n"
     printf "Registration GUI status:\t"
     REGPROC='python3 /opt/ibm/registration/registration.py'
@@ -30,8 +38,10 @@ func_running_reg_gui (){
 }
 
 func_test_py3 (){
-# Confirm if python3 is installed on the server
-# Calls functions: func_test_py2
+# This function confirms if python3 is installed on the server
+# Calls functions: 
+# > func_test_py2
+#
     printf "\n"
     printf "Checking Python3 Installation:\t"
     command -v python3 &>/dev/null
@@ -45,7 +55,10 @@ func_test_py3 (){
 }
 
 func_test_py2 (){
-# Confirm if python2 is installed on the server only if python3 does not exist
+# This function confirms if python2 is installed on the server
+# Calls functions: 
+# > 
+#
     printf "\n"
     printf "Checking Python2 Installation:\t"
     command -v python2 &>/dev/null
@@ -62,9 +75,12 @@ func_test_py2 (){
 }
 
 func_test_regpy (){
-# Confirm if IBM register.py is installed on the server
-# If the register.py is invalid or does not exist the script will exit
+# This function confirm if IBM register.py is installed on the server
+# If the register.py is invalid (0 bytes) or does not exist the script will exit
 # The register.py is included in ibm-anaconda package
+# Calls functions: 
+# > 
+#
     printf "\n"
     IBMREG=/opt/ibm/registration/registration.py
     printf "Checking for file registration.py:\t"
