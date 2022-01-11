@@ -19,7 +19,7 @@ func_clear_files_recent (){
 	    cp $HOME/bin/static/recently-used.xbel $HOME/.local/share/recently-used.xbel &>/dev/null
 	    printf "cp command rc=$?"
 	else
-	    printf "${FUNCNAME} results:  $HOME/bin/static/recently-used.xbel does not exist." >> / $logfile
+	    printf "${FUNCNAME} results:  $HOME/bin/static/recently-used.xbel does not exist." >> $logfile
 	fi
 	printf "\n"
 }
