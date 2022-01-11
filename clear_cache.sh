@@ -71,8 +71,10 @@ func_run_bleachbit_targeted (){
 
 func_trash_empty (){
 	printf "\n"
+	date +%H:%M:%S
 	printf "Starting ${FUNCNAME}\n"
 	$HOME/.local/bin/trash-empty 3 &>/dev/null
+	date +%H:%M:%S
 	printf "$FUNCNAME rc=$?\n" 
 	printf "\n"
 	
@@ -81,9 +83,7 @@ func_trash_empty (){
 func_truncate_vlc_history (){
 	printf "\n"
 	printf "Starting ${FUNCNAME}\n"
-	date +%H:%M:%S
 	truncate -s 0 $HOME/.config/vlc/vlc-qt-interface.conf &>/dev/null
-	date +%H:%M:%S
 	printf "$FUNCNAME rc=$?\n" 
 	printf "\n"
 }
