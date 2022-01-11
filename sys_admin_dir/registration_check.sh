@@ -18,6 +18,8 @@ func_test_xwin (){
         sleep 5
         wall -n 'THIS COMPUTER IS NOT REGISTERED.\nRegistration is required when accessing internal IBM resources' &>/dev/null
         wall -n 'To register the computer:\npython3 /opt/ibm/registration/registration.py' &>/dev/null
+        # MUST TEST THE FOLLOWING COMMAND
+        #perl-ne 'chomp;printf "%- 79s\n",$_;' myfile | wall
     fi
     printf "\n"
 }
