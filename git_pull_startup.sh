@@ -18,11 +18,11 @@ zshdir=$GITDIR/zsh-syntax-highlighting
 dockerBuild=$GITDIR/Docker_build
 
 func_set_colors () {
-    bold=$(tput bold)
-    blink=$(tput blink)
-    boldoff=$(tput sgr0)
-	reverse=$(tput rev)
-    red=$(tput setaf 1)
+    bold=$(tput bold &>/dev/null)
+    blink=$(tput blink &>/dev/null)
+    boldoff=$(tput sgr0 &>/dev/null)
+    reverse=$(tput rev &>/dev/null)
+    red=$(tput setaf 1 &>/dev/null)
     green=$(tput setaf 2)
     yellow=$(tput setaf 3)
     cyan=$(tput setaf 6)
