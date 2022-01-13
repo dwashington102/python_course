@@ -18,16 +18,16 @@ zshdir=$GITDIR/zsh-syntax-highlighting
 dockerBuild=$GITDIR/Docker_build
 
 func_set_colors () {
-    bold=$(tput bold &>/dev/null)
-    blink=$(tput blink &>/dev/null)
-    boldoff=$(tput sgr0 &>/dev/null)
-    reverse=$(tput rev &>/dev/null)
-    red=$(tput setaf 1 &>/dev/null)
-    green=$(tput setaf 2 &>/dev/null)
-    yellow=$(tput setaf 3 &>/dev/null)
-    cyan=$(tput setaf 6 &>/dev/null)
-    normal=$(tput setaf 9 &>/dev/null)
-    boldoff=$(tput sgr0 &>/dev/null)
+    bold=$(tput bold)
+    blink=$(tput blink)
+    boldoff=$(tput sgr0)
+    reverse=$(tput rev)
+    red=$(tput setaf 1)
+    green=$(tput setaf 2)
+    yellow=$(tput setaf 3)
+    cyan=$(tput setaf 6)
+    normal=$(tput setaf 9)
+    boldoff=$(tput sgr0)
 }
 
 func_print_spacer (){
@@ -255,7 +255,19 @@ func_check_conn_github () {
 
 function MAIN (){
 	printf "\nDEBUG >>> TERM var: ${TERM}"
-	func_set_colors
+	if [ $TERM != "dumb"]; then
+        bold=$(tput bold)
+        blink=$(tput blink)
+        boldoff=$(tput sgr0)
+        reverse=$(tput rev)
+        red=$(tput setaf 1)
+        green=$(tput setaf 2)
+        yellow=$(tput setaf 3)
+        cyan=$(tput setaf 6)
+        normal=$(tput setaf 9)
+        boldoff=$(tput sgr0)
+	fi
+	#func_set_colors
     func_check_conn_github
 
     cd $GITDIR
