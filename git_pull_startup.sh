@@ -255,7 +255,7 @@ func_check_conn_github () {
 
 function MAIN (){
 	printf "\nDEBUG >>> TERM var: ${TERM}"
-	if [ $TERM != "dumb"]; then
+	if [ $TERM != "dumb" ]; then
         bold=$(tput bold)
         blink=$(tput blink)
         boldoff=$(tput sgr0)
