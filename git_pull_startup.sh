@@ -23,11 +23,11 @@ func_set_colors () {
     boldoff=$(tput sgr0 &>/dev/null)
     reverse=$(tput rev &>/dev/null)
     red=$(tput setaf 1 &>/dev/null)
-    green=$(tput setaf 2)
-    yellow=$(tput setaf 3)
-    cyan=$(tput setaf 6)
-    normal=$(tput setaf 9)
-    boldoff=$(tput sgr0)
+    green=$(tput setaf 2 &>/dev/null)
+    yellow=$(tput setaf 3 &>/dev/null)
+    cyan=$(tput setaf 6 &>/dev/null)
+    normal=$(tput setaf 9 &>/dev/null)
+    boldoff=$(tput sgr0 &>/dev/null)
 }
 
 func_print_spacer (){
@@ -254,6 +254,7 @@ func_check_conn_github () {
 }
 
 function MAIN (){
+    printf "\nDEBUG >>> TERM var: ${TERM}\n"
     if [ ! -z $TERM ]; then 
 	    func_set_colors
     fi
