@@ -254,7 +254,8 @@ func_check_conn_github () {
 }
 
 function MAIN (){
-	printf "\nDEBUG >>> TERM var: ${TERM}"
+	#func_set_colors
+	#2022-01-13: Replaced func_set_colors with if clause below in order to avoid tput command from dumping errors to console when running script against remote computer.
 	if [ $TERM != "dumb" ]; then
         bold=$(tput bold)
         blink=$(tput blink)
@@ -267,7 +268,6 @@ function MAIN (){
         normal=$(tput setaf 9)
         boldoff=$(tput sgr0)
 	fi
-	#func_set_colors
     func_check_conn_github
 
     cd $GITDIR
