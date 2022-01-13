@@ -254,7 +254,10 @@ func_check_conn_github () {
 }
 
 function MAIN (){
-    func_set_colors
+    if [ ! -z $TERM ]; then 
+	    func_set_colors
+    fi
+
     func_check_conn_github
 
     cd $GITDIR
