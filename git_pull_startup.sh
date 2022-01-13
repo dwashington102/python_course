@@ -254,8 +254,8 @@ func_check_conn_github () {
 }
 
 function MAIN (){
+	printf "\nDEBUG >>> TERM var: ${TERM}"
 	func_set_colors
-
     func_check_conn_github
 
     cd $GITDIR
