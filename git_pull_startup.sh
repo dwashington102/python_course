@@ -254,10 +254,7 @@ func_check_conn_github () {
 }
 
 function MAIN (){
-    printf "\nDEBUG >>> TERM var: ${TERM}\n"
-    if [ $TERM != "dumb" ]; then 
-	    func_set_colors
-    fi
+	func_set_colors
 
     func_check_conn_github
 
