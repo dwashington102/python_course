@@ -4,10 +4,7 @@
 # Script is called from p340-raptor and ran against test machines in order to keep test machines GIT repos updated
 
 # Changes:
-
-K430USER=k430user
-X1USER=x1user
-WORKUSER=washingd
+# Date: Description of change
 
 declare -a HostList=("k430-raptor" "x1-raptor" "192.168.122.226")
 declare -a UserList=("k430user" "x1user" "washingd")
