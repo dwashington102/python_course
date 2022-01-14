@@ -117,7 +117,7 @@ func_check_pythoncourse (){
 		cd "$pythonCourse"
 		git status . | grep 'working tree clean' &>/dev/null
 		if [ $? == 0 ]; then
-			printf "git status did not detect any uncommitted changes...creating backup of local repo directory and pulling repo from github\n"
+		    printf "git status did not detect any uncommitted changes...creating backup of local repo directory and pulling repo from github\n"
 		    func_rename_pythoncourse
 		else
 	        func_pull_pythoncourse
