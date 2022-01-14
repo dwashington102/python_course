@@ -1,7 +1,9 @@
 #!/bin/bash
 
+
+
 func_test_xwin (){
-# This function will launch the registration.py GUI if XWindows is running
+# This function will launch the registration.py GUI if a XWin session is running
 # If XWindows is not running, the wall command is used to nag user
 # Calls functions: 
 # > func_running_reg_gui
