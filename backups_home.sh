@@ -1,4 +1,5 @@
 #!/bin/sh
+# Testing git push
 
 tstamp=`date +%Y%m%d`
 cd $HOME/.local/share/gnome-shell/extensions
