@@ -18,7 +18,7 @@ func_clear_files_recent (){
 	printf "\n"
 	if [ -f $HOME/.local/share/recently-used.xbel ]; then
 	    printf "Starting ${FUNCNAME}\n"
-	    cp $HOME/bin/static/recently-used.xbel $HOME/.local/share/recently-used.xbel &>/dev/null
+	    command cp $HOME/bin/static/recently-used.xbel $HOME/.local/share/recently-used.xbel &>/dev/null
 	    printf "cp command rc=$?"
 	else
 	    printf "${FUNCNAME} results:  $HOME/static/recently-used.xbel does not exist." >> $logfile
@@ -109,7 +109,7 @@ if [ $? == "0" ]; then
     func_bleachbit_cron_logs  
     func_run_bleachbit_cleaners
     func_run_bleachbit_targeted
-end_tStamp=$(date +%Y%m%d_%H:%M)
+    end_tStamp=$(date +%Y%m%d_%H:%M)
 printf "End Time: ${end_tStamp}\n" >> $logfile
 echo $spacer >> $logfile
 else
