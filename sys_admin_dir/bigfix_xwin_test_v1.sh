@@ -4,7 +4,7 @@ file $(which w) &>/dev/null
 if [ $? == 0 ]; then
        #XWindows Running Section	
        # This command ONLY gathers the 1st instance of running XWindows session
-       get_display=$(w -h | grep -m1 -E '[[:alpha:]]\s:[[:digit:]]\s' | awk '{print $2}')
+       get_display=$(w -h | command grep -m1 -E '[[:alpha:]]\s:[[:digit:]]\s' | awk '{print $2}')
        if [ -z "$get_display" ]; then
 	       #get_display is empty indicates connected users are not running Xwindows session
        	       #The script should exit here because if XWindows is not running the registration.py will not run.

@@ -38,7 +38,7 @@ Command to detect journal-flush: journalctl -b AUDIT_FIELD_UNIT=systemd-journal-
 COMMENTS
 
 func_check_storage (){
-    grep ^'Storage=none' /etc/systemd/journald.conf &>/dev/null
+    command grep ^'Storage=none' /etc/systemd/journald.conf &>/dev/null
     if [[ $? -ne 0 ]]; then
 	    echo "No changes to journald.conf: ${now_timestamp}" > ${INFO_LOG}
 
@@ -49,12 +49,12 @@ func_check_storage (){
 	    if [[ $? -eq 0 ]]; then
 		    echo "systemd-journal.service restarted at $(date +%H:%M)" >> ${CRIT_LOG}
 		    printf "Current Storage setting in /etc/systemd/journald.conf:\n" >> ${CRIT_LOG}
-		    grep ^Storage= /etc/systemd/journald.conf >> ${CRIT_LOG}
+		    command grep ^Storage= /etc/systemd/journald.conf >> ${CRIT_LOG}
 	    else
 		    echo "systemd-journal.service restarted at $(date +%H:%M)" >> ${CRIT_LOG}
 		    echo "systemd-journal.service restart failed at $(date +%H:%M)" >> ${CRIT_LOG}
 		    printf "Current Storage setting in /etc/systemd/journald.conf:\n" >> ${CRIT_LOG}
-		    grep ^Storage= /etc/systemd/journald.conf >> ${CRIT_LOG}
+		    command grep ^Storage= /etc/systemd/journald.conf >> ${CRIT_LOG}
 	    fi
     fi
 }

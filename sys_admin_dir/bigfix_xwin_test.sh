@@ -43,7 +43,7 @@ func_get_xdisplay (){
 # Example from the output of the 'w' command that indicating a running terminal session
 # myuser pts/8    p     10:36    2:23m  0.26s  0.26s /usr/bin/zsh
 func_get_term (){
-       get_terms_var=$(w -h | /usr/bin/grep -m1 -E '[[:alnum:]]\s+(pts|tty)' | awk '{print $2}')
+       get_terms_var=$(w -h | command grep -m1 -E '[[:alnum:]]\s+(pts|tty)' | awk '{print $2}')
        if [ -z "$get_terms_var" ]; then
 	       printf "\nNo users currently connected"
 	       printf "\n"

@@ -19,14 +19,14 @@ func_set_colors () {
 }
 
 func_yumUpdate () {
-    for myvm in `tail -5 ~/YAML/hosts | grep ^9`
+    for myvm in `tail -5 ~/YAML/hosts | command grep ^9`
     do
     	printf "\n${bold}-----------\/\/------------${boldoff}"
     	printf "\nIP Address:\t $myvm\n"
     	printf "Hostname:\t `nslookup $myvm | awk -F" = " '{print $2}'`"
         printf "\n"
         # Sending a test ping to the lab machine
-    	/usr/bin/ping -c 1 ${myvm}  > /dev/null 2>&1
+    	command ping -c 1 ${myvm}  > /dev/null 2>&1
     	if [[ $? == 0 ]]; then
     	    ssh root@${myvm} 'yum update -y'
         else

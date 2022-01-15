@@ -17,7 +17,7 @@ logfile=${logDir}/${tStamp}_NetworkManager_DOWN.log
 func_get_status_sysd () {
     # Variable set_rc_sysd=1 indicates the script expects the service to be down and will enter the loop to restart the service if VARIABLE get_rc_sysd=1
     set_rc_sysd=1
-    systemctl status sshd | grep "Active:.*active.*running.*since" 
+    systemctl status sshd | command grep "Active:.*active.*running.*since" 
     get_rc_sysd=$?
 
     if [[ $get_rc_sysd == $set_rc_sysd ]]; then
@@ -42,7 +42,7 @@ func_get_status_sysd () {
 # get_status_initd function: Used to confirm status of sshd and restart sshd when the server uses init
 func_get_status_initd () {
     set_rc_initd=1
-    service NetworkManager status | grep "Active:.*active.*running.*since"
+    service NetworkManager status | command grep "Active:.*active.*running.*since"
     get_rc_initd=$?
     if [[ $get_rc_initd == $set_rc_initd ]]; then
         printf "NetworkManager currently not running...restarting\n" > ${logfile}
@@ -63,7 +63,7 @@ function confirm_daemon() {
     # Function is used to confirm if the host server is using systemd or initd
     # A host server running systemd will show systemd as PID 1
     set_sysd_pid=1
-    get_sysd_pid=`ps aux | grep -v grep | grep -m 1 systemd | awk '{print $2}'`
+    get_sysd_pid=`ps aux | command grep -v grep | command grep -m 1 systemd | awk '{print $2}'`
     if [[ $get_sysd_pid == $set_sysd_pid ]]; then
         # Calling function when server uses systemd
         func_get_status_sysd

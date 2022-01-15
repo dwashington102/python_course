@@ -15,7 +15,7 @@ func_check_uid (){
 }
 
 func_test_network (){
-    ping -i 1 -c3 8.8.8.8
+    command ping -i 1 -c3 8.8.8.8
     get_rc=$?
     if [ $get_rc != 0 ]; then  
         func_restart_network
