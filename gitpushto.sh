@@ -9,7 +9,25 @@
 declare -a HostList=("k430-raptor" "x1-raptor" "192.168.122.226")
 declare -a UserList=("k430user" "x1user" "washingd")
 
-testConnection () {
+func_set_colors () {
+    bold=$(tput bold)
+    blink=$(tput blink)
+    boldoff=$(tput sgr0)
+    reverse=$(tput rev)
+    red=$(tput setaf 1)
+    green=$(tput setaf 2)
+    yellow=$(tput setaf 3)
+    cyan=$(tput setaf 6)
+    normal=$(tput setaf 9)
+    boldoff=$(tput sgr0)
+}
+
+func_print_spacer (){
+	printf "${normal}"
+	printf "\n\n\n"
+}
+
+func_testConnection () {
     printf "\nTesting Connection to Computers..."
     printf "\n"
     userCount=0
@@ -17,19 +35,23 @@ testConnection () {
         do
             ping -c3 -i1 $myhost &>/dev/null
             if [ $? == 0 ]; then
-                printf "\nSuccess --->\tHOST: "$myhost" User: ${UserList[$userCount]}" 
+                printf "\n${green}Success --->\tHOST: "$myhost" User: ${UserList[$userCount]}"
+                func_print_spacer
                 ssh ${UserList[$userCount]}@$myhost '~/bin/git_pull_startup.sh'
+
             else
-                printf "\nFailure --->\tHOST: "$myhost" User: ${UserList[$userCount]}" 
+                printf "\n${red}Failure --->\tHOST: "$myhost" User: ${UserList[$userCount]}" 
+                func_print_spacer
             fi
             userCount=$((userCount + 1))
         done
 }
 
 MAIN (){
-    printf "\n"
-    testConnection
-    printf "\n"
+    func_set_colors
+    func_print_spacer
+    func_testConnection
+    func_print_spacer
 }
 
 MAIN
