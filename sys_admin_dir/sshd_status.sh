@@ -9,7 +9,7 @@
 
 func_check_uid (){
     userId=$(id -u)
-    if [ $userId == 0 ]; then
+    if [ "$userId" == "0" ]; then
         timeStamp=`date +%Y%m%d_%H%M`
     else
         printf "\nUserID is non-root...exiting\n"
@@ -19,7 +19,7 @@ func_check_uid (){
 
 func_test_sshd (){
     get_status=`systemctl is-active sshd`
-    if [ $get_status != 'active' ]; then  
+    if [ "$get_status" != 'active' ]; then  
         func_restart_sshd
     else
         echo "SSHD active at: ${timeStamp} "  > /root/cron_sshd_running.log
