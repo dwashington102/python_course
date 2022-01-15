@@ -3,8 +3,10 @@
 # Script clears cache items
 # 
 #
-# 2020-01-16: Updated trash_empty() providing FQpath to trash-empty in order to avoid rc=127
+# 2022-01-14: Updated  MAIN() to test for bleachbit before running functions that require bleachbit
+# 2022-01-11: Updated func_clear_files_recent adding a check for recently-used.xbel
 # 2021-04-18: Updated cp cmd in clear_files_recent to redirect STDOUT & STDERR to /dev/null
+# 2020-01-16: Updated trash_empty() providing FQpath to trash-empty in order to avoid rc=127
 
 # Constant Variables
 tStamp=`date +%Y%m%d_%H%M`
@@ -39,7 +41,7 @@ func_bleachbit_cron_logs (){
 func_delete_history (){
 	printf "\n"
 	printf "\nStarting ${FUNCNAME}\n"
-	echo $SHELL | grep zsh
+	echo $SHELL | command grep zsh
 	if [ $? == 0 ]; then
  		sed -i '/mp4/d' $HOME/.zsh_history
 	else
@@ -101,12 +103,19 @@ func_trash_empty >> $logfile
 func_truncate_vlc_history >> $logfile
 
 #bleachbit functions should not append to $logfile here
-func_bleachbit_cron_logs  
-func_run_bleachbit_cleaners
-func_run_bleachbit_targeted
+file $(command bleachbit -v) &>/dev/null
+if [ $? == "0" ]; then
+    printf "\nCalling bleachbit functions"
+    func_bleachbit_cron_logs  
+    func_run_bleachbit_cleaners
+    func_run_bleachbit_targeted
 end_tStamp=$(date +%Y%m%d_%H:%M)
 printf "End Time: ${end_tStamp}\n" >> $logfile
 echo $spacer >> $logfile
+else
+    printf "bleachbit application NOT FOUND"
+fi
+printf "\n"
 }
 
 MAIN
