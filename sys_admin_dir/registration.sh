@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #Confirm if registration.py is currently running.  If running display zenity popup and exit
 func_check_running_reg () {
