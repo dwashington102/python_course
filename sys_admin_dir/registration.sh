@@ -72,7 +72,13 @@ else
        exit 1
 fi
 printf "\nDISPLAY var: '$DISPLAY'\n"
-$PYCMD /opt/ibm/registration/registration.py &
+command $PYCMD /opt/ibm/registration/registration.py 
+if [ $? != "0" ]; then
+    printf "\nRegistration GUI fails to display"
+    zenity --warning --width=400 --height=200 --text "THIS COMPUTER IS NOT REGISTERED.\nRegistration is required when accessing internal IBM resources.\n\nRegistration GUI failed to display." &>/dev/null
+else
+    printf "\nRegistration GUI completed"
+fi
 }
 
 MAIN
