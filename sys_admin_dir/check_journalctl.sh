@@ -45,7 +45,7 @@ func_check_storage (){
     else
 	    echo "CRITICAL 'Storage=none' set in the /etc/systemd/journald.conf" > ${CRIT_LOG}
 	    sed -i 's/Storage=none/Storage=auto/' /etc/systemd/journald.conf
-	    systemctl restart systemd-journald.service > ${CRIT_LOG} 2>/dev/null
+	    systemctl restart systemd-journald.service > ${CRIT_LOG} &>/dev/null
 	    if [[ $? -eq 0 ]]; then
 		    echo "systemd-journal.service restarted at $(date +%H:%M)" >> ${CRIT_LOG}
 		    printf "Current Storage setting in /etc/systemd/journald.conf:\n" >> ${CRIT_LOG}
