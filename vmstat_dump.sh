@@ -20,7 +20,7 @@
 
 
 func_set_vars () {
-    # Values used to insert data into csv file
+    # Variables used to insert data into csv file, timestamps for logs, and inserts
     myuser=$(whoami)
     HNAME=$(hostname)
     VMSTATS=$(vmstat -wa -SM  | awk '{print ":"$4":"$5":"$6":"}' | grep ^:[[:digit:]])
@@ -42,7 +42,7 @@ func_update_csv () {
 
 #reset_count function sets the counter value to 0 by${HOME}/databases/sqlite_db/log_files updating the count.txt file
 func_reset_count () { 
-	$echo 0 > ${HOME}/databases/sqlite_db/SQL_files/vmstat_db_count.txt 
+	echo 0 > ${HOME}/databases/sqlite_db/SQL_files/vmstat_db_count.txt 
 }
 
 # Write to sucess log file
@@ -52,7 +52,7 @@ func_log_success () {
 
 # Write to failure log file
 func_log_failure () { 
-	$echo "Debug: Failed imports $TSTAMP" >> ${LOGFAIL} 
+	echo "Debug: Failed imports $TSTAMP" >> ${LOGFAIL} 
 }
 
 
@@ -60,7 +60,7 @@ func_log_failure () {
 func_test_dbdir () {
     #ls $HOME/databases > /dev/null 2>&1
     if [ -d $HOME/database ]; then
-	if [ $? == 0 ]; then
+	if [ "$?" == "0" ]; then
 	    printf "\nDatabase directory does exist\n"
 		printf "\nScript will continue"
 	else
