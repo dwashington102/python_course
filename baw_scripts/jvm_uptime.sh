@@ -28,6 +28,7 @@ func_set_colors () {
 }
 
 func_check_uptime () {
+    # lab_hosts.txt contains a list of IP addresses for machines where JVMs are running
     for myvm in `cat ~/LAB_ENV/lab_hosts.txt | grep ^9 | awk '{print $1}'`
     do
     	printf "\n${bold}-----------\/\/------------${boldoff}"
