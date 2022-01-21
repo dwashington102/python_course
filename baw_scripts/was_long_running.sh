@@ -20,7 +20,7 @@ func_fileCheck (){
 
 
 func_get_hungThreads () {
-    hungThreadList=`grep WSVR0605W ${sysOutFile} | awk -F'[()]' '{print $2}'`
+    hungThreadList=`command grep WSVR0605W ${sysOutFile} | awk -F"[()]" '{print $2}'`
     for hungThread in ${hungThreadList[@]}
     do
         printf "\nThreadId: ${hungThread}"
