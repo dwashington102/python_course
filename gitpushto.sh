@@ -31,7 +31,7 @@ func_print_spacer (){
 }
 
 func_testConnection () {
-(
+#(
     printf "\nTesting Connection to Computers..."
     printf "\n"
     userCount=0
@@ -50,16 +50,16 @@ func_testConnection () {
             fi
             userCount=$((userCount + 1))
         done
-) >> $HOME/logs/$LOGFILE
+#) |tee $HOME/logs/$LOGFILE
 }
 
 MAIN (){
-    (
+#    (
     func_set_colors
     func_print_spacer
     func_testConnection
     func_print_spacer
-    ) >> $HOME/logs/$LOGFILE
+#    ) >> $HOME/logs/$LOGFILE
 }
 
 MAIN
