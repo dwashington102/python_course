@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/bash -x
 # Create Date: 2022-01-14
 # Purpose: Script is used to call the git_pull_startup.sh script, which updates the local GIT repos on the computers
 # Script is called from p340-raptor and ran against test machines in order to keep test machines GIT repos updated
@@ -6,8 +6,11 @@
 # Changes:
 # Date: Description of change
 
-declare -a HostList=("k430-raptor" "x1-raptor" "192.168.122.226")
-declare -a UserList=("k430user" "x1user" "washingd")
+LOGFILE="gitpushto_`date +%Y%M%D_%H%M%S`"
+mkdir -p $HOME/logs
+touch $HOME/logs/$LOGFILE
+declare -a HostList=("k430-raptor" "x1-raptor" "192.168.122.226" "192.168.122.39")
+declare -a UserList=("k430user" "x1user" "washingd" "washingd")
 
 func_set_colors () {
     bold=$(tput bold)
@@ -41,6 +44,7 @@ func_testConnection () {
 
             else
                 printf "\n${red}Failure --->\tHOST: "$myhost" User: ${UserList[$userCount]}" 
+                sleep 5
                 func_print_spacer
             fi
             userCount=$((userCount + 1))
@@ -48,10 +52,12 @@ func_testConnection () {
 }
 
 MAIN (){
+    (
     func_set_colors
     func_print_spacer
     func_testConnection
     func_print_spacer
+    ) >> $LOGFILE
 }
 
 MAIN
