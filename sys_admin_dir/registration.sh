@@ -31,7 +31,7 @@ func_get_py_ver (){
 
 # Confirm if Xsession is running, set DISPLAY env, throw zenity popup before registration GUI is displayed.
 func_get_xdisplay (){
-       get_xdisplay_var=$(w -h | command grep -m1 -E '(xfce.*session|gdm.*session)' | awk '{print $2}')
+       get_xdisplay_var=$(w -h | command grep -m1 -E '(gnome.*session|xfce.*session|gdm.*session)' | awk '{print $2}')
        #get_xdisplay_var=$(w -h | /usr/bin/grep -m1 -E '[[:alnum:]]\s:[[:digit:]]\s' | awk '{print $2}')
        if [ ! -z "$get_xdisplay_var" ]; then
               printf "\nCaptured Xsession"
@@ -72,7 +72,7 @@ else
        exit 1
 fi
 printf "\nDISPLAY var: '$DISPLAY'\n"
-command $PYCMD /opt/ibm/registration/registration.py 
+command $PYCMD /opt/ibm/registration/registration.py &>/dev/null
 if [ $? != "0" ]; then
     printf "\nRegistration GUI fails to display"
     zenity --warning --width=400 --height=200 --text "THIS COMPUTER IS NOT REGISTERED.\nRegistration is required when accessing internal IBM resources.\n\nRegistration GUI failed to display." &>/dev/null
