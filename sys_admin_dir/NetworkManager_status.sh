@@ -37,6 +37,7 @@ func_get_status_sysd () {
     else
         printf "ERROR encountered unable to retrieve NetworkManager status"
     fi
+    printf "\n"
 }
 
 # get_status_initd function: Used to confirm status of sshd and restart sshd when the server uses init
@@ -79,6 +80,7 @@ function confirm_daemon() {
 
 MAIN (){
     confirm_daemon
+    printf "\n"
 }
 
 
