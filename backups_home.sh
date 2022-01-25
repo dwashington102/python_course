@@ -1,5 +1,13 @@
 #!/bin/sh
 
+
+# Script creates a backup of the GNOMEDIR directory
+
+
+#01-25-2022: Updated MAIN() to call func_set_log() in order to create the $logfile if it does not exist.
+#            Without the change running the script while the $HOME/logs directory does not exists results in
+#            the error "ambiguous redirect" 
+
 # tstamp variable used in the creation of the tar.gz file in backup_extDir()
 tstamp=$(date +%Y%m%d_%H%M%S)
 GNOMEDIR="$HOME/.local/share/gnome-shell/extensions"
@@ -58,8 +66,8 @@ clean_gitDir() {
 
 
 MAIN() {
-    (
     func_set_log
+    (
     printf "\nBackup for $tstamp:\n"
     backup_extDir
     clean_gitDir
