@@ -9,7 +9,7 @@ tstamp=$(date +%Y%M%d_%H%M%S)
 mkdir -p $HOME/logs
 LOGFILE=git_pushto_${tstamp}
 touch $HOME/logs/$LOGILE
-declare -a HostList=("k430-raptor" "x1-raptor" "192.168.122.226" "192.168.122.39")
+declare -a HostList=("k430-raptor" "x1-raptor" "p340-dove-docker" "p340-dove-fed35")
 declare -a UserList=("k430user" "x1user" "washingd" "washingd")
 
 func_set_colors () {
