@@ -1,8 +1,8 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 #Confirm if registration.py is currently running.  If running display zenity popup and exit
 func_check_running_reg () {
-	get_reg_pid=$(command pgrep -f 'python.*/opt/ibm/registration/registation.py')
+	get_reg_pid=$(command pgrep -f 'python.*/opt/ibm/registration/registration.py')
 	if [ ! -z "$get_reg_pid" ]; then
 	    printf "\nDEBUG >>> registration.py currently running pid=$get_reg_pid\n"
 		func_get_xdisplay
@@ -11,13 +11,13 @@ func_check_running_reg () {
 }
 
 #Confirm if python3 or python2 is installed. Exit if no version of python is installed.
-func_get_py_ver (){ 
+func_get_py_ver (){                                                                                                                                                                           
         command -v python3 &>/dev/null
         if [ $? != 0 ]; then
             command -v python2 &>/dev/null
             if [ $? == 0 ]; then
                 printf "\nPython2 is installed"
-		PYCMD=python2
+				PYCMD="python2"
             else
                 printf "\nNo version of Python installed"
                 printf "\nInstall Python3"
@@ -25,13 +25,13 @@ func_get_py_ver (){
              fi
         else
                 printf "\nPython3 is installed"
-		PYCMD=python3
+				PYCMD="python3"
         fi
 }
 
 # Confirm if Xsession is running, set DISPLAY env, throw zenity popup before registration GUI is displayed.
 func_get_xdisplay (){
-       get_xdisplay_var=$(w -h | command grep -m1 -E '(gnome.*session|xfce.*session|gdm.*session)' | awk '{print $2}')
+       get_xdisplay_var=$(w -h | command grep -m1 -E '(xfce.*session|gdm.*session)' | awk '{print $2}')
        #get_xdisplay_var=$(w -h | /usr/bin/grep -m1 -E '[[:alnum:]]\s:[[:digit:]]\s' | awk '{print $2}')
        if [ ! -z "$get_xdisplay_var" ]; then
               printf "\nCaptured Xsession"
@@ -72,13 +72,7 @@ else
        exit 1
 fi
 printf "\nDISPLAY var: '$DISPLAY'\n"
-command $PYCMD /opt/ibm/registration/registration.py &>/dev/null
-if [ $? != "0" ]; then
-    printf "\nRegistration GUI fails to display"
-    zenity --warning --width=400 --height=200 --text "THIS COMPUTER IS NOT REGISTERED.\nRegistration is required when accessing internal IBM resources.\n\nRegistration GUI failed to display." &>/dev/null
-else
-    printf "\nRegistration GUI completed"
-fi
+$PYCMD /opt/ibm/registration/registration.py &
 }
 
 MAIN
