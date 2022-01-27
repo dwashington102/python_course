@@ -5,7 +5,7 @@ func_check_running_reg () {
 	get_reg_pid=$(command pgrep -f 'python.*/opt/ibm/registration/registration.py')
 	if [ ! -z "$get_reg_pid" ]; then
 	    printf "\nDEBUG >>> registration.py currently running pid=$get_reg_pid\n"
-		func_get_xdisplay
+	    func_get_xdisplay
         exit 0
 	fi
 }
@@ -25,7 +25,7 @@ func_get_py_ver (){
              fi
         else
                 printf "\nPython3 is installed"
-				PYCMD="python3"
+		  PYCMD="python3"
         fi
 }
 
@@ -44,12 +44,12 @@ func_get_xdisplay (){
 func_get_term (){                                                                                                                                                                             
        get_terms_var=$(w -h | /usr/bin/grep -m1 -E '[[:alnum:]]\s+(pts|tty)' | awk '{print $2}')
        if [ -z "$get_terms_var" ]; then
-               printf "\nNo users currently connected"
-               printf "\n"
+              printf "\nNo users currently connected"
+              printf "\n"
               exit 1
        else
-	          DISPLAY=${get_terms_var}
-	   		  wall /tmp/reg.msg
+	       DISPLAY=${get_terms_var}
+	   	wall /tmp/reg.msg
        fi
 }
 
@@ -62,7 +62,7 @@ file $(which w) &>/dev/null
 if [ $? == 0 ]; then
        func_get_xdisplay
        if [ -z $DISPLAY ]; then
-             func_get_term
+           func_get_term
        fi
 else
        #The w command was not found.
