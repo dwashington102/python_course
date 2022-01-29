@@ -58,7 +58,6 @@ func_log_failure () {
 
 # Test if $HOME/databases exits
 func_test_dbdir () {
-    #ls $HOME/databases > /dev/null 2>&1
     if [ -d $HOME/database ]; then
 	if [ "$?" == "0" ]; then
 	    printf "\nDatabase directory does exist\n"
@@ -67,7 +66,7 @@ func_test_dbdir () {
 		printf "\nCreating directories"
 		sleep 2
 		created_sqliteDb_vmstats.sh
-    		ls $HOME/databases > /dev/null 2>&1
+    		ls $HOME/databases &>/dev/null
 		if [ $? != 0 ]; then
 		    printf "\nUnable to create dirs"
 			printf "\n"
