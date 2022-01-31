@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# Script gathers a list of docker/podman images and containers
+
 import subprocess
 
 
@@ -11,14 +13,14 @@ from docker_listimages import get_images
 def docker_test():
     #capture_output=True : blocks stderr from being returned to console
     print("\nTesting docker command...")
-    docker_cmd=subprocess.run(['which', 'docker'], capture_output=True)
+    docker_cmd=subprocess.run(['command', '-v', 'docker'], capture_output=True)
     if docker_cmd.returncode==0:
         print('docker command found was successful')
         dockercmd='docker'
     else:
         print("Unable to find docker command")
         print("\nTesting podman command...")
-        podman_cmd=subprocess.run(['which', 'podman'], capture_output=True)
+        podman_cmd=subprocess.run(['command', '-v', 'podman'], capture_output=True)
         if podman_cmd.returncode==0:
             print('podman command found was successful')
             dockercmd='podman'
