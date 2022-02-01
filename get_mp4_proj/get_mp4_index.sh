@@ -2,25 +2,7 @@
 # Version: 0.1.6
 # 2021-06-29: Updated to accept URL via CLI
 
-if [ "$1" == "" ]; then
-    MAIN (){
-        func_set_colors
-        func_get_dir_userInput
-        func_get_index_userInput
-        func_get_index_rc
-        func_test_index_rc
-        func_clean_up
-    }
-else
-    getUrl=$1
-    MAIN (){
-    func_set_colors
-    func_start
-    func_get_index_rc
-    func_test_index_rc
-    func_clean_up
-    }
-fi
+
 
 # Constant Variables
 # tStamp variable is added to log files generated
@@ -220,6 +202,28 @@ func_clean_up () {
     rm -rf ./tmp > /dev/null 2>&1
     rm -rf ./rawUrls > /dev/null 2>&1
 }
+
+# Begin MAIN function
+if [ "$1" == "" ]; then
+    MAIN (){
+        func_set_colors
+        func_get_dir_userInput
+        func_get_index_userInput
+        func_get_index_rc
+        func_test_index_rc
+        func_clean_up
+    }
+else
+    getUrl=$1
+    MAIN (){
+    func_set_colors
+    func_start
+    func_get_index_rc
+    func_test_index_rc
+    func_clean_up
+    }
+fi
+
 
 MAIN
 exit 0
