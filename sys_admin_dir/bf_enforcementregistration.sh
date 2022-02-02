@@ -14,17 +14,18 @@ COMMENTS
 # Copies existing reregister.py to /tmp, changes the delay_run var to 1 resulting in a delay of only 1 second before GUI
 func_cp_rereg (){
 cp /opt/ibm/reregister/reregister.py /tmp/bf_reregister.py
-sed -i 's/delay_run = .*/delay_run = randint(1, 2)/' /tmp/bf_reregister.py
+sed -i 's/delay_run = .*/delay_run = randint(0, 1)/' /tmp/bf_reregister.py
 chmod +x /tmp/bf_reregister.py
-# END TEST
 }
 
 #Confirm if reregistration.py is currently running.  If running display zenity popup and exit
 func_check_running_reg () {
-	get_reg_pid=$(command pgrep -f 'python.*/opt/ibm/reregister/reregister.py')
+	get_reg_pid=$(command pgrep -f 'python.*reregister.py')
 	if [ ! -z "$get_reg_pid" ]; then
 	    func_get_xdisplay
-        exit 0
+        #exit 0
+       else
+	    zenity --warning --width=400 --height=200 --text '<b><span foreground="red">***** THIS COMPUTER IS NOT REGISTERED *****\n</span></b>\nRegistration is required when accessing internal IBM resources.\n\nMinimize all windows and click OK button to launch Registration GUI.\n\nComplete the Registration GUI' &>/dev/null
 	fi
 }
 
@@ -54,7 +55,7 @@ func_get_xdisplay (){
        if [ ! -z "$get_xdisplay_var" ]; then
               printf "\nCaptured Xsession"
               DISPLAY=${get_xdisplay_var}
-              zenity --warning --width=400 --height=200 --text "(v3)THIS COMPUTER IS NOT REGISTERED.\nRegistration is required when accessing internal IBM resources.\n\nMinimize all windows in order to locate Registration GUI.\nComplete the Registration GUI" &>/dev/null
+	      zenity --warning --width=400 --height=200 --text '<b><span foreground="red">***** THIS COMPUTER IS NOT REGISTERED *****\n</span></b>\nRegistration is required when accessing internal IBM resources.\n\nMinimize all windows and click OK button to launch Registration GUI.\n\nComplete the Registration GUI' &>/dev/null
        fi
 }
 
