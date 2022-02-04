@@ -35,11 +35,12 @@ func_check_running_reg () {
 	fi
 }
 
-#Confirm python3 is installed. Exit if no version of python3 is installed.
+#Confirm python3 is installed. If python3 is not installed attempt to throw wall message
 func_get_py_ver (){                                                                                                                                                                           
         command -v python3 &>/dev/null
         if [ $? != 0 ]; then
             printf "\nPython3 is not installed"
+            func_get_term
             exit 1
         else
             printf "\nPython3 is installed"
@@ -69,7 +70,13 @@ func_get_term (){
               exit 1
        else
 	          DISPLAY=${get_terms_var}
-	   		  wall /tmp/bf_reg.msg
+              # 2022-02-04: Added following because older CentOS7 machines run a version of wall that does not accept a file as input
+              command wall -v &>/dev/null
+              if [ $? == "0" ]; then
+	   		      wall /tmp/bf_reg.msg
+              else
+                  wall < /tmp/bf_reg.msg
+              fi
        fi
 }
 
