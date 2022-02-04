@@ -1,5 +1,9 @@
 #!/usr/bin/bash
 # Script: Maps <Super># number to the various Gnome WM keybindings Virtual Workspaces
+
+# example:  
+# If there are 3 workspaces the user inputs "3"
+# The script then maps the <Super>1 to Workspace 1, <Super>2 to Workspace 2, <Super>3 to Workspace 3
 # Date: 2022-01-15
 
 # Changes
