@@ -132,8 +132,10 @@ func_rename_pythoncourse (){
 	cd $GITDIR
     mv $pythonCourse $pythonCourse.$timeStamp
     if [[ $? != 0 ]]; then
+	    printf "${red}"
     	printf "$pythonCourse NOT COPIED\n"
     	printf "No git clone will be attempted for $pythonCourse\n"
+		printf "${normal}"
     else
     	func_pull_pythoncourse
      fi
