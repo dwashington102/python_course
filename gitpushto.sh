@@ -4,8 +4,9 @@
 
 # Changes:
 # Date: Description of change
+# 2022-02-04 - Updated MAIN() in order to tee to LOGFILE
 
-tstamp=$(date +%Y%M%d_%H%M%S)
+tstamp=$(date +%Y%m%d_%H%M%S)
 mkdir -p $HOME/logs
 LOGFILE=git_pushto_${tstamp}
 touch $HOME/logs/$LOGILE
@@ -54,12 +55,12 @@ func_testConnection () {
 }
 
 MAIN (){
-#    (
+    (
     func_set_colors
     func_print_spacer
     func_testConnection
     func_print_spacer
-#    ) >> $HOME/logs/$LOGFILE
+    ) | tee $HOME/logs/$LOGFILE
 }
 
 MAIN
