@@ -3,6 +3,7 @@
 
 # Script run on startup to pull git projects.
 
+# 02-06-2022:  Changed retention from from 20 days to 10 days
 # 01-10-2022:  Updated func_check_pythoncourse to check/confirm git updates are not pending
 # 07-11-2021:  Added func_pull_Docker_build
 # 05-02-2021:  Added func_pull_zsh_syntax  
@@ -36,13 +37,13 @@ func_print_spacer (){
 }
 
 
-####################### Remove 30day dir Function
+####################### Remove 10day dir Function
 # Function will remove all directories from $GITDIR older than 20days
 # Directory name will include the timestamp "*202*"
-func_remove_20day_dirs (){
+func_remove_old_dirs (){
 	IFS=$'\n'
 	cd $GITDIR
-	listDirs=($(find . -maxdepth 1 -mtime +20 -name "*202*" -type d))
+	listDirs=($(find . -maxdepth 1 -mtime +10 -name "*202*" -type d))
 	if [[ ${#listDirs[@]} -ne 0 ]]; then
 	for dirName in ${listDirs[*]}
 	do
@@ -286,7 +287,7 @@ function MAIN (){
     func_rename_dockerbuild
     func_print_spacer
     
-    func_remove_20day_dirs
+    func_remove_old_dirs
 }
 
 
