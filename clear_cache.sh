@@ -13,7 +13,7 @@
 # 2020-01-16: Updated trash_empty() providing FQpath to trash-empty in order to avoid rc=127
 
 # Constant Variables
-tStamp=`date +%Y%m%d_%H%M`
+tStamp=$(date +%Y%m%d_%H%M)
 logfile=$HOME/cronlogs/cron_run_$tStamp
 spacer='------------//------------------'
 
@@ -38,7 +38,7 @@ func_bleachbit_cron_logs (){
 	# only the printf statements in this function write to log file. Output of bleachbit command not included in log file
 	printf "\nStarting ${FUNCNAME}\n"
 	cd $HOME/cronlogs
-	command bleachbit -s `find . -type f -mtime +5` &>/dev/null
+	command bleachbit -s $(find . -type f -mtime +5) &>/dev/null
 	printf "$FUNCNAME rc=$?\n" 
 	printf "\n"
 }
