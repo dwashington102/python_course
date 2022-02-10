@@ -12,7 +12,7 @@ func_check_uid (){
         now_timestamp=$(date +%Y%m%d_%H%M) 
         INFO_LOG=/root/cron_journald_${now_timestamp}.log
         CRIT_LOG=/root/CRIT_cron_journald_${now_timestamp}.log
-        timeStamp=`date +%Y%m%d_%H%M`
+        timeStamp=$(date +%Y%m%d_%H%M)
     else
         printf "\nUserID is non-root...exiting\n"
         exit 1
@@ -62,7 +62,7 @@ func_check_storage (){
 
 
 MAIN (){
-	func_check_uid
+    func_check_uid
     func_check_journal
 }
 
