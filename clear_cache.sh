@@ -63,7 +63,7 @@ func_run_bleachbit_cleaners (){
 	printf "\n"
 	# only the printf statements in this function write to log file. Output of bleachbit command not included in log file
 	printf "\nStarting ${FUNCNAME}\n"  >> $logfile
-	command bleachbit -c system.trash firefox.cache google_chrome.cache opera.cache chromium.cache chromium.history chromium.cookies google_chrome.history vlc.mru > /dev/null 2>&1
+	command bleachbit -c system.trash firefox.cache google_chrome.cache opera.cache chromium.cache chromium.history chromium.cookies google_chrome.history vlc.mru  &>/dev/null
 	printf "$FUNCNAME rc=$?\n" 
 	printf "\n"
 }
