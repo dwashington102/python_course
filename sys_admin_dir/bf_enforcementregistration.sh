@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 
 # Copies existing reregister.py to /tmp, changes the delay_run var to 1 resulting in a delay of only 1 second before GUI
@@ -49,12 +49,12 @@ func_get_py_ver (){
 # Confirm if Xsession is running, set DISPLAY env, throw zenity popup before registration GUI is displayed.
 func_get_xdisplay (){
 	   bes_userid=$(env | command grep -m1 -E '(USER.*=|LOGNAME=)' | awk -F'=' '{print $2}')
-	   get_xdisplay_var=$(w -h | command grep -m1 -E "^$bes_userid.*session" | awk '{print $2}')
+       get_xdisplay_var=$(w -h | command grep -m1 -E "^$bes_userid.*session" | awk '{print $2}')
 	   if [ ! -z "$get_xdisplay_var" ]; then
-            printf "\nCaptured Xsession"
-            XDISPLAY=${get_xdisplay_var}
-	        printf "\nDEBUG >>>> DISPLAY= $XDISPLAY"
-            func_check_zenity
+              printf "\nCaptured Xsession\n"
+              DISPLAY=${get_xdisplay_var}
+			  printf "\nDISPLAY=$DISPLAY\n"
+			  func_check_zenity
        fi
 }
 
@@ -64,25 +64,24 @@ func_get_term (){
 	   get_terms_var=$(w -h | grep -m1 $bes_userid | awk '{print $2}')
 	   #get_terms_var=$(w -h | /usr/bin/grep -m1 -E '[[:alnum:]]\s+(pts|tty)' | awk '{print $2}')
        if [ -z "$get_terms_var" ]; then
-              printf "\nNo users currently connected"
-              printf "\n"
+               printf "\nNo users currently connected"
+               printf "\n"
               exit 1
        else
 	          TERMDISPLAY=${get_terms_var}
-	          printf "\nDEBUG >>>> TERMDISPLAY= $XDISPLAY"
-	          wall /tmp/bf_reg.msg
+	   		  wall /tmp/bf_reg.msg
        fi
 }
 
 MAIN (){
-XDISPLAY=""
+DISPLAY=""
 func_cp_rereg
 func_check_running_reg
 func_get_py_ver
 file $(which w) &>/dev/null
 if [ $? == 0 ]; then
        func_get_xdisplay
-       if [ -z $XDISPLAY ]; then
+       if [ -z "$DISPLAY" ]; then
              func_get_term
        fi
 else
@@ -97,4 +96,3 @@ $PYCMD /tmp/bf_reregister.py
 }
 
 MAIN
-exit 0
