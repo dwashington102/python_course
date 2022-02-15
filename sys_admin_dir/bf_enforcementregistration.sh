@@ -12,6 +12,9 @@ sed -i 's/subprocess.*update_config.*stdout//' /tmp/bf_reregister.py
 # Remove entries in bf_reregister.py where the beekeeper.ini file is deleted
 sed -i "s/os.remove.*beekeeper.ini\")/os.rename(\"\/tmp\/beekeeper.ini\", \"\/tmp\/bf_beekeeper.ini\")/" /tmp/bf_reregister.py
 
+# Allow bf_reregister.py to continue even if the /var/opt/beekeeper/beekeeper.ini file does not exists
+sed -i "s/sys.exit(1)/pass/" /tmp/bf_reregister.py
+
 chmod +x /tmp/bf_reregister.py
 }
 
@@ -48,7 +51,9 @@ func_get_py_ver (){
 
 # Confirm if Xsession is running, set DISPLAY env, throw zenity popup before registration GUI is displayed.
 func_get_xdisplay (){
-	   bes_userid=$(env | command grep -m1 -E '(USER.*=|LOGNAME=)' | awk -F'=' '{print $2}')
+	   # bes_userid=$(env | command grep -m1 -E '(USER.*=|LOGNAME=)' | awk -F'=' '{print $2}')
+       # Set bes_userid to only use first 6 characters of the USERNAME or LOGNAME due to 'w -h' command truncating user names
+	   bes_userid=$(env | command grep -m1 -E '(USER.*=|LOGNAME=)' | awk -F"=" '{ print substr ($2,1,6) }')
        get_xdisplay_var=$(w -h | command grep -m1 -E "^$bes_userid.*session" | awk '{print $2}')
 	   if [ ! -z "$get_xdisplay_var" ]; then
               printf "\nCaptured Xsession\n"
@@ -60,7 +65,9 @@ func_get_xdisplay (){
 
 # If no Xsession is found, use 'w -h' output and wall command to inform user to register computer
 func_get_term (){         
-       bes_userid=$(env | command grep -m1 -E '(USER.*=|LOGNAME=)' | awk -F'=' '{print $2}')
+       # bes_userid=$(env | command grep -m1 -E '(USER.*=|LOGNAME=)' | awk -F'=' '{print $2}')
+       # Set bes_userid to only use first 6 characters of the USERNAME or LOGNAME due to 'w -h' command truncating user names
+	   bes_userid=$(env | command grep -m1 -E '(USER.*=|LOGNAME=)' | awk -F"=" '{ print substr ($2,1,6) }')
 	   get_terms_var=$(w -h | grep -m1 $bes_userid | awk '{print $2}')
 	   #get_terms_var=$(w -h | /usr/bin/grep -m1 -E '[[:alnum:]]\s+(pts|tty)' | awk '{print $2}')
        if [ -z "$get_terms_var" ]; then
