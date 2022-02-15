@@ -9,10 +9,10 @@
 
 func_delete_root_cron_logs (){
     (
-    oldlogs=($(find . -name "cron_sshd*.log" -mtime +60 -print))
+    oldlogs=($(find . -name "cron_sshd*.log" -mtime +20 -print))
     printf "\nFiles to delete: ---- " 
     if [ ${#oldlogs[@]} -eq 0 ]; then
-         printf "\nNo cron_sshd logs found older than 60 days" 
+         printf "\nNo cron_sshd logs found older than 20 days" 
     else 
         for mylog in ${oldlogs[*]}
         do
@@ -45,7 +45,7 @@ func_check_uid (){
 # If the sshd unit is not running, a restart is attempted by calling function func_restart_sshd
 func_test_sshd (){
     get_status=`systemctl is-active sshd`
-    if [ "$get_status" != 'active' ]; then  
+    if [ "$get_status" != "active" ]; then  
         func_restart_sshd
     else
         echo "SSHD active at: ${timeStamp} "  > /root/cron_sshd_running.log
@@ -57,7 +57,7 @@ func_test_sshd (){
 func_restart_sshd (){
     echo "SSHD ${get_status}" > /root/cron_sshd_down_${timeStamp}.log
     systemctl restart sshd.service
-    if [ $? != 0 ]; then
+    if [ "$?" != "0" ]; then
         echo "SSHD Restart Failed" >> /root/cron_sshd_down_${timeStamp}.log
     else
 	echo "SSHD Restarted. " >> /root/cron_sshd_down_${timeStamp}.log
