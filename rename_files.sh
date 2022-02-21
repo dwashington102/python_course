@@ -40,11 +40,11 @@ func_get_ext () {
 }
 
 func_get_files() {
-printf "DEBUG >>> entered func ${FUNCNAME[0]}"
 IFS=$'\n'
 #ls -1 *.${ext_type}  > /dev/null 2>&1
 file_count=`find . -maxdepth 1 -type f -name "*.${ext_type}" | wc -l`
 if [ ${file_count} -gt 0 ]; then
+    printf "DEBUG >>> entered func ${FUNCNAME[0]} --- entered if"
     func_rename_files
 else
     #ls -1 *${ext_type}* > /dev/null 2>&1 
