@@ -44,7 +44,7 @@ IFS=$'\n'
 #ls -1 *.${ext_type}  > /dev/null 2>&1
 file_count=`find . -maxdepth 1 -type f -name "*.${ext_type}" | wc -l`
 if [ ${file_count} -gt 0 ]; then
-    printf "DEBUG >>> entered func ${FUNCNAME[0]} --- entered if"
+    printf "\nDEBUG >>> entered func ${FUNCNAME[0]} --- entered if"
     func_rename_files
 else
     #ls -1 *${ext_type}* > /dev/null 2>&1 
@@ -61,10 +61,11 @@ fi
 
 
 func_rename_files() {
-printf "DEBUG >>> entered func ${FUNCNAME[0]}"
+printf "\nDEBUG >>> entered func ${FUNCNAME[0]}"
     file_count=1
     tot_files=0
-    for get_fileName in `ls -1 *.${ext_type} | wc -l`
+    for get_fileName in $(ls -1 *.${ext_type})
+    #for get_fileName in `ls -1 *.${ext_type} | wc -l`
     do
 	printf "DEBUG >>> ${get_fileName}\n"
         sleep 10
