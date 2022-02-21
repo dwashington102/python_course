@@ -40,6 +40,7 @@ func_get_ext () {
 }
 
 func_get_files() {
+printf "DEBUG >>> entered func ${FUNCNAME[0]}"
 IFS=$'\n'
 #ls -1 *.${ext_type}  > /dev/null 2>&1
 file_count=`find . -maxdepth 1 -type f -name "*.${ext_type}" | wc -l`
@@ -60,6 +61,7 @@ fi
 
 
 func_rename_files() {
+printf "DEBUG >>> entered func ${FUNCNAME[0]}"
     file_count=1
     tot_files=0
     for get_fileName in `ls -1 *.${ext_type} | wc -l`
