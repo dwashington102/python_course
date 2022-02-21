@@ -61,7 +61,7 @@ fi
 
 
 func_rename_files() {
-printf "\nDEBUG >>> entered func ${FUNCNAME[0]}"
+printf "\nDEBUG >>> entered func ${FUNCNAME[0]}\n"
     file_count=1
     tot_files=0
     for get_fileName in $(ls -1 *.${ext_type})
