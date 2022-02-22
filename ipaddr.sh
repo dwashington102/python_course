@@ -7,7 +7,8 @@ usage (){
     cat << EOF
 Usage: $0 [--help|--all]
 
-    -a, --all    Will print the network information for all interfaces
+    -a, --all    Print the network information for all interfaces
+    -d, --dev    Print network information for specific network interface
     -h, --help   Show this help
 EOF
 }
@@ -41,16 +42,21 @@ if [ "$1" = "--all" -o "$1" = "-a" ]; then
     exit 0
 fi
 
+if [ "$1" = "--dev" -o "$1" = "-d" ]; then
+    get_device 
+    exit 0
+fi
+
 if [ "$1" = "--help" -o "$1" = "-h" ]; then
     usage 
     exit 0
 fi
 
-
-if [ "$1" = "-n" ]; then
-    get_device 
+if [ -z "$1" ]; then
+    usage
     exit 0
 fi
+
 
 if [ -n "$1" ]; then
     printf "\nUnknown parameter '$1'\n" >&2
