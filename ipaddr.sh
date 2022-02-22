@@ -2,8 +2,6 @@
 
 # Script simplies the output of the 'ip' command used to view the IP address, current state, and MTU of interfaces
 
-
-
 # Usage function
 usage (){
     cat << EOF
@@ -46,6 +44,4 @@ if [ -n "$1" ]; then
     usage
     exit 1
 fi
-
-
 exit 0
