@@ -22,7 +22,7 @@ if [[ ${#get_intface[@]} ]]; then
     for i in ${get_intface[*]}
     do
         printf "\nInterface Name: $i\n"
-        ip addr list ${i} | command grep -E '(state|inet)'
+        ip addr list ${i} | command grep -E '(state|inet) | command grep -v inet6'
     done    
 else
     printf "\nThe 'ip a' command failed to return any interfaces"
@@ -30,7 +30,7 @@ fi
 printf "\n"
 }
 
-MAIN (){
+# Do not put this in a MAIN function
 if [ "$1" = "--all" -o "$1" = "-a" ]; then
     get_all
     exit 0
@@ -46,8 +46,6 @@ if [ -n "$1" ]; then
     usage
     exit 1
 fi
-}
 
 
-MAIN
 exit 0
