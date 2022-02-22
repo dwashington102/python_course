@@ -3,6 +3,7 @@
 # Script simplies the output of the 'ip' command used to view the IP address, current state, and MTU of interfaces
 
 
+MAIN (){
 if [ "$1" = "--all" -o "$1" = "-a" ]; then
     get_all
     exit 0
@@ -18,6 +19,7 @@ if [ -n "$1" ]; then
     usage
     exit 1
 fi
+}
 
 
 # Usage function
@@ -46,4 +48,6 @@ fi
 printf "\n"
 }
 
+
+MAIN
 exit 0
