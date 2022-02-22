@@ -23,7 +23,7 @@ get_device (){
         exit 2
     else
         printf "\nInterface Name: $i\n"
-        ip addr list ${set_nic} | command -E ('state|inet)' | command grep -v inet6
+        ip addr list ${set_nic} | command -E '(state|inet)' | command grep -v inet6
     fi
 
     printf "\nDEBUG >>> NIC: name"
