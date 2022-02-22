@@ -12,6 +12,13 @@ Usage: $0 [--help|--all]
 EOF
 }
 
+get_device (){
+    printf "\nNetwork Interface Name: "
+    read get_nic
+    printf "\nDEBUG >>> NIC: name"
+}
+
+
 get_all (){
 # Write each interface to an array
 get_intface=($(ip a | command grep mtu | awk -F":" '{print $2}'))
@@ -39,9 +46,18 @@ if [ "$1" = "--help" -o "$1" = "-h" ]; then
     exit 0
 fi
 
+
+if [ "$1" = "-n" ]; then
+    get_device 
+    exit 0
+fi
+
 if [ -n "$1" ]; then
     printf "\nUnknown parameter '$1'\n" >&2
     usage
     exit 1
 fi
+printf "\n"
+
+
 exit 0
