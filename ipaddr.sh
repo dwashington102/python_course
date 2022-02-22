@@ -5,7 +5,7 @@
 # Usage function
 usage (){
     cat << EOF
-Usage: $0 [--help|--all]
+Usage: $0 [--help|--all|--dev]
 
     -a, --all    Print the network information for all interfaces
     -d, --dev    Print network information for specific network interface
@@ -16,6 +16,16 @@ EOF
 get_device (){
     printf "\nNetwork Interface Name: "
     read get_nic
+    set_nic=$(ip a | command grep mtu | awk -F":" '{print $2}' | grep get_nic)
+    IFS=$'\n'
+    if [ -z ${set_nic} ]; then
+        printf "\nInvalid network interface ${set_nic}"
+        exit 2
+    else
+        printf "\nInterface Name: $i\n"
+        ip addr list ${set_nic} | command -E ('state|inet)' | command grep -v inet6
+    fi
+
     printf "\nDEBUG >>> NIC: name"
 }
 
@@ -28,7 +38,7 @@ if [[ ${#get_intface[@]} ]]; then
     for i in ${get_intface[*]}
     do
         printf "\nInterface Name: $i\n"
-        ip addr list ${i} | command grep -E '(state|inet) | command grep -v inet6'
+        ip addr list ${i} | command grep -E '(state|inet)' | command grep -v inet6
     done    
 else
     printf "\nThe 'ip a' command failed to return any interfaces"
