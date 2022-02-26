@@ -8,25 +8,8 @@ usage (){
 Usage: $0 [--help|--all|--dev]
 
     -a, --all    Print the network information for all interfaces
-    -d, --dev    Print network information for specific network interface
     -h, --help   Show this help
 EOF
-}
-
-get_device (){
-    printf "\nNetwork Interface Name: "
-    read get_nic
-    set_nic=$(ip a | command grep mtu | awk -F":" '{print $2}' | grep get_nic)
-    IFS=$'\n'
-    if [ -z ${set_nic} ]; then
-        printf "\nInvalid network interface ${set_nic}"
-        exit 2
-    else
-        printf "\nInterface Name: $i\n"
-        ip addr list ${set_nic} | command -E '(state|inet)' | command grep -v inet6
-    fi
-
-    printf "\nDEBUG >>> NIC: name"
 }
 
 
@@ -49,11 +32,6 @@ printf "\n"
 # Do not put this in a MAIN function
 if [ "$1" = "--all" -o "$1" = "-a" ]; then
     get_all
-    exit 0
-fi
-
-if [ "$1" = "--dev" -o "$1" = "-d" ]; then
-    get_device 
     exit 0
 fi
 
