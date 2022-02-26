@@ -54,13 +54,22 @@ func_get_xdisplay (){
 	   # bes_userid=$(env | command grep -m1 -E '(USER.*=|LOGNAME=)' | awk -F'=' '{print $2}')
        # Set bes_userid to only use first 6 characters of the USERNAME or LOGNAME due to 'w -h' command truncating user names
 	   bes_userid=$(env | command grep -m1 -E '(USER.*=|LOGNAME=)' | awk -F"=" '{ print substr ($2,1,6) }')
-       get_xdisplay_var=$(w -h | command grep -m1 -E "^$bes_userid.*session" | awk '{print $2}')
-	   if [ ! -z "$get_xdisplay_var" ]; then
-              printf "\nCaptured Xsession\n"
-              DISPLAY=${get_xdisplay_var}
-			  printf "\nDISPLAY=$DISPLAY\n"
-			  func_check_zenity
-       fi
+	   running_kde=$(pgrep plasma)
+	   if [ -n "$running_kde" ]; then
+               get_xdisplay_var=$(w -h | command grep -m1 -E "^$bes_userid.*plasm*" | awk '{print $2}')
+               printf "\nCaptured Xsession\n"
+               DISPLAY=${get_xdisplay_var}
+	       printf "\nDISPLAY=$DISPLAY\n"
+	       func_check_zenity
+	   else 
+               get_xdisplay_var=$(w -h | command grep -m1 -E "^$bes_userid.*session" | awk '{print $2}')
+	           if [ ! -z "$get_xdisplay_var" ]; then
+                       printf "\nCaptured Xsession\n"
+                       DISPLAY=${get_xdisplay_var}
+		       printf "\nDISPLAY=$DISPLAY\n"
+		       func_check_zenity
+		   fi
+           fi
 }
 
 # If no Xsession is found, use 'w -h' output and wall command to inform user to register computer
@@ -90,6 +99,7 @@ if [ $? == 0 ]; then
        func_get_xdisplay
        if [ -z "$DISPLAY" ]; then
              func_get_term
+	     exit 1
        fi
 else
        #The w command was not found.
