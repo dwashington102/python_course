@@ -25,18 +25,25 @@ func_get_xdisplay (){
 
 func_check_gnome (){
     GDESKTOP=""
-    ps aux | command grep -E '^.* gnome-session$' &>/dev/null
+    ps aux | command grep -E '^.*gnome-session$' &>/dev/null
     if [ $? == "0" ]; then
         GDESKTOP="GNOME"
+        printf "\nGDESKTOP: $GDESKTOP"
+    else
+	 return 1
     fi
 }
 
 func_check_kde (){
     KDESKTOP=""
-    ps aux | command grep -E '^.* kded[[:digit:]]$' &>/dev/null
+    ps aux | command grep -E '^.*kded[[:digit:]]$' &>/dev/null
     if [ $? == "0" ]; then
         KDESKTOP="KDE"
+        printf "\nKDESKTOP: $KDESKTOP"
+    else
+	return 1
     fi
+
 }
 
 func_check_xfce (){
@@ -44,24 +51,40 @@ func_check_xfce (){
     ps aux  | command grep -E '^.* xfce[[:digit:]]-session$' &>/dev/null
     if [ $? == "0" ]; then
         XDESKTOP="XFCE"
+        printf "\nXDESKTOP: $XDESKTOP"
+    else
+	return 1
     fi
 }
 
 func_check_cinn (){
     CDESKTOP=""
     ps aux | command grep -E '^.* cinnamon-session' | command grep -v grep &>/dev/null
-    if [ $? == "0 "]; then
+    if [ $? == "0" ]; then
         CDESKTOP="CINNAMON"
+        printf "\nCDESKTOP: $CDESKTOP"
+    else
+	return 1
     fi
 }
 
 
 MAIN (){
-   func_check_gnome
+   
    func_check_kde
-   func_check_xfce
-   func_check_cinn
+   if [ $? != "0" ]; then
+       func_check_cinn
+       if [ $? != "0" ]; then
+           func_check_xfce
+           if [ $? != "0" ]; then
+               func_check_gnome
+           fi
+	fi
+   else
+         printf "\nKDE DESKTOP FOUND"
+   fi
 }
 
 MAIN
+printf "\n"
 exit 0
