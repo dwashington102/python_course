@@ -20,6 +20,7 @@ COMMENT
 
 declare -a VMHostList=("35" "36" "67" "100")
 
+test_ps (){
 for vmip in "${VMHostList[@]}"
     do
 	    if [ "$vmip" == "35" ]; then
@@ -40,10 +41,50 @@ for vmip in "${VMHostList[@]}"
 		    ssh washingd-dev@192.168.122.${vmip} ${CMD}
             fi	
     done
-
 exit 0
+}
 
+cinn_check (){
+	CMD="ps -e | grep -E '(^.* cinnamon-sessio$)'"
+	ssh washingd-dev@192.168.122.${vmip} ${CMD} &>/dev/null
+	if [ $? == "0" ]; then
+	    printf "\n192.168.122.${vmip} is running Cinnamon Desktop"
+	else 
+	    return 1
+	fi
+}
 
+xfce_check (){
+	CMD="ps -e | grep -E '(^.* xfce[[:digit:]]-session$)'"
+	ssh washingd-dev@192.168.122.${vmip} ${CMD} &>/dev/null
+	if [ $? == "0" ]; then
+	    printf "\n192.168.122.${vmip} is running XFCE Desktop"
+	else 
+	    return 1
+	fi
+}
+
+kde_check (){
+	CMD="ps -e | grep -E '(^.* kded[[:digit:]]$)'"
+	ssh washingd-dev@192.168.122.${vmip} ${CMD} &>/dev/null
+	if [ $? == "0" ]; then
+	    printf "\n192.168.122.${vmip} is running KDE Desktop"
+	else 
+	    return 1
+	fi
+}
+
+gnome_check (){
+	CMD="ps -e | grep -E '(^.* gnome-session.*$)'"
+	ssh washingd-dev@192.168.122.${vmip} ${CMD} &>/dev/null
+	if [ $? == "0" ]; then
+	    printf "\n192.168.122.${vmip} is running Gnome Desktop"
+	else 
+	    return 1
+	fi
+}
+
+check_desktop (){
 for vmip in "${VMHostList[@]}"
 do
     cinn_check
@@ -55,26 +96,15 @@ do
 	        gnome_check
 	    fi
 	fi
-    else
-        printf "\nCinnamon Desktop Detected"
     fi
-
-cinn_check (){
-	CMD="ps -e | grep -E '(^.* cinnamon-sessio$)'"
-	ssh washingd-dev@192.168.122.${vmip} ${CMD}
-	if [ $? == "0" ]; then
-	    printf "\n192.168.122.${vmip} is running Cinnamon Desktop"
-	else 
-	    return 1
-	fi
+done
 }
 
-xfce_check (){
-	CMD="ps -e | grep -E '(^.* xfce[[:digit:]]-session$)'"
-	ssh washingd-dev@192.168.122.${vmip} ${CMD}
-	if [ $? == "0" ]; then
-	    printf "\n192.168.122.${vmip} is running Cinnamon Desktop"
-	else 
-	    return 1
-	fi
+
+MAIN (){
+   check_desktop 
+   printf "\n"
 }
+
+MAIN
+exit 0
