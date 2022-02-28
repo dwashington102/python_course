@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash -x
 
 
 # Copies existing reregister.py to /tmp, changes the delay_run var to 1 resulting in a delay of only 1 second before GUI
@@ -85,18 +85,17 @@ func_get_xdisplay (){
 
 # If no Xsession is found, use 'w -h' output and wall command to inform user to register computer
 func_get_term (){         
-       # bes_userid=$(env | command grep -m1 -E '(USER.*=|LOGNAME=)' | awk -F'=' '{print $2}')
        # Set bes_userid to only use first 6 characters of the USERNAME or LOGNAME due to 'w -h' command truncating user names
 	   bes_userid=$(env | command grep -m1 -E '(USER.*=|LOGNAME=)' | awk -F"=" '{ print substr ($2,1,6) }')
 	   get_terms_var=$(w -h | grep -m1 $bes_userid | awk '{print $2}')
-	   #get_terms_var=$(w -h | /usr/bin/grep -m1 -E '[[:alnum:]]\s+(pts|tty)' | awk '{print $2}')
-       if [ -z "$get_terms_var" ]; then
+	   if [ -z "$get_terms_var" ]; then
                printf "\nNo users currently connected"
                printf "\n"
-              exit 1
+               exit 1
        else
 	          TERMDISPLAY=${get_terms_var}
 	   		  wall /tmp/bf_reg.msg
+			  exit 1
        fi
 }
 
@@ -105,13 +104,11 @@ DISPLAY=""
 func_cp_rereg
 func_check_running_reg
 func_get_py_ver
-#file $(which w) &>/dev/null
 command -v w &>/dev/null
 if [ $? == 0 ]; then
        func_get_xdisplay
        if [ -z "$DISPLAY" ]; then
              func_get_term
-	     exit 1
        fi
 else
        #The w command was not found.
@@ -120,18 +117,20 @@ else
        printf "\n"
        exit 1
 fi
-
 zenity --warning --width=400 --height=200 --text '<b><span foreground="red">***** THIS COMPUTER IS NOT REGISTERED *****\n</span></b>\nRegistration is required when accessing internal IBM resources.\n\nMinimize all windows and click OK button to launch Registration GUI.\n\nComplete the Registration GUI' &>/dev/null
 # If the zenity command fails to display, set DISPLAY to common default ":0.0" and ":1" and attempt to display zenity and reReg GUI
 if [ $? != "0" ]; then
+    printf "\nCould not display zenity using $DISPLAY...setting DISPLAY to ':0.0'\n"
 	export DISPLAY=":0.0"
     zenity --warning --width=400 --height=200 --text '<b><span foreground="red">***** THIS COMPUTER IS NOT REGISTERED *****\n</span></b>\nRegistration is required when accessing internal IBM resources.\n\nMinimize all windows and click OK button to launch Registration GUI.\n\nComplete the Registration GUI' &>/dev/null
     if [ $? != "0" ]; then
+	    printf "\nCould not display zenity using $DISPLAY...setting DISPLAY to ':1'\n"
 	    export DISPLAY=":1"
         zenity --warning --width=400 --height=200 --text '<b><span foreground="red">***** THIS COMPUTER IS NOT REGISTERED *****\n</span></b>\nRegistration is required when accessing internal IBM resources.\n\nMinimize all windows and click OK button to launch Registration GUI.\n\nComplete the Registration GUI' &>/dev/null
         $PYCMD /tmp/bf_reregister.py
     else 
         $PYCMD /tmp/bf_reregister.py
+	fi
 else
     $PYCMD /tmp/bf_reregister.py
 fi
