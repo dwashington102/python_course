@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/usr/bin/bash
 
 
 # Copies existing reregister.py to /tmp, changes the delay_run var to 1 resulting in a delay of only 1 second before GUI
@@ -51,24 +51,35 @@ func_get_py_ver (){
 
 # Confirm if Xsession is running, set DISPLAY env, throw zenity popup before registration GUI is displayed.
 func_get_xdisplay (){
-	   # bes_userid=$(env | command grep -m1 -E '(USER.*=|LOGNAME=)' | awk -F'=' '{print $2}')
-       # Set bes_userid to only use first 6 characters of the USERNAME or LOGNAME due to 'w -h' command truncating user names
 	   bes_userid=$(env | command grep -m1 -E '(USER.*=|LOGNAME=)' | awk -F"=" '{ print substr ($2,1,6) }')
-	   running_kde=$(pgrep plasma)
-	   if [ -n "$running_kde" ]; then
-               get_xdisplay_var=$(w -h | command grep -m1 -E "^$bes_userid.*plasm*" | awk '{print $2}')
-               printf "\nCaptured Xsession\n"
+
+       #Check for KDE, GNOME, or XFCE
+	   running_kde=$(pgrep 'kded[[:digit:]]')
+	   running_gnome=$(pgrep 'gnome-session')
+	   running_xfce=$(pgrep 'xfce[[:digit:]]-session')
+
+	    if [ -n "$running_kde" ]; then
+            get_xdisplay_var=$(w -h | command grep -m1 -E "^$bes_userid.*kded[[:digit:]]$" | awk '{print $2}')
+            printf "\nCaptured KDE Xsession\n"
+            DISPLAY=${get_xdisplay_var}
+	        printf "\nDISPLAY=$DISPLAY\n"
+	        func_check_zenity
+        elif [ -n "$running_gnome" ]; then
+            get_xdisplay_var=$(w -h | command grep -m1 -E "^$bes_userid.*session" | awk '{print $2}')
+            printf "\nCaptured GNOME Xsession\n"
+            DISPLAY=${get_xdisplay_var}
+		    printf "\nDISPLAY=$DISPLAY\n"
+		    func_check_zenity
+	    elif [ -n "$running_xfce" ]; then 
+               get_xdisplay_var=$(w -h | command grep -m1 -E "^$bes_userid.*xfce[[:digit:]]-session$" | awk '{print $2}')
+               printf "\nCaptured XFCE Xsession\n"
                DISPLAY=${get_xdisplay_var}
 	       printf "\nDISPLAY=$DISPLAY\n"
 	       func_check_zenity
-	   else 
-               get_xdisplay_var=$(w -h | command grep -m1 -E "^$bes_userid.*session" | awk '{print $2}')
-	           if [ ! -z "$get_xdisplay_var" ]; then
-                       printf "\nCaptured Xsession\n"
-                       DISPLAY=${get_xdisplay_var}
-		       printf "\nDISPLAY=$DISPLAY\n"
-		       func_check_zenity
-		   fi
+
+           else 
+	       printf "\nFailed to capture Xsession"
+               return 1
            fi
 }
 
@@ -94,7 +105,8 @@ DISPLAY=""
 func_cp_rereg
 func_check_running_reg
 func_get_py_ver
-file $(which w) &>/dev/null
+#file $(which w) &>/dev/null
+command -v w &>/dev/null
 if [ $? == 0 ]; then
        func_get_xdisplay
        if [ -z "$DISPLAY" ]; then
@@ -108,8 +120,16 @@ else
        printf "\n"
        exit 1
 fi
+
 zenity --warning --width=400 --height=200 --text '<b><span foreground="red">***** THIS COMPUTER IS NOT REGISTERED *****\n</span></b>\nRegistration is required when accessing internal IBM resources.\n\nMinimize all windows and click OK button to launch Registration GUI.\n\nComplete the Registration GUI' &>/dev/null
-$PYCMD /tmp/bf_reregister.py
+# If the zenity command fails to display, set DISPLAY to common default ":0.0" and attempt to display zenity and reReg GUI
+if [ $? != "0" ]; then
+	export DISPLAY=":0.0"
+    zenity --warning --width=400 --height=200 --text '<b><span foreground="red">***** THIS COMPUTER IS NOT REGISTERED *****\n</span></b>\nRegistration is required when accessing internal IBM resources.\n\nMinimize all windows and click OK button to launch Registration GUI.\n\nComplete the Registration GUI' &>/dev/null
+    $PYCMD /tmp/bf_reregister.py
+else
+    $PYCMD /tmp/bf_reregister.py
+fi
 }
 
 MAIN
