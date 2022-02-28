@@ -122,11 +122,16 @@ else
 fi
 
 zenity --warning --width=400 --height=200 --text '<b><span foreground="red">***** THIS COMPUTER IS NOT REGISTERED *****\n</span></b>\nRegistration is required when accessing internal IBM resources.\n\nMinimize all windows and click OK button to launch Registration GUI.\n\nComplete the Registration GUI' &>/dev/null
-# If the zenity command fails to display, set DISPLAY to common default ":0.0" and attempt to display zenity and reReg GUI
+# If the zenity command fails to display, set DISPLAY to common default ":0.0" and ":1" and attempt to display zenity and reReg GUI
 if [ $? != "0" ]; then
 	export DISPLAY=":0.0"
     zenity --warning --width=400 --height=200 --text '<b><span foreground="red">***** THIS COMPUTER IS NOT REGISTERED *****\n</span></b>\nRegistration is required when accessing internal IBM resources.\n\nMinimize all windows and click OK button to launch Registration GUI.\n\nComplete the Registration GUI' &>/dev/null
-    $PYCMD /tmp/bf_reregister.py
+    if [ $? != "0" ]; then
+	    export DISPLAY=":1"
+        zenity --warning --width=400 --height=200 --text '<b><span foreground="red">***** THIS COMPUTER IS NOT REGISTERED *****\n</span></b>\nRegistration is required when accessing internal IBM resources.\n\nMinimize all windows and click OK button to launch Registration GUI.\n\nComplete the Registration GUI' &>/dev/null
+        $PYCMD /tmp/bf_reregister.py
+    else 
+        $PYCMD /tmp/bf_reregister.py
 else
     $PYCMD /tmp/bf_reregister.py
 fi
