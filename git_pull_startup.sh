@@ -3,6 +3,7 @@
 
 # Script run on startup to pull git projects.
 
+# 03-04-2022: Updated listdirs adding regex to find command
 # 02-06-2022:  Changed retention from from 20 days to 10 days
 # 01-10-2022:  Updated func_check_pythoncourse to check/confirm git updates are not pending
 # 07-11-2021:  Added func_pull_Docker_build
@@ -43,7 +44,7 @@ func_print_spacer (){
 func_remove_old_dirs (){
 	IFS=$'\n'
 	cd $GITDIR
-	listDirs=($(find . -maxdepth 1 -mtime +10 -name "*202*" -type d))
+	listDirs=$(find . -maxdepth 1 -mtime +10 -regex posix-extended -regex '.*202[[:digit:]].*_[[:digit:]]{3,}$' -type d)
 	if [[ ${#listDirs[@]} -ne 0 ]]; then
 	for dirName in ${listDirs[*]}
 	do
