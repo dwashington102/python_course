@@ -1,13 +1,15 @@
 #!/usr/bin/bash
 IFS=$'\n'
-for get_fixlet_id in $(grep -m10 -E '.*Relevant.*\(fixlet:[[:digit:]].*\)$' $PWD/TODAY.log | grep -vi "not relevant")
-do
-    printf "\nFull string NAME: $get_fixlet_id"
-    set_fixlet_name=$(echo $get_fixlet_id :w!
-    
-    #set_fixlet_name=$(echo $get_fixlet_id | awk -F"\\\(fixlet" '{print "(fixlet"$2}') <--Hack around
-    printf "\nOnly Fixlet ID: $set_fixlet_name"
+loop_count=0
 
+printf "\n"
+for get_fixlet_id in $(command grep --max-count 10 --extended-regexp '.*Relevant.*\(fixlet:[[:digit:]].*\)$' "${PWD}"/TODAY.log | command grep --invert-match --ignore-case "not relevant")
+do
+    loop_count=$((loop_count + 1))
+    printf "%s: Full string NAME: %s\n" "${loop_count}" "${get_fixlet_id}"
+    get_fixlet_num=$(echo $get_fixlet_id | awk -F"\\\(fixlet:" '{print $2}' | awk '{gsub(/)/, "") ; print }')
+    printf "Fixlet Num: %s\n" "${get_fixlet_num}"
+    printf "\n"
 done
 printf "\n"
 
