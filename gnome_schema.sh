@@ -8,11 +8,10 @@ LOGFILE=$HOME/gsettings_keys.log
 do_work (){
 for gschema in $(gsettings list-schemas)
 do
-    printf "\nSchema: ${gschema}"
+    printf "\nSchema: %s" "${gschema}"
     for gkey in $(gsettings list-keys ${gschema})
     do
         printf "\n%s\t%s" "---- Key: ${gkey}" "---> Value: $(gsettings get ${gschema} ${gkey})"
-        #printf "\n\tKey: ${gkey}\t\t---> Value: $(gsettings get ${gschema} ${gkey})"
     done
     printf "\n"
 done
@@ -22,10 +21,12 @@ done
 MAIN (){
     (
         do_work
-    ) | tee $LOGFILE
+    ) > $LOGFILE
 
 }
 
 
 MAIN
+printf "\nGenerated output file: %s\n"  "${LOGFILE}"
+head -5 "${LOGFILE}"
 exit 0
