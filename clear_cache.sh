@@ -82,7 +82,7 @@ func_trash_empty (){
 	printf "\n"
 	date +%H:%M:%S
 	printf "Starting ${FUNCNAME}\n"
-	$HOME/.local/bin/trash-empty 3 &>/dev/null
+	$HOME/.local/bin/trash-empty -f 3 &>/dev/null
 	date +%H:%M:%S
 	printf "$FUNCNAME rc=$?\n" 
 	printf "\n"
