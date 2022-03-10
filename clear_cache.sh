@@ -15,7 +15,53 @@
 # Constant Variables
 tStamp=$(date +%Y%m%d_%H%M)
 logfile=$HOME/cronlogs/cron_run_$tStamp
+
 spacer='------------//------------------'
+
+# Function runs all browser cleaners
+func_browser_cleaner (){
+    IFS=$'\n'
+    get_pids=$(ps aux)
+    get_chrome_pid=$(cat ${get_pids} | grep -E '/google.*/chrome')
+    get_brave_pid=$(cat ${get_pids}  |  grep -E '/brave.*/brave')
+    get_firefox_pid=$(cat ${get_pids}  |  grep -E '/firefox.*/firefox')
+
+    #echo "DEBUG >> chrome: ${get_chrome_pid}"
+    #echo "DEBUG >> brave: $get_brave_pid"
+    #echo "DEBUG >> ff: $get_firefox_pid"
+
+    if [ -z "$get_chrome_pid" ]; then
+        for cleaner in $(bleachbit -l | command grep chrome)
+	do
+	    bleachbit -c $cleaner 
+	    printf "\nRan browser cleaner for Chrome"
+	done
+    else
+        printf "\nRunning Chrome process detected...skipping cleanup"
+    fi
+
+    if [ -z "$get_brave_pid" ]; then
+        for cleaner in $(bleachbit -l | command grep brave)
+	do
+	    bleachbit -c $cleaner
+	    printf "\nRan browser cleaner for Brave"
+	done
+    else
+        printf "\nRunning Brave process detected...skipping cleanup"
+    fi
+
+    if [ -z "$get_firefox_pid" ]; then
+        for cleaner in $(bleachbit -l | command grep firefox)
+	do
+	    bleachbit -c $cleaner
+	    printf "\nRan browser cleaner for Firefox"
+	done
+    else
+        printf "\nRunning Firefox process detected...skipping cleanup"
+    fi
+
+}
+	    
 
 
 # This function is used to remove all entries from the "Recent Files" of file manager
@@ -114,6 +160,7 @@ func_clear_files_recent
 func_delete_history 
 func_trash_empty 
 func_truncate_vlc_history 
+#func_browser_cleaner
 
 #bleachbit functions should not append to $logfile here
 file $(command bleachbit -v) &>/dev/null
