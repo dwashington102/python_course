@@ -1,31 +1,16 @@
 #!/usr/bin/bash
 PORT=1445
 
-command -v /usr/sbin/smbd &>/dev/null
-if [ $? == 0 ]; then
-	sambaVer=$(/usr/sbin/smbd -V | awk -F"Version " '{ print substr ($2,1,4) }')
-	if [ 1 -eq $(echo "4.15 > $sambaVer" | bc -l) ]; then
-	    printf "\nSamba Version: $sambaVer is less than 4.15"
-	    printf "\nDEBUG >>> Full Version of Samba $(/usr/sbin/smbd -V)"
-	    SMBFLAGS="-DFS"
-	    printf "\nCommand: $smbcmd\n"
-	else
-	    printf "\nSamba Version: $sambaVer is at 4.15 or greater"
-	    printf "\nDEBUG >>> Full Version of Samba $(/usr/sbin/smbd -V)"
-	    SMBFLAGS="-DF --debug-stdout"
-	    printf "\nCommand: $smbcmd\n"
-	fi
+# Confirm version samba installed and set the command options depending on samba version
+sambaVer=$(/usr/sbin/smbd -V | awk -F"Version " '{ print substr ($2,1,4) }')
+if [ 1 -eq $(echo "4.14 >= $sambaVer" | bc -l) ]; then
+	smbflags="-DFS"
 else
-	printf "\nSamba is not installed\n"
-	exit 1
-fi   
-
-
-
-
+	smbflags="-DF --debug-stdout"
+fi
 
 # Checks
-if pgrep -f "/opt/ibm-kvm-samba/bin/ibm-file-sharing ${SMBFLAGS} -s $HOME/.ibm-kvm-samba/smb.conf"; then
+if pgrep -f "/opt/ibm-kvm-samba/bin/ibm-file-sharing ${smbflags} -s $HOME/.ibm-kvm-samba/smb.conf"; then
     echo ibm-kvm-samba already running
     exit 0
 fi
@@ -111,9 +96,9 @@ sleep 10
 # Keep running termination takes place
 while true
 do
-    if ! pgrep -f "/opt/ibm-kvm-samba/bin/ibm-file-sharing ${SMBFLAGS} -s $HOME/.ibm-kvm-samba/smb.conf"; then
+    if ! pgrep -f "/opt/ibm-kvm-samba/bin/ibm-file-sharing ${smbflags} -s $HOME/.ibm-kvm-samba/smb.conf"; then
         [ -f $HOME/.ibm-kvm-samba/smbd-smb.conf.pid ] && rm -f $HOME/.ibm-kvm-samba/smbd-smb.conf.pid
-        /opt/pseudohostname/fakehostname -l /opt/pseudohostname/libfakehostname.so KVM /opt/ibm-kvm-samba/bin/ibm-file-sharing $SMBFLAGS -s $HOME/.ibm-kvm-samba/smb.conf
+        /opt/pseudohostname/fakehostname -l /opt/pseudohostname/libfakehostname.so KVM /opt/ibm-kvm-samba/bin/ibm-file-sharing $smbflags -s $HOME/.ibm-kvm-samba/smb.conf
         sleep 2
     fi
 done
