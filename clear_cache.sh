@@ -2,6 +2,8 @@
 # 2021-01-15
 # Script clears cache items
 # 
+# 2022-03-15:
+# - Created browser_cleaner()
 #
 # 2022-01-21:
 # - Update MAIN() added if statement to check if $HOME/cronlogs exists before 'touch $logfile' 
@@ -20,46 +22,52 @@ spacer='------------//------------------'
 
 # Function runs all browser cleaners
 func_browser_cleaner (){
+    printf "\nStarting function....${FUNCNAME}\n"
     IFS=$'\n'
-    get_pids=$(ps aux)
-    get_chrome_pid=$(cat ${get_pids} | grep -E '/google.*/chrome')
-    get_brave_pid=$(cat ${get_pids}  |  grep -E '/brave.*/brave')
-    get_firefox_pid=$(cat ${get_pids}  |  grep -E '/firefox.*/firefox')
+    get_pids=( $(ps aux) )
+    get_chrome_pid=$(echo "${get_pids[*]}" | grep -E '/google.*/chrome')
+    get_brave_pid=$(echo "${get_pids[*]}" | grep -E '/brave.*/brave')
+    get_ff_pid=$(echo "${get_pids[*]}" | grep -E '/firefox.*/firefox')
 
-    #echo "DEBUG >> chrome: ${get_chrome_pid}"
-    #echo "DEBUG >> brave: $get_brave_pid"
-    #echo "DEBUG >> ff: $get_firefox_pid"
-
+    printf "\n"
     if [ -z "$get_chrome_pid" ]; then
+	printf "\nChrome PID not found...running cleaners"
+    	printf "\n"
         for cleaner in $(bleachbit -l | command grep chrome)
 	do
 	    bleachbit -c $cleaner 
-	    printf "\nRan browser cleaner for Chrome"
 	done
+	printf "\nRan browser cleaner for Chrome"
     else
         printf "\nRunning Chrome process detected...skipping cleanup"
     fi
 
+    printf "\n"
     if [ -z "$get_brave_pid" ]; then
+	printf "\nBrave PID not found...running cleaners"
+    	printf "\n"
         for cleaner in $(bleachbit -l | command grep brave)
 	do
 	    bleachbit -c $cleaner
-	    printf "\nRan browser cleaner for Brave"
 	done
+	printf "\nRan browser cleaner for Brave"
     else
         printf "\nRunning Brave process detected...skipping cleanup"
     fi
 
-    if [ -z "$get_firefox_pid" ]; then
+    printf "\n"
+    if [ -z "$get_ff_pid" ]; then
+	printf "\nFirefox PID not found...running cleaners"
+    	printf "\n"
         for cleaner in $(bleachbit -l | command grep firefox)
 	do
 	    bleachbit -c $cleaner
-	    printf "\nRan browser cleaner for Firefox"
 	done
+	printf "\nRan browser cleaner for Firefox"
     else
         printf "\nRunning Firefox process detected...skipping cleanup"
     fi
-
+    printf "\n$FUNCNAME rc=$?\n" 
 }
 	    
 
@@ -160,7 +168,7 @@ func_clear_files_recent
 func_delete_history 
 func_trash_empty 
 func_truncate_vlc_history 
-#func_browser_cleaner
+func_browser_cleaner
 
 #bleachbit functions should not append to $logfile here
 file $(command bleachbit -v) &>/dev/null
