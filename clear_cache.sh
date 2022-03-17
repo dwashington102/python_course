@@ -24,7 +24,7 @@ spacer='------------//------------------'
 func_browser_cleaner (){
     printf "\nStarting function....${FUNCNAME}\n"
     IFS=$'\n'
-    get_pids=( $(ps aux) )
+    get_pids=( $(ps auxh) )
     get_chrome_pid=$(echo "${get_pids[*]}" | grep -E '/google.*/chrome')
     get_brave_pid=$(echo "${get_pids[*]}" | grep -E '/brave.*/brave')
     get_ff_pid=$(echo "${get_pids[*]}" | grep -E '/firefox.*/firefox')
