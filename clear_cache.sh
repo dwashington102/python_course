@@ -18,7 +18,7 @@
 tStamp=$(date +%Y%m%d_%H%M)
 logfile=$HOME/cronlogs/cron_run_$tStamp
 
-spacer='------------//------------------'
+spacer='-------------//-------------------'
 
 # Function runs all browser cleaners
 func_browser_cleaner (){
