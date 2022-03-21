@@ -12,7 +12,6 @@ Usage: $0 [--help|--all|--dev]
 EOF
 }
 
-
 get_all (){
 # Write each interface to an array
 get_intface=($(ip a | command grep mtu | awk -F":" '{print $2}'))
