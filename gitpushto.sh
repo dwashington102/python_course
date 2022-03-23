@@ -4,14 +4,15 @@
 
 # Changes:
 # Date: Description of change
+# 2022-03-23 - Added p50-raptor to @HostList
 # 2022-02-04 - Updated MAIN() in order to tee to LOGFILE
 
 tstamp=$(date +%Y%m%d_%H%M%S)
 mkdir -p $HOME/logs
 LOGFILE=git_pushto_${tstamp}
 touch $HOME/logs/$LOGILE
-declare -a HostList=("k430-raptor" "x1-raptor" "p340-dove-docker" "p340-dove-fed35")
-declare -a UserList=("k430user" "x1user" "washingd" "washingd")
+declare -a HostList=("k430-raptor" "x1-raptor" "p340-dove-docker" "p340-dove-fed35" "p50-raptor")
+declare -a UserList=("k430user" "x1user" "washingd" "washingd" "p50user")
 
 func_set_colors () {
     bold=$(tput bold)
