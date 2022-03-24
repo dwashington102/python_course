@@ -79,6 +79,9 @@ function confirm_daemon() {
 }
 
 MAIN (){
+    if [ ! -d /root/cronlogs ]; then
+	mkdir /root/cronlogs
+    fi
     confirm_daemon
     printf "\n"
 }
