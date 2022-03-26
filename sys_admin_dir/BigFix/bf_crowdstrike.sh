@@ -12,6 +12,7 @@ get_service_status (){
         systemctl enable falcon-sensor.service --now
     elif [ "$get_status" == "enabled" ]; then
         printf "\nfalcon-sensor.service is enabled"
+        systemctl start falcon-sensor.service
     else
         printf "\nfalcon-sensor.service status is invalid"
     fi
