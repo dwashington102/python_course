@@ -25,7 +25,11 @@ get_rpm (){
         if [ -f /var/opt/BESClient/__BESData/CustomSite_IBM_ITCS_300_-28Linux-29/falcon-sensor-el8.run ]; then
 	    /var/opt/BESClient/__BESData/CustomSite_IBM_ITCS_300_-28Linux-29/falcon-sensor-el8.run NONEU 
 	    exit 0
-	    fi
+	else
+	    echo "falcon-sensor-el8.run NOT FOUND"
+	    exit 2 
+	fi
+
     fi
 }
 
