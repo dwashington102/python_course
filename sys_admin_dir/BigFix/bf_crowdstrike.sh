@@ -15,18 +15,19 @@ get_service_status (){
         systemctl start falcon-sensor.service
     else
         printf "\nfalcon-sensor.service status is invalid"
+	exit 1
     fi
 }
 
 get_rpm (){
     check_install=$(rpm -qa falcon-sensor)
     if [ -z "$check_install" ]; then
-        echo "falcon-sensor RPM not installed...performing installation"
+        echo "falcon-sensor RPM not installed...attempting installation"
         if [ -f /var/opt/BESClient/__BESData/CustomSite_IBM_ITCS_300_-28Linux-29/falcon-sensor-el8.run ]; then
 	    /var/opt/BESClient/__BESData/CustomSite_IBM_ITCS_300_-28Linux-29/falcon-sensor-el8.run NONEU 
 	    exit 0
 	else
-	    echo "falcon-sensor-el8.run NOT FOUND"
+	    echo "Installation binary falcon-sensor-el8.run NOT FOUND"
 	    exit 2 
 	fi
 
@@ -39,7 +40,7 @@ MAIN () {
     if [ "$?" == "0" ]; then
         get_service_status
     else
-	    /var/opt/BESClient/__BESData/CustomSite_IBM_ITCS_300__-28Linux-29/falcon-sensor-el8.run NONEU
+        /var/opt/BESClient/__BESData/CustomSite_IBM_ITCS_300__-28Linux-29/falcon-sensor-el8.run NONEU
 	exit 0
     fi
     printf "\n"
