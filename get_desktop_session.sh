@@ -25,7 +25,8 @@ func_get_xdisplay (){
 
 func_check_gnome (){
     GDESKTOP=""
-    ps aux | command grep -E '^.*gnome-session$' &>/dev/null
+    ps -u $USER | command grep -E '^.*gnome-session.*$' &>/dev/null
+    #ps aux | command grep -E '^.*gnome-session.*$' &>/dev/null
     if [ $? == "0" ]; then
         GDESKTOP="GNOME"
         printf "\nGDESKTOP: $GDESKTOP"
@@ -36,7 +37,9 @@ func_check_gnome (){
 
 func_check_kde (){
     KDESKTOP=""
-    ps aux | command grep -E '^.*kded[[:digit:]]$' &>/dev/null
+    printf "\nDEBUG >>> entered check_kde()\n"
+    #ps aux | command grep -E '^.*kded[[:digit:]]$' &>/dev/null
+    ps -u $USER | command grep -E '^.*kded[[:digit:]].*$' &>/dev/null
     if [ $? == "0" ]; then
         KDESKTOP="KDE"
         printf "\nKDESKTOP: $KDESKTOP"
