@@ -9,7 +9,6 @@ git_clone_actions () {
     IFS=$'\n'
     for gitRepo in "${gitRepoList[@]}"
     do
-        echo "DEBUG >>> $gitRepo"
 	    git clone "$gitRepo" &>>"$logfile"
 	    printf "git '$gitRepo' rc=$?\n\n"
     done
