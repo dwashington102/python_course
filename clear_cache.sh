@@ -2,6 +2,8 @@
 # 2021-01-15
 # Script clears cache items
 # 
+# 2022-03-30:
+# - Added scriptName variable
 # 2022-03-15:
 # - Created browser_cleaner()
 #
@@ -16,7 +18,8 @@
 
 # Constant Variables
 tStamp=$(date +%Y%m%d_%H%M)
-logfile=$HOME/cronlogs/cron_run_$tStamp
+scriptName=`basename "$0"`
+logfile=$HOME/cronlogs/cron_run-"$scriptName"_$tStamp
 
 spacer='-------------//-------------------'
 
