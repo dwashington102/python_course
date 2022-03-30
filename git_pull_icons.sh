@@ -1,4 +1,11 @@
-#!/bin/sh
+#!/usr/bin/sh
+# 2022-03-29
+
+:<< 'COMMENT'
+Script performs a 'git clone' of various repos that contains icons used on the workstation
+allows user to automate the process of keeping icons updated with the latest version
+COMMENT
+
 
 tStamp=$(date +%Y%m%d_%H%M)
 logfile=$HOME/cronlogs/cronlog_"$tStamp"
