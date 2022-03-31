@@ -9,20 +9,28 @@ Version 1.0
 Date: Sat 03 Jul 2021 05:01:14 AM CDT
 '
 
+# 30-Mar-2022: Updated 
+
 tStamp=`date +%Y%m%d_%H%M`
 logDir=/root/cronlogs/
+scriptName=`basename "$0"`
 logfile=${logDir}/${tStamp}_NetworkManager_DOWN.log
+
+
+
+
+
 
 # get_status_sysd function: Used to confirm status of NetworkManager and restart NetworkManager when the server uses systemd
 func_get_status_sysd () {
     # Variable set_rc_sysd=1 indicates the script expects the service to be down and will enter the loop to restart the service if VARIABLE get_rc_sysd=1
     set_rc_sysd=1
-    systemctl status sshd | command grep "Active:.*active.*running.*since" 
+    systemctl status NetworkManager.service | command grep "Active:.*active.*running.*since" 
     get_rc_sysd=$?
 
     if [[ $get_rc_sysd == $set_rc_sysd ]]; then
-        printf "\nNetwork Manager (sysd) currently not running...restarting" > ${logfile}
-        systemctl start NetworkManager
+        printf "\nNetwork Manager (sysd) currently not running...restarting" > $logfile
+        systemctl start NetworkManager.service
         start_rc_sysd=$?
         if [[ $start_rc_sysd == 0 ]]; then
             printf "\nNetworkManager (sysd) successfully started"
@@ -35,7 +43,7 @@ func_get_status_sysd () {
     elif [[ $get_rc_sysd == 0 ]]; then
         printf "\nNetwork Manager is currently running" 
     else
-        printf "ERROR encountered unable to retrieve NetworkManager status"
+        printf "ERROR encountered unable to retrieve NetworkManager status" >> $logfile
     fi
     printf "\n"
 }
@@ -60,29 +68,18 @@ func_get_status_initd () {
     fi
 }
 
-function confirm_daemon() {
-    # Function is used to confirm if the host server is using systemd or initd
-    # A host server running systemd will show systemd as PID 1
-    set_sysd_pid=1
-    get_sysd_pid=`ps aux | command grep -v grep | command grep -m 1 systemd | awk '{print $2}'`
-    if [[ $get_sysd_pid == $set_sysd_pid ]]; then
-        # Calling function when server uses systemd
-        func_get_status_sysd
-    elif [[ $get_sys_pid != $set_sysd_pid ]]; then
-        # Calling function when server uses initd
-        func_get_status_initd
-    else
-        printf "Invalid result '$get_sys_pid' in function: ${FUNCNAME[0]}"
-        printf "Unexpected results encountered...exiting now\n"
-        exit 1
-    fi
-}
-
 MAIN (){
     if [ ! -d /root/cronlogs ]; then
 	mkdir /root/cronlogs
     fi
-    confirm_daemon
+
+    set_sysd_pid=1
+    get_sysd_pid=$(ps -e | command grep -m 1 systemd | awk '{print $1}')
+    if [ "$get_sysd_pid" =  "1" ]; then
+        func_get_status_sysd
+    else
+        func_get_status_initd
+    fi
     printf "\n"
 }
 
