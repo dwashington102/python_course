@@ -1,9 +1,6 @@
 #!/bin/bash  -x
 
 bf_temp_dir="/tmp/bf_upgrade-chrome"
-logfile="$bf_temp_dir/bf_upgrade_chome.log"
-
-bf_temp_dir="/tmp/bf_upgrade-chrome"
 logfile="$bf_temp_dir/bf_upgrade_chrome.log"
 
 check_dnf (){
