@@ -277,9 +277,6 @@ function MAIN (){
 
     cd $GITDIR
 
-    func_check_pythoncourse
-    func_print_spacer
-    
     func_check_zshsyntax
     func_print_spacer
     
@@ -287,6 +284,9 @@ function MAIN (){
     func_print_spacer
     
     func_rename_dockerbuild
+    func_print_spacer
+    
+    func_check_pythoncourse
     func_print_spacer
     
     func_remove_old_dirs
