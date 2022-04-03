@@ -158,10 +158,6 @@ func_truncate_vlc_history (){
 
 
 MAIN() {
-which bleachbit
-if [ "$?" != "0" ]; then
-    echo "bleachbit is not installed...exiting"
-fi
 
 if [ -d $HOME/cronlogs ]; then
 	touch $logfile
