@@ -29,7 +29,7 @@ func_set_log (){
 # cd to the Gnome extensions directory and backup the subdirectories to single compressed file
 backup_extDir() {
     if [ -d $GNOMEDIR ]; then
-	    cd $GNOMEDIR
+	    pushd $GNOMEDIR
 	    if [ -d $BACKUPDIR ]; then
 		tar -zcf $HOME/backups/extensions_${tstamp}.tar.gz ./.
 		printf "\ntar command rc=$?"
@@ -49,7 +49,7 @@ backup_extDir() {
 
 # cd to the GIT_REPO directory and remove all backups subdirectories older than 30 days.
 clean_gitDir() {
-    cd $GITREPO
+    pushd $GITREPO
     if [[ $? != 0 ]]; then
         printf "\ncd to GIT REPO FAILED"
 	    exit 1
