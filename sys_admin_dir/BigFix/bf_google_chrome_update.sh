@@ -43,20 +43,18 @@ check_network (){
 do_upgrade (){
     get_chrome_install=( $(rpm -qa --qf "%{NAME}\n" | grep google-chrome) )
     if [ ${#get_chrome_install[*]} -ne 0 ]; then
-	    echo "Downloading google-chrome packages"
-	    dnf upgrade --downloadonly ${get_chrome_install[*]} --downloaddir "$PWD" --repo google-chrome -y
-#	    pkg_names=( $(ls -1 *rpm) )
+	echo "Downloading google-chrome packages"
+	dnf upgrade --downloadonly ${get_chrome_install[*]} --downloaddir "$PWD" --repo google-chrome -y
         packages=$(find . -name '*.rpm' -exec basename {} \;)
         [ -n "$packages" ] && rpm -Fvh $packages
-	    #echo "Performing upgrade of google-chrome packages"
-	    #rpm -Fvh ${pkg_names[*]}
-	    echo "Completed upgrade of google-chrome packages"
+	echo "Completed upgrade of google-chrome packages"
     else
         echo "No google-chrome packages installed"
     fi
 }
 
 MAIN (){
+    [ -d "$bf_temp_dir" ] && 
     touch "$logfile"
     (
 	echo "Starting upgrade of Google Chrome Packages"
