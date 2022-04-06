@@ -1,12 +1,12 @@
-#!/bin/bash 
+#!/bin/bash
 
-bf_temp_dir="/tmp/bf_upgrade-chrome"
+bf_temp_dir="/tmp/bf_linuxatibm"
 logfile="$bf_temp_dir/bf_upgrade_chrome.log"
 
 check_dnf (){
     IFS=$'\n'
     is_dnf_running=( $(ps -e | grep -E '(dnf|rpm)$') )
-        if [ "${#is_dnf_running[@]}" -ne 0 ]; then
+    if [ "${#is_dnf_running[@]}" -ne 0 ]; then
         echo "Another DNF process is running...exiting"
         printf "\nPIDs: \n%s" "${is_dnf_running[*]}"
         exit 4
@@ -18,7 +18,7 @@ backup_rpmdb () {
     get_openfiles=( $(lsof -w +D /var/lib/rpm) )
     if [ "${#get_openfiles[@]}" -ne 0 ]; then
             echo "Directory /var/lib/rpm has open files...exiting"
-        printf "\nOpen files: %s" "${get_openfiles[*]}"
+            printf "\nOpen files: %s" "${get_openfiles[*]}"
         exit 2
     else
         echo "Backing up RPM database (/var/lib/rpm)"
@@ -32,32 +32,39 @@ backup_rpmdb () {
 }
 
 check_network (){
-    ping -c2 -i2 dl.google.com &>/dev/null
+    ping -c2 -i2 dl.google.com
     if [ "$?" != "0" ]; then
-       if ["$(curl --connect-timeout 10 chrome.google.com)" != "0" ]; then
-                echo "Unable to connect to Google repo...exiting"
-        exit 1
-       fi
-        else
-        echo "Network connection to google.com successful"
+        if [ "$(curl -s --connect-timeout 10 dl.google.com)" != "0" ]; then
+            echo "Unable to connect to Google repo...exiting"
+            exit 1
+        fi
+    else
+        echo "Network connection to dl.google.com repo successful"
     fi
 }
 
 do_upgrade (){
     get_chrome_install=( $(rpm -qa --qf "%{NAME}\n" | grep google-chrome) )
     if [ ${#get_chrome_install[*]} -ne 0 ]; then
-    echo "Downloading google-chrome packages"
-    dnf upgrade --downloadonly ${get_chrome_install[*]} --downloaddir "$PWD" --repo google-chrome -y
-    packages=$(find . -name '*.rpm' -exec basename {} \;)
-    [ -n "$packages" ] && rpm -Fvh --test $packages || echo "No RPMs found...exiting ; exit 8"
-    echo "Completed upgrade of google-chrome packages"
+        echo "Downloading google-chrome packages"
+        dnf upgrade --downloadonly ${get_chrome_install[*]} --downloaddir "$PWD" --repo google-chrome -y
+        pkg_names=$(find . -name '*.rpm' -exec basename {} \;) 
+        if [ -n "$pkg_names" ]; then
+            echo "Performing upgrade of google-chrome packages"
+            rpm -Fvh --test "$pkg_names" 
+            echo "Completed upgrade of google-chrome packages"
+        else 
+            echo "No RPMs found...exiting"
+            exit 8
+        fi
     else
-    echo "No google-chrome packages installed"
+        echo "No google-chrome packages installed"
     fi
 }
 
+
 MAIN (){
-    [ -d "$bf_temp_dir" ] && 
+    [ ! -d $bf_temp_dir ] && mkdir -p "$bf_temp_dir" 
     touch "$logfile"
     (
     echo "Starting upgrade of Google Chrome Packages"
