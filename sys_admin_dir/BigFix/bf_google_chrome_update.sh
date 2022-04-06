@@ -1,5 +1,14 @@
 #!/bin/bash
 
+
+<< 'EXITCODES'
+exit 1: Unable to ping/curl dl.google.com
+exit 2: RPM db directory (/var/lib/rpm) has open files
+exit 3: tar command used to backup RPM db failed
+exit 4: Another dnf process is running
+exit 8: After dnf download no RPM packages found in directory
+EXITCODES
+
 bf_temp_dir="/tmp/bf_linuxatibm"
 logfile="$bf_temp_dir/bf_upgrade_chrome.log"
 
