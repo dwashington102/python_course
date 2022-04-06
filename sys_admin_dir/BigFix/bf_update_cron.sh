@@ -31,4 +31,3 @@ MAIN (){
 }
 
 MAIN
-exit 0

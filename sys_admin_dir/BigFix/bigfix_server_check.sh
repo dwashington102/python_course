@@ -1,4 +1,4 @@
-#!/bin/sh
+e!/bin/sh
 # 
 # Script checks the BigFix servers for the following:
 : <<'COMMENTS'
@@ -21,4 +21,3 @@ MAIN (){
 }
 
 MAIN
-exit 0
