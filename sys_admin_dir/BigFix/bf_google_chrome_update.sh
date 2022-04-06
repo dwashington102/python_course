@@ -8,18 +8,17 @@ check_dnf (){
     is_dnf_running=( $(ps -e | grep -E '(dnf|rpm)$') )
 	if [ "${#is_dnf_running[@]}" -ne 0 ]; then
         echo "Another DNF process is running...exiting"
-        for i in "${is_dnf_running[@]}"
-            do
-                echo "PID: $i"
-            done
+        printf "\nPIDs: \n%s" "${is_dnf_running[*]}"
         exit 4
     fi
 }
 
 backup_rpmdb () {
+	IFS=$'\n'
 	get_openfiles=( $(lsof -w +D /var/lib/rpm) )
 	if [ "${#get_openfiles[@]}" -ne 0 ]; then
             echo "Directory /var/lib/rpm has open files...exiting"
+	    printf "\nOpen files: %s" "${get_openfiles[*]}"
 	    exit 2
 	else
 	    echo "Backing up RPM database (/var/lib/rpm)"
@@ -35,8 +34,12 @@ backup_rpmdb () {
 check_network (){
 	ping -c2 -i2 dl.google.com &>/dev/null
 	if [ "$?" != "0" ]; then
-	    echo "Unable to connect to Google repo...exiting"
-	    exit 1
+	   if ["$(curl --connect-timeout 10 chrome.google.com)" != "0" ]; then
+                echo "Unable to connect to Google repo...exiting"
+	        exit 1
+	   fi
+        else
+	    echo "Network connection to google.com successful"
 	fi
 }
 
@@ -57,13 +60,13 @@ MAIN (){
     [ -d "$bf_temp_dir" ] && 
     touch "$logfile"
     (
-	echo "Starting upgrade of Google Chrome Packages"
+    echo "Starting upgrade of Google Chrome Packages"
     pushd "$bf_temp_dir" &>/dev/null
-	check_network
-    backup_rpmdb
-	check_dnf
-    do_upgrade
-	echo "Script completed"
+    check_network
+    #backup_rpmdb
+    #check_dnf
+    #do_upgrade
+    echo "Script completed"
     ) > $logfile
 }
 
