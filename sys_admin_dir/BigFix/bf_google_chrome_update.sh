@@ -63,12 +63,11 @@ MAIN (){
     echo "Starting upgrade of Google Chrome Packages"
     pushd "$bf_temp_dir" &>/dev/null
     check_network
-    #backup_rpmdb
-    #check_dnf
-    #do_upgrade
+    backup_rpmdb
+    check_dnf
+    do_upgrade
     echo "Script completed"
     ) > $logfile
 }
 
 MAIN
-exit 0
