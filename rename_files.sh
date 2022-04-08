@@ -67,7 +67,7 @@ printf "\nDEBUG >>> entered func ${FUNCNAME[0]}\n"
     for get_fileName in $(ls -1 *.${ext_type})
     #for get_fileName in `ls -1 *.${ext_type} | wc -l`
     do
-	printf "DEBUG >>> ${get_fileName}\n"
+    printf "DEBUG >>> ${get_fileName}\n"
         sleep 10
         if [ ${get_fileName} -lt 1 ]; then
         #if [ $? -eq 1 ]; then
@@ -129,4 +129,3 @@ MAIN () {
 
 
 MAIN
-exit 0

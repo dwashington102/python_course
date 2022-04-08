@@ -18,9 +18,6 @@ logfile=${logDir}/${tStamp}_NetworkManager_DOWN.log
 
 
 
-
-
-
 # get_status_sysd function: Used to confirm status of NetworkManager and restart NetworkManager when the server uses systemd
 func_get_status_sysd () {
     # Variable set_rc_sysd=1 indicates the script expects the service to be down and will enter the loop to restart the service if VARIABLE get_rc_sysd=1
@@ -70,7 +67,7 @@ func_get_status_initd () {
 
 MAIN (){
     if [ ! -d /root/cronlogs ]; then
-	mkdir /root/cronlogs
+    mkdir /root/cronlogs
     fi
 
     set_sysd_pid=1
@@ -85,4 +82,3 @@ MAIN (){
 
 
 MAIN
-exit 0
