@@ -20,7 +20,7 @@ chmod +x /tmp/bf_reregister.py
 
 #Check if zenity window is open
 func_check_zenity () {
-    command ps -ef | command grep -E 'zenity.*Registration\ GUI'
+    pgrep -f 'zenity.*Registration\ GUI'
 	if [ $? == "0" ]; then
         zenity --warning --width=400 --height=200 --text '<b><span foreground="orange">***** THIS COMPUTER IS NOT REGISTERED *****\n</span></b>\nRegistration is required when accessing internal IBM resources.\n\nMinimize all windows and click OK button to launch Registration GUI.\n\nComplete the Registration GUI' &>/dev/null 
 	    exit 0

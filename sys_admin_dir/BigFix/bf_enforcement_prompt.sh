@@ -8,7 +8,7 @@ func_copy_beekeeper (){
 
 
 func_get_email (){
-    command ps axu | command grep -E 'zenity.*Registration GUI' &>/dev/null
+    pgrep -f 'zenity.*Registration GUI' &>/dev/null
     if [ $? == "0" ]; then
         getEmail=$(zenity --entry --width=400 --height=200 --text "***** THIS COMPUTER IS NOT REGISTERED *****\n\nRegistration is required when accessing internal IBM resources.\n\n" 2>/dev/null)
 	if [ ! -z "$getEmail" ]; then
