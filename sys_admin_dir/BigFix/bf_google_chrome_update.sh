@@ -11,6 +11,7 @@ EXITCODES
 
 bf_temp_dir="/tmp/bf_linuxatibm"
 logfile="$bf_temp_dir/bf_upgrade_chrome.log"
+timeStamp=$(date +%Y%m%d_%H%M)
 
 check_dnf (){
     IFS=$'\n'
@@ -56,7 +57,7 @@ do_upgrade (){
     get_chrome_install=( $(rpm -qa --qf "%{NAME}\n" | grep google-chrome) )
     if [ ${#get_chrome_install[*]} -ne 0 ]; then
         echo "Downloading google-chrome packages"
-        dnf upgrade --downloadonly ${get_chrome_install[*]} --downloaddir "$PWD" --repo google-chrome -y
+        dnf upgrade -v --downloadonly ${get_chrome_install[*]} --downloaddir "$PWD" --repo google-chrome -y
         pkg_names=$(find . -name '*.rpm' -exec basename {} \;) 
         if [ -n "$pkg_names" ]; then
             echo "Performing upgrade of google-chrome packages"
@@ -76,7 +77,7 @@ MAIN (){
     [ ! -d $bf_temp_dir ] && mkdir -p "$bf_temp_dir" 
     touch "$logfile"
     (
-    echo "Starting upgrade of Google Chrome Packages"
+    echo "Starting upgrade of Google Chrome Packages --- $timeStamp"
     pushd "$bf_temp_dir" &>/dev/null
     check_network
     backup_rpmdb
