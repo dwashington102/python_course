@@ -49,4 +49,3 @@ MAIN () {
 
 MAIN
 printf "\n"
-exit 0
