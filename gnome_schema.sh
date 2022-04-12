@@ -29,4 +29,3 @@ MAIN (){
 MAIN
 printf "\nGenerated output file: %s\n"  "${LOGFILE}"
 head -5 "${LOGFILE}"
-exit 0
