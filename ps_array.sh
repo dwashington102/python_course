@@ -10,5 +10,4 @@ do
 	count=$((count + 1))
 done
 printf "\n"
-exit 0
 

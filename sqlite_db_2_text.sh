@@ -99,4 +99,3 @@ printf "\n"
 }
 
 MAIN
-exit 0
