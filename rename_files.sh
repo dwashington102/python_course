@@ -34,8 +34,12 @@ func_get_choice () {
 
 
 func_get_ext () {
-    printf "Input Ext.:\t"
-    read ext_type
+    if [ -z $1 ]; then
+        printf "Input Ext.:\t"
+        read ext_type
+    else
+    ext_type="$1"
+    fi
 
 }
 
@@ -44,7 +48,6 @@ IFS=$'\n'
 #ls -1 *.${ext_type}  > /dev/null 2>&1
 file_count=`find . -maxdepth 1 -type f -name "*.${ext_type}" | wc -l`
 if [ ${file_count} -gt 0 ]; then
-    printf "\nDEBUG >>> entered func ${FUNCNAME[0]} --- entered if"
     func_rename_files
 else
     #ls -1 *${ext_type}* > /dev/null 2>&1 
@@ -61,15 +64,13 @@ fi
 
 
 func_rename_files() {
-printf "\nDEBUG >>> entered func ${FUNCNAME[0]}\n"
     file_count=1
     tot_files=0
-    for get_fileName in $(ls -1 *.${ext_type})
+    #for get_fileName in $(ls -1 *.${ext_type})
+    for get_fileName in $(find . -maxdepth 1 -type f -name "*.${ext_type}" -exec basename {} \;)
     #for get_fileName in `ls -1 *.${ext_type} | wc -l`
     do
-    printf "DEBUG >>> ${get_fileName}\n"
-        sleep 10
-        if [ ${get_fileName} -lt 1 ]; then
+        if [ -z $get_fileName ]; then
         #if [ $? -eq 1 ]; then
             printf "\nThe ls command failed after initially running successfully"
             printf '\n'
@@ -121,6 +122,9 @@ func_rename_files_wildcard() {
 
 
 MAIN () {
+    if [ ! -z "$1" ]; then
+        ext_type="$1"
+    fi
     func_set_colors
     func_get_ext
     func_get_files
