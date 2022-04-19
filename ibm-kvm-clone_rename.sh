@@ -26,6 +26,7 @@ if [ ${#get_pkg_names[*]} -gt 0 ]; then
             # in double quotes
             new_name=$(echo $pkg_name | sed "s/-a[[:alpha:]]-/-$name_count-/")
             printf "\n\t\t - New Name: %s\n" "$new_name"
+            # mv "$pkg_name" "$new_name"    # <<<<----Uncomment this line in order to rename files
             count=$((count +1))
         done
         printf "\n"
