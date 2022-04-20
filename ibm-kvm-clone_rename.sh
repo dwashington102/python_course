@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-<< 'COMMENT'
+:<< 'COMMENT'
 We have a list of RPMs with this naming convention
 ibm-kvm-clone-win10-aw-20210715-1.x86_64.rpm
 ibm-kvm-clone-win10-ax-20210715-1.x86_64.rpm
