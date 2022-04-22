@@ -1,0 +1,48 @@
+README
+
+
+
+*** Trouble with podman and named volumes ***
+- 2022-04-22
+If the named volume mount uses any "Options" it appears the rootless container 
+has problems creating when attempting to mount the volume.
+
+Gather a list of volumes:
+podman volume ls
+
+Inspect the mount point:
+podman volume  inspect mnt-point-name
+
+Mount points where the "Options" section does not contain any settings appear like this:
+"Name": "mydata",
+        "Driver": "local",
+        "Mountpoint": "/home/p340user/.local/share/containers/storage/volumes/mydata/_data",
+        "CreatedAt": "2021-06-28T07:39:46.103445859-05:00",
+        "Labels": {
+            "db1": "mydata"
+        },
+        "Scope": "local",
+        "Options": {}
+
+Mount points where the "Options" section does contain settings appear like this:
+"Name": "testdb",
+        "Driver": "local",
+        "Mountpoint": "/home/p340user/.local/share/containers/storage/volumes/testdb/_data",
+        "CreatedAt": "2022-04-22T05:41:39.433694942-05:00",
+        "Labels": {},
+        "Scope": "local",
+        "Options": {
+            "device": "/opt/dockerVolumes/mydata",
+            "o": "bind",
+            "type": "none"
+        }
+
+Attempts to run a container using volume "testdb" fails with a permission issue:
+$ podman run --rm -it --name TESTDB -w "/data" -v testdb:/data 300e315adb2f '/bin/sh'
+Error: error mounting volume testdb for container e55b8dddb879bcd634ce7b275ba332b73f1d43adabef543c14c222d4132563ea: cannot mount volumes without root privileges: operation requires root privileges
+
+Attempts to run a container using volume "mydata" (which does not have any options set) are successful:
+$ podman run --rm -it --name TESTDB -w "/data" -v mydata:/data 300e315adb2f '/bin/sh'
+sh-4.4#
+
+
