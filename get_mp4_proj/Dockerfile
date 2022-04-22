@@ -28,7 +28,8 @@ RUN mkdir -p /app
 RUN mkdir -p /data
 
 # Copy files from HOST to image
-ADD ./get_mp4_proj/get* /bin/
+# Requires FQN (/home/washingd/GIT_REPO/python_course/get_mp4_proj) OR run build command in the FQN path
+ADD ./get* /bin/
 
 # When connecting to container start in this directory
 WORKDIR /data
