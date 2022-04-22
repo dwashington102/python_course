@@ -88,7 +88,7 @@ func_geturl() {
 
 func_get_imageId() {
     # Gather a list of docker images repo name "getmp4"
-    $DOCKERCMD images getmp4 | grep -m1 -v ^REPO  > /dev/null 2>&1
+    $DOCKERCMD images | grep getmp4 | grep -m1 -v ^REPO  > /dev/null 2>&1
     if [ "$?"  == "0" ]; then
 	# Added grep -m1 in order to restrict the number of images being returned
         get_imgId=`$DOCKERCMD images | grep -v ^REPO | grep -m1 getmp4 | awk '{print $3}'`
@@ -113,7 +113,7 @@ func_run() {
         sleep 1
         #printf "\nCreating Docker Container"
         # docker run statement is adding an arguement after the Image-ID
-        $DOCKERCMD container run -d --env TERM=dumb --rm --name ${getUserUrl}v${loopCount} -w "/data/today/`date +%Y%m%d_%H%M%S`_${searchtag}" -v opendb:/data ${get_imgId} ${getUrl}/${get_category}/${searchtag}
+        $DOCKERCMD container run -d --env TERM=dumb --rm --name ${getUserUrl}v${loopCount} -w "/data/today/`date +%Y%m%d_%H%M%S`_${searchtag}" -v /data:/data ${get_imgId} ${getUrl}/${get_category}/${searchtag}
         # Line below is working as designed
         #docker container run -d --env TERM=dumb --rm --name ${getUserUrl}v${loopCount} -w "/data/today/`date +%Y%m%d_%H%M%S`_${searchtag}" -v opendb:/data ${get_imgId} ${getUrl}/tags/${searchtag}
         loopCount=$((loopCount + 1))
