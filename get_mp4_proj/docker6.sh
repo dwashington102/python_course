@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Sets the container name (ex: TESTDB_v1, TESTDB_v2....)
-loopCount=$((RANDOM % 50 +1))
+loopCount=$((RANDOM % 10))
 trap func_cleanup EXIT
 
 #declare -a my_arrlist=("tag1" "tag2" "tag3" "tag4" "tag5")
