@@ -88,7 +88,7 @@ func_run() {
         loopCount=$((loopCount + 1))
         sleep 3
     done
-    DOCKERCMD ps
+    $DOCKERCMD ps
 }
 
 MAIN
