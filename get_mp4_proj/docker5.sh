@@ -10,7 +10,7 @@
 # Site:
 # w_ap
 
-loopCount=1
+loopCount=$((RANDOM % 50 +1))
 
 declare -a arr=("tag1" "tag2" "tag3" "tag4" "tag5")
 
