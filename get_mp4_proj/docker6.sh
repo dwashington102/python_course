@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Sets the container name (ex: TESTDB_v1, TESTDB_v2....)
-loopCount=$((RANDOM % 10))
+loopCount=$((RANDOM % 10 + 1))
 trap func_cleanup EXIT
 
 #declare -a my_arrlist=("tag1" "tag2" "tag3" "tag4" "tag5")
@@ -93,10 +93,10 @@ func_get_imageId() {
 	# Added grep -m1 in order to restrict the number of images being returned
         get_imgId=`$DOCKERCMD images | grep -v ^REPO | grep -m1 getmp4 | awk '{print $3}'`
         printf "\nContainer being built with image: ${get_imgId}"
-	    printf "\n"
+	printf "\n"
     else
-	    printf "\nUnable to locate Image Repository '${get_ImgId}'"
-	    exit 1
+	printf "\nUnable to locate Image Repository '${get_ImgId}'"
+	exit 1
     fi
 }
 

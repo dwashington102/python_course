@@ -10,7 +10,7 @@
 # Site:
 # w_ap
 
-loopCount=$((RANDOM % 10))
+loopCount=$((RANDOM % 10 + 1))
 
 declare -a arr=("tag1" "tag2" "tag3" "tag4" "tag5")
 
@@ -66,7 +66,7 @@ func_get_imageId() {
     $DOCKERCMD images getmp4 | grep -m1 -v ^REPO  > /dev/null 2>&1
     if [ "$?"  == "0" ]; then
 	# Added grep -m1 in order to restrict the number of images being returned
-        get_imgId=`$DOCKERCMD images | grep -v ^REPO | grep -m1 getmp4 | awk '{print $3}'`
+        get_imgId=`$DOCKERCMD images | grep getmp4 | grep -v ^REPO | grep -m1 getmp4 | awk '{print $3}'`
         printf "\nContainer being built with image: ${get_imgId}"
 	printf "\n"
 	$DOCKERCMD ps 
@@ -82,7 +82,7 @@ func_run() {
     do
         printf "\nRetrieving: ${myTag}"
         sleep 10
-        printf "\nCreating Docker Container"
+        printf "\nCreating Docker Container\n"
         # docker run statement is adding an arguement after the Image-ID
         $DOCKERCMD container run -d --env TERM=dumb --rm --name ${getUserUrl}v${loopCount} -w "/data/today/`date +%Y%m%d_%H%M%S`_${myTag}" -v opendb:/data ${get_imgId} ${getUrl}/tags/${myTag}
         loopCount=$((loopCount + 1))
