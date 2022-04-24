@@ -17,14 +17,13 @@ declare -a UserList=("k430user" "x1user" "washingd" "washingd" "p50user")
 func_set_colors () {
     bold=$(tput bold)
     blink=$(tput blink)
-    boldoff=$(tput sgr0)
+    offall=$(tput sgr0)
     reverse=$(tput rev)
     red=$(tput setaf 1)
     green=$(tput setaf 2)
     yellow=$(tput setaf 3)
     cyan=$(tput setaf 6)
     normal=$(tput setaf 9)
-    boldoff=$(tput sgr0)
 }
 
 func_print_spacer (){
