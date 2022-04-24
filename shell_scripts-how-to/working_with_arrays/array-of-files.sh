@@ -30,4 +30,18 @@ printf -- "\n"
 # IFS=$'\n'
 # echo "${myList[*]" | grep myfilename
 
+# Adding elements to an empty array 
+# See danger_kernel_remove.sh
+
+# Adding elements to an array
+declare -a myHosts=("x1" "p340" "k430")
+printf "Current myHosts Array: \n%s\n" "${myHosts[*]}"
+
+myHosts+="p50"
+printf "Updated myHosts Array: \n%s\n" "${myHosts[*]}"
+
+
+
+
+
 
