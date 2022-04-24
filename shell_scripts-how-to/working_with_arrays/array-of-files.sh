@@ -6,14 +6,20 @@ COMMENT
 # Declaring an Array
 declare -a HostList=("k430-raptor" "x1-raptor" "p340-dove-docker" "p340-dove-fed35" "p50-raptor")
 
-# Generating an array
+# Print contents of array with position numbers
+declare -p HostList
+
+# Generating an array from files in the current directory
 myList=( $(find . -mindepth 1 -maxdepth 1 -type f -exec basename {} \;))
 
-# Get a total count of the items in the array
-printf "\nTotal Items In Array: %s" "${#myList[*]}"
+# Confirm contents of the array myList
+declare -p myList
 
-# Total Length of array
-printf "\nTotal Length Of Array: %s" "${#myList}"
+# Get a total count of the items in the array
+printf "\nTotal Items In Array myList: %s" "${#myList[*]}"
+
+# Total Length (characters) of array
+printf "\nTotal Length Of Array myList: %s" "${#myList}"
 
 # Iterate through array
 loopCount=1
@@ -37,16 +43,24 @@ printf -- "\n"
 # See danger_kernel_remove.sh
 
 # Appending elements to an array
-declare -a myHosts=("x1" "p340" "k430")
-printf "\nCurrent myHosts Array: \n%s\n" "${myHosts[*]}"
-myHosts+=("p50")
-printf "\nUpdated myHosts Array: \n%s\n" "${myHosts[*]}"
+declare -a myHosts=("x1-texas" "p340-texas" "k430-texas")
+printf "\nCurrent myHosts Array: \n%s\n" "${myHosts[@]}"
+myHosts+=("p50-texas")
+printf "\nUpdated myHosts Array: \n%s\n" "${myHosts[@]}"
+
+# Removing element from array
 
 
 # Sorting Array Output
 printf "\nSorted myHosts Array:\n"
-printf "%s\n" "${myHosts[*]}" | sort
+printf "%s\n" "${myHosts[@]}" | sort
 
+# Replace string in array
+myHosts=( "${myHosts[@]/texas/usa}" )
+printf "\nChanged hostnames in myHosts Array:\n%s\n" "${myHosts[@]}"
+
+# Pulling out elements 0 and 3 from array
+#printf "\nElements 0 and 3:\n\t%s\n" "${myHosts[@]:0:3}"
 
 
 
