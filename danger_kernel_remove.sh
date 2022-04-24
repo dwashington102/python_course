@@ -43,6 +43,7 @@ get_dir_count (){
 
 
 MAIN (){
+    IFS=$'\n'
     printf "\n"
     get_limit_value
     get_rpms_installed
@@ -61,7 +62,6 @@ MAIN (){
 
             for dirName in "${dir_total[@]}"
             do
-                IFS=$'\n' 
                 echo "${kernel_rpms[*]}" | grep "$dirName"  1>/dev/null
                 if [[ "$?" -ne 0 ]]; then
                     deleteCount=$((deleteCount +1 ))
