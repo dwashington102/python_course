@@ -81,8 +81,11 @@ MAIN (){
         printf "\n"
     else
         printf "\nTotal number of directories does not exceed installonly limit of dnf.conf"
+        printf "\n"
+
     fi
 
+    printf "\n"
     printf "\nInstalled RPMS:"
     printf "\n%s" "${kernel_rpms[*]}" | sort
     printf "\n"
