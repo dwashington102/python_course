@@ -77,11 +77,13 @@ MAIN (){
     fi
 
     printf "\n"
-    printf "\nTotal Directories to delete: %s\n%s" "$deleteCount" "${deleteDirs[*]}"
+    printf "\nTotal Directories to delete:"
+    printf "\n%s" "${deleteDirs[*]}" | sort
     printf "\n"
-    printf "\nTotal Directories to save: %s\n%s" "$saveCount" "${savedDirs[*]}"
+    printf "\nTotal Directories to save:"
+    printf "\n%s" "${savedDirs[*]}" | sort
     printf "\n"
-    printf "\nInstalled RPMS\n%s" "${kernel_rpms[*]}"
+    printf "\nInstalled RPMS\n%s" "${kernel_rpms[*]}" | sort
     printf "\n"
 }
 
