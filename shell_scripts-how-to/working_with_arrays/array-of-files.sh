@@ -10,7 +10,10 @@ declare -a HostList=("k430-raptor" "x1-raptor" "p340-dove-docker" "p340-dove-fed
 myList=( $(find . -mindepth 1 -maxdepth 1 -type f -exec basename {} \;))
 
 # Get a total count of the items in the array
-printf "\nTotal Items In Array: %s" "${#myList[@]}"
+printf "\nTotal Items In Array: %s" "${#myList[*]}"
+
+# Total Length of array
+printf "\nTotal Length Of Array: %s" "${#myList}"
 
 # Iterate through array
 loopCount=1
@@ -33,12 +36,17 @@ printf -- "\n"
 # Adding elements to an empty array 
 # See danger_kernel_remove.sh
 
-# Adding elements to an array
+# Appending elements to an array
 declare -a myHosts=("x1" "p340" "k430")
-printf "Current myHosts Array: \n%s\n" "${myHosts[*]}"
+printf "\nCurrent myHosts Array: \n%s\n" "${myHosts[*]}"
+myHosts+=("p50")
+printf "\nUpdated myHosts Array: \n%s\n" "${myHosts[*]}"
 
-myHosts+="p50"
-printf "Updated myHosts Array: \n%s\n" "${myHosts[*]}"
+
+# Sorting Array Output
+printf "\nSorted myHosts Array:\n"
+printf "%s\n" "${myHosts[*]}" | sort
+
 
 
 
