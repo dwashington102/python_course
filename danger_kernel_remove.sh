@@ -22,6 +22,20 @@ Details:
     match kernel names included in kernel_rpms[@]
 WARNING
 
+func_set_colors () {
+    bold=$(tput bold)
+    blink=$(tput blink)
+    boldoff=$(tput sgr0)
+    reverse=$(tput rev)
+    red=$(tput setaf 1)
+    green=$(tput setaf 2)
+    yellow=$(tput setaf 3)
+    cyan=$(tput setaf 6)
+    normal=$(tput setaf 9)
+    boldoff=$(tput sgr0)
+}
+
+
 # Gather the max. number of kernels setting from dnf.conf
 get_limit_value (){
     limit_value=$(grep installonly /etc/dnf/dnf.conf | awk -F"=" '{print $2}')
@@ -43,6 +57,7 @@ get_dir_count (){
 
 
 MAIN (){
+    func_set_colors
     IFS=$'\n'
     printf "\n"
     get_limit_value
@@ -53,7 +68,8 @@ MAIN (){
         if [[ "${#dir_total[@]}" -gt "${#kernel_rpms[@]}" ]]; then
             printf "\n"
             printf "\nThe number of directories (%s) exceeds number of installed kernels" "${#dir_total[@]}"
-            printf "\n\n>>> DOING DANGEROUS WORK HERE <<<"
+            printf "\n\n${bold}>>> DOING DANGEROUS WORK HERE <<<${normal}"
+            pirntf "\n"
             deleteCount=0
             saveCount=0
 
