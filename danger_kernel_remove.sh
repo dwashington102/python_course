@@ -48,8 +48,8 @@ MAIN (){
     get_rpms_installed
     get_dir_count
 
-    if [ "${#dir_total[@]}" -gt "$limit_value" ]; then
-        if [ "${#dir_total[@]}" -gt "${#kernel_rpms[@]}" ]; then
+    if [[ "${#dir_total[@]}" -gt "$limit_value" ]]; then
+        if [[ "${#dir_total[@]}" -gt "${#kernel_rpms[@]}" ]]; then
             printf "\n"
             printf "\nThe number of directories (%s) exceeds number of installed kernels" "${#dir_total[@]}"
             printf "\n\n>>> DOING DANGEROUS WORK HERE <<<"
@@ -72,18 +72,18 @@ MAIN (){
                 fi
             done
         fi
+        printf "\n"
+        printf "\nTotal Directories to delete:"
+        printf "\n%s" "${deleteDirs[*]}" | sort
+        printf "\n"
+        printf "\nTotal Directories to save:"
+        printf "\n%s" "${savedDirs[*]}" | sort
+        printf "\n"
     else
-        printf "Total number of directories does not exceed installonly limit of dnf.conf"
+        printf "\nTotal number of directories does not exceed installonly limit of dnf.conf"
     fi
 
-    printf "\n"
-    printf "\nTotal Directories to delete:"
-    printf "\n%s" "${deleteDirs[*]}" | sort
-    printf "\n"
-    printf "\nTotal Directories to save:"
-    printf "\n%s" "${savedDirs[*]}" | sort
-    printf "\n"
-    printf "\nInstalled RPMS\n%s:"
+    printf "\nInstalled RPMS:"
     printf "\n%s" "${kernel_rpms[*]}" | sort
     printf "\n"
 }
