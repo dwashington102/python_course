@@ -21,15 +21,15 @@ get_limit_value (){
 
 # Gather the total  number of "kernel-core" rpms installed
 get_rpms_installed (){
-    kernel_rpms=( $(rpm -qa | grep ^kernel-core) )
+    kernel_rpms=( $(rpm -qa | grep ^kernel-core | awk -F"core-" '{print $2}') )
     printf "\nDEBUG >>> Number of kernel RPMS - %s" "${#kernel_rpms[@]}"
 }
 
 # Gather the total number of subdirectories in /usr/lib/module
 get_dir_count (){
     pushd /usr/lib/modules &>/dev/null
-    dir_total=$(find . -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | wc -l)
-    printf "\nDEBUG >>> Number of directories - %s" "$dir_total"
+    dir_total=( $(find . -mindepth 1 -maxdepth 1 -type d -exec basename {} \;) )
+    printf "\nDEBUG >>> Number of directories - %s" "${#dir_total[@]}"
 }
 
 
@@ -38,10 +38,25 @@ MAIN (){
     get_limit_value
     get_rpms_installed
     get_dir_count
-    if [ "$dir_total" -gt "$limit_value" ]; then
-        if [ "$dir_total" -gt "${#kernel_rpms[@]}" ]; then
-            printf "\nThe number of directories (%s) exceeds number of installed kernels" "$dir_total"
+    if [ "${#dir_total[@]}" -gt "$limit_value" ]; then
+        if [ "${#dir_total[@]}" -gt "${#kernel_rpms[@]}" ]; then
+            printf "\nThe number of directories (%s) exceeds number of installed kernels" "${#dir_total[@]}"
             printf "\n>>> DOING DANGEROUS WORK HERE <<<"
+            loopCount=1
+            for dirName in "${dir_total[@]}"
+            do
+                #printf "\nDEBUG >>> DirName: %s" "$dirName"
+                IFS=$'\n' 
+                echo "${kernel_rpms[*]}" | grep "$dirName"  1>/dev/null
+                #[ "$?" -ne "0" ] && printf "\nDEBUG >>> Delete directory (%s): %s \n" "$loopCount" "$dirName" ; loopCount=$((loopCount + 1)) || :
+                if [ "$?" -ne "0" ]; then
+                    printf "\nDEBUG >>> Delete directory (%s): %s\n" "$loopCount" "$dirName"
+                    loopCount=$((loopCount +1 ))
+                else 
+                    printf "\nDEBUG >>> DO NOT DELETE %s\n" "$dirName"
+                fi
+
+            done
         fi
     else
         printf "Total number of directories does not exceed installonly limit of dnf.conf"
