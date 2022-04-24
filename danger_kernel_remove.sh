@@ -83,7 +83,8 @@ MAIN (){
     printf "\nTotal Directories to save:"
     printf "\n%s" "${savedDirs[*]}" | sort
     printf "\n"
-    printf "\nInstalled RPMS\n%s" "${kernel_rpms[*]}" | sort
+    printf "\nInstalled RPMS\n%s:"
+    printf "\n%s" "${kernel_rpms[*]}" | sort
     printf "\n"
 }
 
