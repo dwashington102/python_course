@@ -2,10 +2,10 @@
 
 :<<'COMMENTS'
 Script sets tags using the values in arr
--- creates temp director (really should trap clean this)
--- downloads index.html from m_ot Site 
--- Locate container image from local repo: getmp4
--- Builds container 
+-- downloads index.html from Site 
+-- Locate docker image repo: getmp4
+-- Builds docker container using using existing volume (-v) and passing command: ${getUrl}/tags/${myTag}
+-- Moves TEMPDIR to /data/{timestamp}
 
 Where getUrl is site
 tags = secondary entry at site
@@ -26,8 +26,8 @@ EXIT CODES:
 # m_ot
 COMMENTS
 
-#Changes:
-# 2022-04-24: Updated DOCKERCMD run command changing "tags" to "term"
+#Changes
+# 2022-04-24: Updated docker run command changing "tags" to "term"
 
 loopCount=$((RANDOM % 10 + 1))
 
@@ -38,6 +38,7 @@ MAIN() {
     func_getUserUrl
     func_get_imageId
     func_run
+    func_mv_dir
 }
 
 func_set_dockercmd () {
@@ -112,6 +113,10 @@ func_run() {
         sleep 3
     done
     $DOCKERCMD ps
+}
+
+func_mv_dir() {
+        mv $topDir/$myTag /data/$(date +"%Y%m%d%H%M%S")
 }
 
 MAIN
