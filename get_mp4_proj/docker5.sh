@@ -2,13 +2,18 @@
 
 :<<'COMMENTS'
 Script sets tags using the values in arr
--- downloads index.html from Site 
--- Locate docker image repo: getmp4
--- Builds docker container using using existing volume (-v) and passing command: ${getUrl}/tags/${myTag}
+-- creates temp director (really should trap clean this)
+-- downloads index.html from m_ot Site 
+-- Locate container image from local repo: getmp4
+-- Builds container 
 
 Where getUrl is site
 tags = secondary entry at site
 myTag is arr value
+
+Requirements:
+- Install podman (docker may work, but podman should be used)
+- Create podman volume "mydb": podman volume create mydb
 
 EXIT CODES:
    1: Container image "getmp4" NOT FOUND
@@ -18,14 +23,15 @@ EXIT CODES:
 
 
 # Site:
-# w_ap
+# m_ot
 COMMENTS
 
-# 2022-04-24: Updated docker run command changing "tags" to "term"
+#Changes:
+# 2022-04-24: Updated DOCKERCMD run command changing "tags" to "term"
 
 loopCount=$((RANDOM % 10 + 1))
 
-declare -a arr=("tag1" "tag2" "tag3" "tag4" "tag5")
+declare -a arr=("term1" "term2" "term3" "term4" "term5")
 
 MAIN() {
     func_set_dockercmd
@@ -51,6 +57,9 @@ func_set_dockercmd () {
 }
 
 func_getUserUrl () {
+    dbStorage="$HOME/.local/share/containers/storage/volumes/mydb/_data"
+    topDir=$(mktemp -p $dbStorage -d)
+    pushd $topDir &>/dev/null
     printf "\nWhich URL: "
     read getUrl
     IFS=$'\n'
@@ -81,11 +90,11 @@ func_get_imageId() {
 	# Added grep -m1 in order to restrict the number of images being returned
         get_imgId=$($DOCKERCMD images -n | grep -m1 getmp4  | awk '{print $3}')
         printf "\nContainer being built with image: ${get_imgId}"
-	printf "\n"
-	$DOCKERCMD ps 
+	    printf "\n"
+	    $DOCKERCMD ps 
     else
-	printf "\nUnable to locate Image Repository '${get_ImgId}'"
-	exit 1
+	    printf "\nUnable to locate Image Repository '${get_ImgId}'"
+	    exit 1
     fi
 }
 
@@ -97,7 +106,8 @@ func_run() {
         sleep 10
         printf "\nCreating Docker Container\n"
         # docker run statement is adding an arguement after the Image-ID
-        $DOCKERCMD container run -d --env TERM=dumb --rm --name ${getUserUrl}v${loopCount} -w "/data/today/`date +%Y%m%d_%H%M%S`_${myTag}" -v opendb:/data ${get_imgId} ${getUrl}/term/${myTag}
+        mkdir "$topDir/$myTag"
+        $DOCKERCMD container run -d --env TERM=dumb --rm --name ${getUserUrl}v${loopCount} -w "/data" -v $topDir/$myTag:/data ${get_imgId} ${getUrl}/term/${myTag}
         loopCount=$((loopCount + 1))
         sleep 3
     done
@@ -105,4 +115,3 @@ func_run() {
 }
 
 MAIN
-exit 0
