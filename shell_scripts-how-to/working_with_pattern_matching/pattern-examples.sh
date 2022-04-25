@@ -16,13 +16,15 @@ printf -- "OG Match: %s\n" "${myList[@]}" | grep [og]
 
 #Remove the entries from the LEFT edge in $PATH
 printf "\n"
-printf "Full PATH:\n\t${PATH}"
+printf "\nLEFT Edge Removal"
+printf "\nFull PATH:\n\t${PATH}"
 printf "\nRemoved 1st entry in PATH:\n\t${PATH#*:}"
 printf "\nRemoved all except the last entry in PATH:\n\t${PATH##*:}"
 
 #Remove the entries from the RIGHT edge
 printf "\n"
-printf "Full PATH:\n\t${PATH}"
+printf "\nRIGHT Edge Removal"
+printf "\nFull PATH:\n\t${PATH}"
 printf "\nRemoved last entry in PATH:\n\t${PATH%:*}"
 printf "\nRemoved all except the 1st entry in PATH:\n\t${PATH%%:*}"
 
