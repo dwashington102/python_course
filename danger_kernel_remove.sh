@@ -48,7 +48,7 @@ get_limit_value (){
 # Gather the total  number of "kernel-core" rpms installed
 get_rpms_installed (){
     kernel_rpms=( $(rpm -qa | grep ^kernel-core | awk -F"core-" '{print $2}') )
-    printf "\nNumber of kernel RPMS installed - %s" "${#kernel_rpms[@]}"
+    printf "\nNumber of kernel-core RPMS installed - %s" "${#kernel_rpms[@]}"
 }
 
 # Gather the total number of subdirectories in /usr/lib/module
@@ -104,10 +104,10 @@ MAIN (){
         fi
         printf "\n"
         printf "\nTotal Directories to delete:"
-        printf "\n%s" "${deleteDirs[*]}" | sort
+        printf "\n%s" "${deleteDirs[*]}" | sort -V
         printf "\n"
         printf "\nTotal Directories to save:"
-        printf "\n%s" "${savedDirs[*]}" | sort
+        printf "\n%s" "${savedDirs[*]}" | sort -V
         printf "\n"
     else
         printf "\nTotal number of directories does not exceed installonly limit of dnf.conf"
@@ -117,7 +117,7 @@ MAIN (){
 
     printf "\n"
     printf "\nInstalled RPMS:"
-    printf "\n%s" "${kernel_rpms[*]}" | sort
+    printf "\n%s" "${kernel_rpms[*]}" | sort -V
     printf "\n"
 }
 
