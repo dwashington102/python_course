@@ -38,7 +38,6 @@ MAIN() {
     func_getUserUrl
     func_get_imageId
     func_run
-    func_mv_dir
 }
 
 func_set_dockercmd () {
@@ -50,7 +49,7 @@ func_set_dockercmd () {
         if [ "$?" == "0" ]; then
             DOCKERCMD='podman'
         else
-            printf "docker nor pomand commands found on server"
+            printf "docker nor podman command found on server"
             printf "Install the required packages...exiting"
             exit 2
         fi
@@ -113,10 +112,6 @@ func_run() {
         sleep 3
     done
     $DOCKERCMD ps
-}
-
-func_mv_dir() {
-        mv $topDir/$myTag /data/$(date +"%Y%m%d%H%M%S")
 }
 
 MAIN
