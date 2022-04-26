@@ -26,3 +26,6 @@ do
     count=$((count + 1))
 done
 printf "\n"
+
+# Ben's Solution:
+# for part in $(seq -f "%03g" 1 $NUM_OF_CHUNKS); do SOURCE=$(( 10#$part-1 )); echo "$SOURCE"; echo "$part"; done
