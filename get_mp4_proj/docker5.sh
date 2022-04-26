@@ -107,7 +107,7 @@ func_run() {
         printf "\nCreating Docker Container\n"
         # docker run statement is adding an arguement after the Image-ID
         mkdir "$topDir/$myTag"
-        $DOCKERCMD container run -d --env TERM=dumb --rm --name ${getUserUrl}v${loopCount} -w "/data" -v $topDir/$myTag:/data ${get_imgId} ${getUrl}/term/${myTag}
+        $DOCKERCMD container run -d -m 512M --env TERM=dumb --rm --name ${getUserUrl}v${loopCount} -w "/data" -v $topDir/$myTag:/data ${get_imgId} ${getUrl}/term/${myTag}
         loopCount=$((loopCount + 1))
         sleep 3
     done

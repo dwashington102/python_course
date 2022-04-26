@@ -51,8 +51,8 @@ func_end_time () {
 }
 
 func_get_urls (){
-    grep '<a href="/video' index.html | awk -F'[""]' '{print $2}' | sort -u > rawUrls
-    baseUrl=`grep -m 1 "base_url.*=" index.html | awk -F'=' '{print $2}' | awk -F'[""]' '{print $2}'`
+    grep '<a href="/video' index.html| awk -F"a href=" '{print $2}' | awk -F'[""]' '{print $2}' | sort -u > rawUrls
+    baseUrl=$(grep -m 1 "base_url.*=" index.html | awk -F'=' '{print $2}' | awk -F'[""]' '{print $2}')
     wget -q --no-check-certificate --spider ${baseUrl} > /dev/null 2>&1
     if [ $? -ne 0 ];then
         printf "Unable to reach ${baseUrl}\n"
@@ -67,10 +67,13 @@ func_gen_rawFiles (){
     if [ -s rawUrls ]; then
     printf "\nGenerating files in ./rawfiles"
     printf "\n"
-    for urlPath in `cat rawUrls`
+    for urlPath in $(cat rawUrls)
         do
             IFS=$'\n'
-            wget --no-check-certificate -a ./logs/gen_tmpFiles -P ./rawfiles ${baseUrl}${urlPath}
+            printf "\nDEBUG urlPath: %s" "$urlPath"
+            printf "\nDEBUG baseUrl: %s" "baseUrl"
+            sleep 10
+            wget --verbose --no-check-certificate -a ./logs/gen_tmpFiles -P ./rawfiles ${baseUrl}${urlPath}
 	    if [ $? == 0 ]; then
             #printf "\n${green}wget rc=$?${normal}:\t${baseUrl}${urlPath}"
             printf "${green}.${normal}"
@@ -96,7 +99,7 @@ func_download_files (){
         printf "\nDownloading video from file:\t ${finalMp4}\n"
         startTime=`date +%Y%m%d-%H:%M`
         printf "\nStart Time\t$startTime\tFilename: ${finalMp4} "
-        wget  --no-check-certificate -a ./logs/download_files -P ./mp4 `grep -m 1 source\ src= ./rawfiles/$finalMp4 | awk -F'[""]' '{print $2}'`
+        wget  --no-check-certificate -a ./logs/download_files -P ./mp4 `grep -m 1 source\ src= ./rawfiles/$finalMp4 | awk -F'source src=' '{print $2}' | awk -F'[""]' '{print $2}'`
         if [ $? == 0 ]; then
             endTime=`date +%Y%m%d-%H:%M`
             printf "\nEnd Time\t$endTime\tFilename: ${finalMp4}"
