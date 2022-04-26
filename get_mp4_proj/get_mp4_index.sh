@@ -156,34 +156,35 @@ func_get_index_rc (){
 }
 
 func_test_index_rc (){
+    # Site: m_ot
     if [ ${index_a_href_fileurl} -gt 0 ]; then
         echo "Calling get_mp4_fileurl.sh" > ./logs/get_mp4_index.log
         get_mp4_fileurl.sh
         printf "\n"
 
-    #Calls get_mp4_plugcontent.sh
+    # Site: d_af
     elif [ ${index_plugcontent} -gt 0 ]; then
         echo "Calling get_mp4_plugcontent.sh" > ./logs/get_mp4_index.log
         get_mp4_plugcontent.sh
         printf "\n"
 
-    # Calls get_mp4_div_video.sh
+    # Site: x_vi
     elif [ ${index_div_video} -gt 0 ]; then
         echo "Calling get_mp4_div_video.sh" > ./logs/get_mp4_index.log
         get_mp4_div_video.sh
         printf "\n"
 
-    # Calls get_mp4_a_href.sh
+    # Site: w_ap
     elif [ ${index_a_href} -gt 0 ]; then
         echo "Calling get_mp4_a_href.sh" > ./logs/get_mp4_index.log
         get_mp4_a_href.sh
         printf "\n"
-
+    # Site: x_ra 
     elif [ ${index_a_href_vid} -gt 0 ]; then
         echo "Calling get_mp4_a_href_vid.sh" > ./logs/get_mp4_index.log
         get_mp4_a_href_vid.sh
         printf "\n"
-
+    # Site: s_ho
     elif [ ${index_a_href_vid_title} -gt 0 ]; then
         echo "Calling get_mp4_a_href_vid_title.sh" > ./logs/get_mp4_index.log
         get_mp4_a_href_vid_title.sh
