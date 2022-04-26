@@ -31,7 +31,8 @@ func_set_colors () {
     blink=$(tput blink)
     offall=$(tput sgr0)
     reverse=$(tput rev)
-    red=$(tput setaf 1)
+    redfg=$(tput setaf 1)
+    whitebg=$(tput setab 7)
     green=$(tput setaf 2)
     yellow=$(tput setaf 3)
     cyan=$(tput setaf 6)
@@ -65,6 +66,30 @@ func_check_uid (){
         fi
 }
 
+func_del_select (){
+    choice="abc"
+    while [ "$choice" = 'abc' ]
+    do
+        printf "\n${bold}${yellow}WARNING WARNING WARNING WARNING WARNING${normal}${boldoff}"
+        printf "\nDo you want to delete the directories:\n"
+        printf '\nType "yes" to DELETE ALL UNWANTED DIRECTORIES IN /usr/lib/modules'
+        printf '\nType "exit" to exit the script\n'
+        read choice
+        if [ "$choice" == "yes " ]; then
+            for i in "${deleteDirs[@]}"
+                do
+                    printf "\nDeleting files..."
+                    rm -ir "$i"
+                done
+        elif [ "$choice" == "exit" ]; then
+            exit 0
+        else
+            choice="abc"
+            printf "\nInvalid choice...try again"
+            printf "\n"
+        fi
+    done
+}
 
 MAIN (){
     func_check_uid
@@ -79,7 +104,7 @@ MAIN (){
         if [[ "${#dir_total[@]}" -gt "${#kernel_rpms[@]}" ]]; then
             printf "\n"
             printf "\nThe number of directories (%s) exceeds number of installed kernels" "${#dir_total[@]}"
-            printf "\n\n${bold}${red}${reverse}${blink}>>> DOING DANGEROUS WORK HERE <<<${offall}"
+            printf "\n\n${bold}${redfg}${whitebg}${blink}>>> DANGEROUS WORK FOLLOWS BE CAREFUL <<<${offall}"
             printf "\n"
             deleteCount=0
             saveCount=0
@@ -109,16 +134,19 @@ MAIN (){
         printf "\nTotal Directories to save:"
         printf "\n%s" "${savedDirs[*]}" | sort -V
         printf "\n"
+        func_del_select
     else
-        printf "\nTotal number of directories does not exceed installonly limit of dnf.conf"
         printf "\n"
+        printf "\nTotal number of directories does not exceed installonly limit of dnf.conf"
 
     fi
+
 
     printf "\n"
     printf "\nInstalled RPMS:"
     printf "\n%s" "${kernel_rpms[*]}" | sort -V
     printf "\n"
 }
+
 
 MAIN
