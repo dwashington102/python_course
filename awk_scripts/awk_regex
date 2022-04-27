@@ -5,3 +5,6 @@
 
 # Exact pattern matching
 # awk '$1 == "foo" {print $2}' file.csv
+#
+#Regex awk
+rpm -qa | awk '/^kernel-core/  {print $1}'
