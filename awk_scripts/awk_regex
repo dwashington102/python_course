@@ -1,0 +1,7 @@
+#!/usr/bin/awk -f
+
+# Regex example
+# awk '$1 ~ /foo/ { print $2}' file.csv
+
+# Exact pattern matching
+# awk '$1 == "foo" {print $2}' file.csv

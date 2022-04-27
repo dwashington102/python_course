@@ -1,0 +1,14 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+    FS=":"
+}
+
+# End commands with ;
+NR==1 {next;}
+{print;}
+
+
+END {
+    printf "This is the end\n"
+}

@@ -36,10 +36,10 @@ func_set_colors () {
     blink=$(tput blink)
     alloff=$(tput sgr0)
     reverse=$(tput rev)
-    red=$(tput setaf 1)
-    green=$(tput setaf 2)
-    yellow=$(tput setaf 3)
-    cyan=$(tput setaf 6)
+    redfg=$(tput setaf 1)
+    greenfg=$(tput setaf 2)
+    yellowbg=$(tput setab 3)
+    cyanbg=$(tput setab 6)
     normal=$(tput setaf 9)
 }
 
@@ -47,9 +47,9 @@ func_set_colors () {
 
 MAIN (){
     func_set_colors
-    printf "\n${green}Color GREEN${normal}"
-    printf "\n${red}Color RED${normal}"
-    printf "\n%sColor CYAN %s\n" "$cyan" "$normal"
+    printf "\n${greenfg}Color GREEN${normal}"
+    printf "\n${redfg}Color RED${normal}"
+    printf "\n%sColor CYAN %s\n" "$cyanbg" "$normal"
 }
 
 
