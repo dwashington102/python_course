@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-:<<'COMMENT'
+<<'COMMENT'
 Script gathers a list of files contained in each subdirectory
 COMMENT
 
