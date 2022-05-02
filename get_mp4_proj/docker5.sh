@@ -27,15 +27,16 @@ EXIT CODES:
 COMMENTS
 
 #Changes
+# 2022-05-02; Added search_item()
 # 2022-04-24: Updated docker run command changing "tags" to "term"
 
 loopCount=$((RANDOM % 10 + 1))
-
-declare -a arr=("term1" "term2" "term3" "term4" "term5")
+declare -ag arr=()
 
 MAIN() {
     func_set_dockercmd
     func_getUserUrl
+    func_search_items
     func_get_imageId
     func_run
 }
@@ -55,6 +56,27 @@ func_set_dockercmd () {
         fi
     fi
 }
+
+func_search_items (){
+    unset itemCount
+    unset loopCount
+    declare -i itemCount=1
+    declare -i loopCount=1
+
+    printf "\nHow many items to search: "
+    read itemCount
+
+    while [ $loopCount -le $itemCount ]
+    do
+        echo "Enter search item number($loopCount)"
+        read searchString
+        arr+=("$searchString")
+        ((loopCount++))
+    done
+    printf "\nBeginning process to build containers..."
+    sleep 2
+}
+
 
 func_getUserUrl () {
     dbStorage="$HOME/.local/share/containers/storage/volumes/mydb/_data"
@@ -100,6 +122,8 @@ func_get_imageId() {
 
 
 func_run() {
+    unset podCount
+    podCount=1
     for myTag in "${arr[@]}"
     do
         printf "\nRetrieving: ${myTag}"
@@ -107,8 +131,8 @@ func_run() {
         printf "\nCreating Docker Container\n"
         # docker run statement is adding an arguement after the Image-ID
         mkdir "$topDir/$myTag"
-        $DOCKERCMD container run -d -m 512M --env TERM=dumb --rm --name ${getUserUrl}v${loopCount} -w "/data" -v $topDir/$myTag:/data ${get_imgId} ${getUrl}/term/${myTag}
-        loopCount=$((loopCount + 1))
+        $DOCKERCMD container run -d -m 512M --env TERM=dumb --rm --name ${getUserUrl}v${podCount} -w "/data" -v $topDir/$myTag:/data ${get_imgId} ${getUrl}/term/${myTag}
+        podCount=$((podCount + 1))
         sleep 3
     done
     $DOCKERCMD ps
