@@ -3,8 +3,12 @@
 bes_list=("besclient" "beswebreports" "beswebui"  "besgatherdb" "besfilldb" "besserver")
 
 func_besrunning() {
-	pgrep BES
-	[ "$?" == "0" ] && printf "\nBES Components are running....\n" || printf "\nNo BES Components running...exiting\n" ; exit 0
+	pgrep BES &>/dev/null
+	if [ "$?" == "0" ]; then 
+            printf "\nBES Components are running....\n" 
+        else
+           printf "\nNo BES Components running...exiting\n" ; exit 0
+	fi
 }
 
 func_stopbes() {
