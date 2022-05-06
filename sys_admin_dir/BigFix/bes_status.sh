@@ -10,7 +10,7 @@ initDir='/etc/init.d'
 declare -a besList=("")
 
 get_components (){
-        besList=($ (find . -maxdepth 1 -name 'bes*' -type f -exec basename {} \;) )
+        besList=($ (find . -maxdepth 1 -name "bes*" -type f -exec basename {} \;) )
         if [ ${#besList[@]} -eq 0 ]; then
             printf "No BigFix Componets found in %s\n" "$initDir"
             exit 1
