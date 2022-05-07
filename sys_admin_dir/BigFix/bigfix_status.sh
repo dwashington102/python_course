@@ -38,11 +38,13 @@ printf "\n"
 }
 
 get_components (){
+    pushd "$initDir" &>/dev/null
     besList=( $(find . -maxdepth 1 -name "bes*" -type f -exec basename {} \;) )
     if [ ${#besList[@]} -eq 0 ]; then
     printf "No BigFix Components found in %s\n" "$initDir"
     exit 1
     fi
+    popd &>/dev/null
 }
 
 check_bigfix_status (){
@@ -55,15 +57,6 @@ check_bigfix_status (){
                printf "\n%s is %10s${redfg}DOWN${alloff}" "$besComp"
             fi
     done
-}
-
-check_db2_status (){
-    pgrep db2sysc &>/dev/null
-    if [[ "$?" == "0" ]]; then 
-        printf "\nDB2 is ${greenfg}running${alloff}"
-    else
-        printf "\nDB2 is ${redfg}DOWN${alloff}"
-    fi
 }
 
 get_agent_version (){
@@ -86,18 +79,27 @@ get_agent_version (){
 
 get_bes_version (){
     printf "\n"
-    if [ -f /var/log/BESInstall.log ]; then
-        grep -E 'BES.*_64.*installed' /var/log/BESInstall.log  | awk -F"['']" '{print $2}' | awk -F"/" '{print $3}' | awk -F"-" '{print $1$2}'
+    besVerList=( $(rpm -qa | grep ^BES | cut -d"-" -f1,2) )
+    if [[ "${#besVerList[@]}" -gt "0" ]]; then
+        printf "%s\n" "${besVerList[@]}"
     else
-        printf "\n\n${yellowfg}Unable to get BES Components Version Info${alloff}"
+        printf "Unable to find BigFix RPMs"
     fi
 }
 
 get_db2_version (){
-    db2ilistCmd=$(locate \/bin\/db2ilist | tail -1)
-    if [ "${#db2ilistCmd}" == "0" ]; then
+    systemctl status db2fmcd.service &>/dev/null
+    [[ "$?" -eq "4" ]] && printf "\nDB2 is not installed\n\n" && exit 4 || printf "\nDB2 is INSTALLED"
+    db2ilistCmd=( $(locate \/bin\/db2ilist | tail -1) )
+    if [ "${#db2ilistCmd[*]}" == "0" ]; then
         printf "\nUnable to locate db2ilist command"
     else 
+        pgrep db2sysc &>/dev/null
+        if [[ "$?" == "0" ]]; then 
+            printf "\nDB2 is ${greenfg}running${alloff}"
+        else
+            printf "\nDB2 is ${redfg}DOWN${alloff}"
+        fi
         get_db2InstanceList=( $($db2ilistCmd) )
         for db2InstanceName in ${get_db2InstanceList[@]}
         do
@@ -124,18 +126,14 @@ get_db2_version (){
 MAIN (){
     func_set_colors
     get_sys_info
-    pushd "$initDir" &>/dev/null
     printf "\n${bold}BigFix Environment Status:${alloff}"
     get_components
     check_bigfix_status 
     printf "\n\nBigFix Software Version Info:"
     get_bes_version
-    [[ $(id -u) == "0" ]]  && get_agent_version || printf "${yellowfg}BES Client Version: Unable to get BESClient Version${alloff}\n" 
+    #[[ $(id -u) == "0" ]]  && get_agent_version || printf "${yellowfg}BES Client Version: Unable to get BESClient Version${alloff}\n" 
     printf "\nDB2 Status:"
-    check_db2_status
-    #[[ $(id -u) == "0" ]] && get_db2_version || printf "\n${yellowfg}Unable to get DB2 Instance Information and Version${alloff}\n"
     get_db2_version || printf "\n${yellowfg}Unable to get DB2 Instance Information and Version${alloff}\n"
-    popd &>/dev/null
 }
 MAIN
 printf "\n\n"
