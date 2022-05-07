@@ -73,9 +73,9 @@ func_del_select (){
         printf "\n${bold}${yellow}WARNING WARNING WARNING WARNING WARNING${normal}${boldoff}"
         printf "\nDo you want to delete the directories:\n"
         printf '\nType "yes" to DELETE ALL UNWANTED DIRECTORIES IN /usr/lib/modules'
-        printf '\nType "exit" to exit the script\n'
+        printf '\nType "exit" to exit the script and NOT DELETE directories\n'
         read choice
-        if [ "$choice" == "yes " ]; then
+        if [ "$choice" == "yes" ]; then
             for i in "${deleteDirs[@]}"
                 do
                     printf "\nDeleting files..."
