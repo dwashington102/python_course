@@ -32,9 +32,20 @@ func_set_keybindings (){
     print_spacer
 }
 
+func_unset_keybindings (){
+    SHELLKEY='org.gnome.shell.keybindings'
+    loopCount=1
+    while [ "$loopCount" -le "$get_ws" ]
+    do
+            gsettings set org.gnome.shell.keybindings switch-to-application-"$loopCount" ['']
+            ((loopCount++))
+    done
+}
+
 
 MAIN (){
     func_set_num_ws
+    func_unset_keybindings
     func_set_keybindings
 }
 
@@ -47,4 +58,3 @@ print_spacer
             printf "Workspace ${i} mapped to:\t"
             gsettings get ${GSETTINGKEY} ${i}
         done
-exit 0
