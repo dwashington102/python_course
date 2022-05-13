@@ -29,23 +29,25 @@ touch besclient.config
 
 set_relays (){
 # Prepare the new besclient.config file
-internalRelays=("xxx.xxx0xxx.xxx3xxx.10" "xxx.xxx0xxx.xxx35.18xxx" "xxx.xxx0xxx.xxx51.1xxx4" "xxx.xxx0xxx.xxxxxx4.xxx4" "xxx.xxx0xxx.xxx30.xxx15" "xxx.xxx0xxx.xxxxxx4.83")
-externalRelays=("5xxx.118.134.131" "14xxx.81.1xxxxxx.73" "5xxx.117.7xxx.xxx3xxx" "14xxx.81.1xxxxxx.8xxx")
+declare -a internalRelays=("xxx.xxx0xxx.xxx3xxx.10" "xxx.xxx0xxx.xxx35.18xxx" "xxx.xxx0xxx.xxx51.1xxx4" "xxx.xxx0xxx.xxxxxx4.xxx4" "xxx.xxx0xxx.xxx30.xxx15" "xxx.xxx0xxx.xxxxxx4.83")
+declare -a externalRelays=("5xxx.118.134.131" "14xxx.81.1xxxxxx.73" "5xxx.117.7xxx.xxx3xxx" "14xxx.81.1xxxxxx.8xxx")
 
-altRelays=("xxx.xxx0xxx.xxx3xxx.10;5xxx.118.134.131;xxx.xxx14.13xxx.1xxx;xxx.xxx0xxx.xxx35.18xxx;14xxx.81.1xxxxxx.73;xxx.xxx0xxx.xxx51.1xxx4;5xxx.117.7xxx.xxx3xxx;xxx.xxx0xxx.xxxxxx4.xxx4;14xxx.81.1xxxxxx.8xxx;xxx.xxx0xxx.xxx30.xxx15;xxx.xxx0xxx.xxxxxx4.83;xxx.xxx14.17.xxx03;xxx.xxx14.17.xxx04"
+declare -a altRelaysList=("xxx.xxx0xxx.xxx3xxx.10;5xxx.118.134.131;xxx.xxx14.13xxx.1xxx;xxx.xxx0xxx.xxx35.18xxx;14xxx.81.1xxxxxx.73;xxx.xxx0xxx.xxx51.1xxx4;5xxx.117.7xxx.xxx3xxx;xxx.xxx0xxx.xxxxxx4.xxx4;14xxx.81.1xxxxxx.8xxx;xxx.xxx0xxx.xxx30.xxx15;xxx.xxx0xxx.xxxxxx4.83;xxx.xxx14.17.xxx03;xxx.xxx14.17.xxx04"
  "xxx.xxx14.13xxx.1xxx;5xxx.118.134.131;xxx.xxx0xxx.xxx3xxx.10;14xxx.81.1xxxxxx.8xxx;xxx.xxx0xxx.xxx51.1xxx4;xxx.xxx14.17.xxx04;xxx.xxx0xxx.xxx35.18xxx;xxx.xxx14.17.xxx03;xxx.xxx0xxx.xxxxxx4.xxx4;xxx.xxx0xxx.xxxxxx4.83;5xxx.117.7xxx.xxx3xxx;xxx.xxx0xxx.xxx30.xxx15;14xxx.81.1xxxxxx.73"
  "xxx.xxx0xxx.xxx3xxx.10;14xxx.81.1xxxxxx.8xxx;xxx.xxx14.13xxx.1xxx;xxx.xxx0xxx.xxx35.18xxx;14xxx.81.1xxxxxx.73;xxx.xxx0xxx.xxx51.1xxx4;5xxx.117.7xxx.xxx3xxx;xxx.xxx0xxx.xxxxxx4.83;xxx.xxx14.17.xxx03;xxx.xxx0xxx.xxx30.xxx15;xxx.xxx0xxx.xxxxxx4.xxx4;xxx.xxx14.17.xxx04;5xxx.118.134.131"
  "xxx.xxx0xxx.xxx30.xxx15;xxx.xxx14.13xxx.1xxx;14xxx.81.1xxxxxx.73;5xxx.117.7xxx.xxx3xxx;xxx.xxx0xxx.xxxxxx4.xxx4;xxx.xxx0xxx.xxx3xxx.10;xxx.xxx14.17.xxx04;xxx.xxx0xxx.xxxxxx4.83;14xxx.81.1xxxxxx.8xxx;xxx.xxx0xxx.xxx35.18xxx;xxx.xxx14.17.xxx03;xxx.xxx0xxx.xxx51.1xxx4;5xxx.118.134.131")
 
 internalRandom=$(( ( RANDOM % ${#internalRelays[*]} ) ))
 externalRandom=$(( ( RANDOM % ${#externalRelays[*]} ) ))
-altRandom=$(( ( RANDOM % ${#altRelays[*]} ) ))
+altRandom=$(( ( RANDOM % ${#altRelaysList[*]} ) ))
 relayServer1=${internalRelays["$internalRandom"]}
 relayServer2=${externalRelays["$externalRandom"]}
-altRelays=${altRelays["$altRandom"]}
+altRelays=${altRelaysList["$altRandom"]}
 }
 
 create_config (){
+pushd /tmp &>/dev/null
+touch besclient.config
 echo '[Software\BigFix\EnterpriseClient]' >> besclient.config
 echo 'EnterpriseClientFolder         = /opt/BESClient' >> besclient.config
 echo '' >> besclient.config
@@ -78,7 +80,7 @@ echo '[Software\BigFix\EnterpriseClient\Settings\Client\_BESClient_Report_Minimu
 echo 'value							= 300' >> besclient.config
 
 #delete contents of __BESData
-rm -fr __BESData
+#rm -fr __BESData
 }
 
 start_client (){
@@ -88,11 +90,11 @@ service besclient restart
 
 
 MAIN (){
-    stop_client
-    reset_client
+#    stop_client
+#    reset_client
     set_relays
     create_config
-    start_client
+#    start_client
 }
 
 MAIN

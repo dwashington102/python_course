@@ -27,7 +27,7 @@ do
     read searchString
     IFS=$'\n'
     arr+=("$searchString")      # <<<<<<<< This is the correct WAY
-    arrV2+=$searchString        # <<<<<<<< THIS AWAY IS JUST WRONG
+    arrV2+=$searchString        # <<<<<<<< THIS WAY IS JUST WRONG
     ((loopCount++))
 done
 printf "\nDEBUG >>> Dump array 'arr' from within ${FUNCNAME}\n"
