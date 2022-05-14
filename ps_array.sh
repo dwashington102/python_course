@@ -1,6 +1,12 @@
 #!/bin/sh
 
+
+<< 'COMMENT'
+Script dumps output of 'ps auxh' adding a line number before each output.  This script is for loop testing
+COMMENT
+
 IFS=$'\n'
+declare -a myArray
 myArray=( $(ps auxh) )
 
 count=1
