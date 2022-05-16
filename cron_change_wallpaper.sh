@@ -19,19 +19,19 @@ running_kde=$(pgrep 'kded[[:digit:]]')
 running_gnome=$(pgrep 'gnome-session')
 running_xfce=$(pgrep 'xfce[[:digit:]]-session')
 
-if [ -n "$running_kde" ]; then
+if [[ -n "$running_kde" ]]; then
     get_xdisplay_var=$(w -h | command grep -m1 -E "^$get_curUser.*kded[[:digit:]]$" | awk '{print $2}')
     printf "\nCaptured KDE Xsession\n"
     DISPLAY=${get_xdisplay_var}
     printf "\nDISPLAY=$DISPLAY\n"
     #func_zenity
-elif [ -n "$running_gnome" ]; then
+elif [[ -n "$running_gnome" ]]; then
     get_xdisplay_var=$(w -h | command grep -m1 -E "^$get_curUser.*session" | awk '{print $2}')
     printf "\nCaptured GNOME Xsession\n"
     DISPLAY=${get_xdisplay_var}
     printf "\nDISPLAY=$DISPLAY\n"
     #func_zenity
-elif [ -n "$running_xfce" ]; then
+elif [[ -n "$running_xfce" ]]; then
     get_xdisplay_var=$(w -h | command grep -m1 -E "^$get_curUser.*xfce[[:digit:]]-session$" | awk '{print $2}')
     printf "\nCaptured XFCE Xsession\n"
     DISPLAY=${get_xdisplay_var}
@@ -52,7 +52,7 @@ zenity --timeout=10 --warning --width=400 --height=200 --text '<b><span foregrou
 
 func_changewallpaper (){
 PYCMD=$(which python3)
-if [ ! -z "$PYCMD" ]; then
+if [[ ! -z "$PYCMD" ]]; then
     printf "Python command found."
     "$PYCMD" "$HOME"/GIT_REPO/python_course/change_wallpaper.py
 else 
@@ -63,7 +63,7 @@ fi
 
 
 MAIN (){
-if [ -d $HOME/cronlogs ]; then
+if [[ -d $HOME/cronlogs ]]; then
     touch $logfile
 else
     mkdir $HOME/cronlogs
