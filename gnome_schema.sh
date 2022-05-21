@@ -19,6 +19,7 @@ done
 
 
 MAIN (){
+    printf "\nGathering gsettings keys...\n"
     (
         do_work
     ) > $LOGFILE
@@ -28,4 +29,5 @@ MAIN (){
 
 MAIN
 printf "\nGenerated output file: %s\n"  "${LOGFILE}"
+printf "\nhead of %s\n\n" "${LOGFILE}"
 head -5 "${LOGFILE}"
