@@ -8,9 +8,9 @@
 # 2022-02-04 - Updated MAIN() in order to tee to LOGFILE
 
 tstamp=$(date +%Y%m%d_%H%M%S)
-mkdir -p $HOME/logs
+#mkdir -p $HOME/logs
 LOGFILE=git_pushto_${tstamp}
-touch $HOME/logs/$LOGILE
+touch $HOME/cronlogs/$LOGILE
 declare -a HostList=("k430-raptor" "x1-raptor" "p340-dove-docker" "p340-dove-fed35" "p50-raptor")
 declare -a UserList=("k430user" "x1user" "washingd" "washingd" "p50user")
 
