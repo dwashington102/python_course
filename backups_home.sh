@@ -16,11 +16,11 @@ GITREPO="$HOME/GIT_REPO"
 
 # function to generate log file
 func_set_log (){
-	logfile="$HOME/logs/backups_${tstamp}.log"
-	if [ -d $HOME/logs ]; then
+	logfile="$HOME/cronlogs/backups_${tstamp}.log"
+	if [ -d $HOME/cronlogs ]; then
 	    touch $logfile
 	else 
-	    mkdir -p $HOME/logs
+	    mkdir -p $HOME/cronlogs
 	    touch $logfile
 	fi
 }
