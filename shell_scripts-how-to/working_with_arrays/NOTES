@@ -1,0 +1,10 @@
+See array_to_select_random_word.sh
+- Remember array items start at 0, while the RANDOM function starts at 1.
+If using a variable generated with the RANDOM function, subtract 1 in order to get the array item.
+EXAMPLE:
+randValue=$(( RANDOM % $maxValue ))
+arrayItem=$(($randValue -1 ))
+
+CRITICAL:  When passing the arrayItem variable, in order to print the item, include the variable in double quotes.
+I've seen odd issues when not in quotes 
+printf "\nDEBUG FINAL: %s" "${wordArray["$arrayItem"]}"
