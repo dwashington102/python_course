@@ -1,5 +1,12 @@
 #!/usr/bin/bash
 
+<<'COMMENTS'
+Script will run the commands necessary to upgrade Fedora to latest version.
+The script should be ran as the root user
+
+COMMENTS
+
+
 check_uid (){
    printf "\nDEBUG:  $(id -u)\n"
    if [ "$(id -u)" == "0" ]; then
@@ -21,7 +28,9 @@ reboot_fedora (){
 }
 
 system_upgrade (){
-    dnf -y system-upgrade download --releasever=36
+    echo "Fedora Version: "
+    read fedVer
+    dnf -y system-upgrade download --releasever="$fedVer"
 }
 
 upgrade_reboot (){
@@ -30,6 +39,7 @@ upgrade_reboot (){
 
 
 MAIN () {
+    printf "\nRunning this script WILL REBOOT this machine"
     check_uid
     preupdate_fedora
     system_upgrade
