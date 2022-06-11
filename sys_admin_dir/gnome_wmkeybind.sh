@@ -25,13 +25,13 @@ func_set_num_ws (){
 func_set_keybindings (){
     for i in $(gsettings list-keys ${GSETTINGKEY} | command grep -E 'switch-to.*[[:digit:]]' | sort -V | head -${get_ws})
         do
-            #get_num=${get_ws}
             set_workspace=$(echo ${i} | awk -F'workspace-' '{print $2}')
             gsettings set ${GSETTINGKEY} ${i} "['<Super>${set_workspace}']"
         done
     print_spacer
 }
 
+# Function removes keybindings that Gnome Dash-to-Dock sets which maps Super-1 to app-1 on the dock, Super-2 to app-2 on dock...
 func_unset_keybindings (){
     SHELLKEY='org.gnome.shell.keybindings'
     loopCount=1
