@@ -18,6 +18,16 @@
            
 # 6. Optional --- create cron job to run the script
 
+func_check_dbdir (){
+    if [ ! -d $HOME/databases/sqlite_db ]; then
+       mkdir -p ~/databases/sqlite_db/databases
+       mkdir -p ~/databases/sqlite_db/csv_files
+       mkdir -p ~/databases/sqlite_db/import_files
+       mkdir -p ~/databases/sqlite_db/export_files
+       mkdir -p ~/databases/sqlite_db/SQL_files
+       mkdir -p ~/databases/sqlite_db/log_files
+    fi
+}
 
 func_set_vars () {
     # Variables used to insert data into csv file, timestamps for logs, and inserts
@@ -82,6 +92,7 @@ func_test_dbdir () {
 
 
 MAIN (){
+    func_check_dbdir
     func_test_dbdir
     func_set_vars
     if [[ $COUNT -eq 0 ]]; then
