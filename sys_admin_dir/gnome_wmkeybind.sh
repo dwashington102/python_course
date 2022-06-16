@@ -25,6 +25,7 @@ func_set_num_ws (){
 func_set_keybindings (){
     for i in $(gsettings list-keys ${GSETTINGKEY} | command grep -E 'switch-to.*[[:digit:]]' | sort -V | head -${get_ws})
         do
+            get_num=${get_ws}
             set_workspace=$(echo ${i} | awk -F'workspace-' '{print $2}')
             gsettings set ${GSETTINGKEY} ${i} "['<Super>${set_workspace}']"
         done
@@ -35,9 +36,12 @@ func_set_keybindings (){
 func_unset_keybindings (){
     SHELLKEY='org.gnome.shell.keybindings'
     loopCount=1
-    while [ "$loopCount" -le "$get_ws" ]
+    while [ "$loopCount" -le "9" ]
     do
             gsettings set org.gnome.shell.keybindings switch-to-application-"$loopCount" ['']
+
+            printf "\nUpdated Setting:\n"
+            gsettings get org.gnome.shell.keybindings switch-to-application-"$loopCount" ['']
             ((loopCount++))
     done
 }

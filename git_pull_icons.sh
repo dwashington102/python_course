@@ -60,6 +60,7 @@ MAIN (){
     pushd $HOME/git_icons &>/dev/null
     rename_dirs
     git_clone_actions
+    printf "\nActions Completed at $(date +%Y%m%d_%H:%M)\n"
     ) > "$logfile"
 }
 
