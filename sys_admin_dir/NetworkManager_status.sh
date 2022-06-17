@@ -10,6 +10,7 @@ Date: Sat 03 Jul 2021 05:01:14 AM CDT
 '
 
 # 30-Mar-2022: Updated 
+# 17-Jun-2022: Updated get_sysd_pid to use faster ps equivalent command
 
 tStamp=`date +%Y%m%d_%H%M`
 logDir=/root/cronlogs/
@@ -71,8 +72,9 @@ MAIN (){
     fi
 
     set_sysd_pid=1
-    get_sysd_pid=$(ps -e | command grep -m 1 systemd | awk '{print $1}')
-    if [ "$get_sysd_pid" =  "1" ]; then
+#    get_sysd_pid=$(ps -e | command grep -m 1 systemd | awk '{print $1}')
+    get_sysd_pid=$(grep systemd /proc/1/comm)
+    if [ "$get_sysd_pid" =  "systemd" ]; then
         func_get_status_sysd
     else
         func_get_status_initd
