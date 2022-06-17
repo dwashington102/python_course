@@ -7,6 +7,7 @@
 # Date: 2022-01-15
 
 # Changes
+# 6-16-2022: Updated func_unset_keybindings()
 
 GSETTINGKEY='org.gnome.desktop.wm.keybindings'
 
