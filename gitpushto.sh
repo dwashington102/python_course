@@ -12,7 +12,7 @@ tstamp=$(date +%Y%m%d_%H%M%S)
 LOGFILE=git_pushto_${tstamp}
 touch $HOME/cronlogs/$LOGILE
 declare -a HostList=("k430-raptor" "x1-raptor" "p340-dove-docker" "p340-dove-fed35" "p50-raptor")
-declare -a UserList=("k430user" "x1user" "washingd" "washingd" "p50user")
+declare -a UserList=("k430user" "x1user" "washingd" "testdev" "p50user")
 
 func_set_colors () {
     bold=$(tput bold)
