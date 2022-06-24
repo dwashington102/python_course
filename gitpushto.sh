@@ -55,12 +55,15 @@ func_testConnection () {
 }
 
 MAIN (){
+    if [ ! -d $HOME/cronlogs ]; then
+        mkdir -p $HOME/cronlogs
+    fi
     (
     func_set_colors
     func_print_spacer
     func_testConnection
     func_print_spacer
-    ) | tee $HOME/logs/$LOGFILE
+    ) | tee $HOME/cronlogs/$LOGFILE
 }
 
 MAIN
