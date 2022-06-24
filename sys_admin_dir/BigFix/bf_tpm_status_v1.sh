@@ -7,18 +7,14 @@ timeStamp=$(date +%Y%m%d_%H%M)
 
 do_work (){
 if [ -r /sys/class/tpm/tpm0 ]; then
-    if grep -q ^1 /sys/class/tpm/tpm0/tpm_version_major; then
-        echo "tpm version 1.x"
-        exit 1
-    elif grep -q ^2 /sys/class/tpm/tpm0/tpm_version_major; then
-	   echo "tpm version 2.x"
-	   exit 2
+    get_tpm_ver=$(grep ^"[[:digit:]]" /sys/class/tpm/tpm0/tpm_version_major)
+    if (( 1 <= "$get_tpm_ver" && "$get_tpm_ver" <= 99 )); then
+        echo "TPM Version = $get_tpm_ver"
     else
-        echo "/sys/class/tpm/tpm0 enabled"
-        exit 3
+	   echo "TPM Version = Available"
     fi
 else
-    echo "Could not find the TPM information file, the TPM driver is probably not installed."
+    echo "TPM Version = NOT FOUND"
     exit 4
 fi
 }
