@@ -18,7 +18,6 @@ Exit Codes:
 '''
 
 import ldap
-import logging
 import re
 import shutil
 import sys
@@ -81,7 +80,7 @@ def get_ldapInfo():
         beekeeperEntry = "div=" + division.decode("utf-8", "ignore")
         log.info("beekeeperEntry {}".format(beekeeperEntry))
         #beekeeperEntry = re.sub('\n', '', beekeeperEntry) 
-        #update_beekeeper(beekeeperEntry)
+        update_beekeeper(beekeeperEntry)
         
 def update_beekeeper(beekeeperEntry):
     log.info("Starting update_beekeeper")
@@ -93,6 +92,7 @@ def update_beekeeper(beekeeperEntry):
                oFile.write(line)
                if line.startswith('employeeCountryCode='):
                    oFile.write(beekeeperEntry + '\n')
+                   log.info("Added {} to {}".format(beekeeperEntry,output_file))
     except:
         log.info('Write Failed...exit(4)')
         sys.exit(4)
@@ -107,11 +107,13 @@ def copy_tmp_beekeeper():
         log.info("Existing {} FOUND".format(bkeeper_v1))
         try:
             shutil.copy("/var/opt/beekeeper/beekeeper.ini", "/tmp/bf_linuxatibm/beekeeper.ini")
+            log.info('Beekeeper copy completed')
         except IOError as e:
             log.info('Beekeeper copy failed...rc=({})'.format(e))
             sys.exit(5)
         try:
             shutil.move("/tmp/beekeeper.ini", "/var/opt/beekeeper/beekeeper.ini")
+            log.info('Beekeeper move completed')
         except IOError as e:
             log.info('Beekeeper move failed...rc=({})'.format(e))
             sys.exit(6)
