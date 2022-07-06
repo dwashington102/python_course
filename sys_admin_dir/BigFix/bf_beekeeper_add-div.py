@@ -18,6 +18,7 @@ Exit Codes:
 '''
 
 import ldap
+import os
 import re
 import shutil
 import sys
@@ -107,6 +108,7 @@ def copy_tmp_beekeeper():
         log.info("Existing {} FOUND".format(bkeeper_v1))
         try:
             shutil.copy("/var/opt/beekeeper/beekeeper.ini", "/tmp/bf_linuxatibm/beekeeper.ini")
+            os.chmod("/var/opt/beekeeper/beekeeper.ini", 0o664)
             log.info('Beekeeper copy completed')
         except IOError as e:
             log.info('Beekeeper copy failed...rc=({})'.format(e))
