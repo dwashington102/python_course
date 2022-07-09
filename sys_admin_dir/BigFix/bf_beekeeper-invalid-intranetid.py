@@ -142,7 +142,7 @@ def update_beekeeper(validEmail):
             for line in iFile:
                 if line.startswith('IntranetID='):
                     updatedline = re.sub('=.*', '=' + validEmail, line)
-                    oFile.write(updatedline + '\n')
+                    oFile.write(updatedline)
                 else:
                     oFile.write(line)
     except:
