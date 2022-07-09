@@ -28,7 +28,7 @@ logfile = "bf_beekeper-invalid-intranetid.log"
 
 try:
     from ibmlog.ibmlogger import IBMLogger
-    log = IBMLogger(__name, filename=logfile)
+    log = IBMLogger(__name__, filename=logfile)
 except:
     import logging
     logfile = "/tmp/{}".format(logfile)
@@ -42,7 +42,12 @@ def main():
     log.info("VALID EMAIL: {}".format(validEmail))
     update_beekeeper(validEmail)
 
+'''
+check_beekeeper() - Performs a is.file check of the /var/opt/beekeeper/beekeeper.ini
+returns bkeeperini variable
+'''
 def check_beekeeper():
+    log.info("Starting check_beekeeper()")
     bkeeperini = "/var/opt/beekeeper/beekeeper.ini"
     bkeeperiniPath = Path(bkeeperini)
 
@@ -53,6 +58,11 @@ def check_beekeeper():
         log.info("Existing {} NOT FOUND...exit(1)".format(bkeeperini))
         sys.exit(1)
 
+'''
+test_intranetid() - Searches the beekeeper.ini file for the string IntranetID and uid.
+Performs an ldapsearch using the IntranetID, if the ldapsearch results in an array with size 0 - an ldapsearch using uid is attempted.  Both ldapsearchs gather the ldapEmail associated.
+returns ldapEmail
+'''
 def test_intranetid(bkeeperini):
     log.info("Starting test_intranetid()")
     searchEmail = "^IntranetID=.*"
@@ -120,6 +130,9 @@ def test_intranetid(bkeeperini):
             log.info("email id: {}".format(ldapEmail))
             return(ldapEmail)
 
+'''
+Generates a /tmp/beekeeper.ini file by replacing the invalid entry for IntranetID with the valid ldapEmail address
+'''
 def update_beekeeper(validEmail):
     log.info("Starting update_beekeeper()")
     try:
