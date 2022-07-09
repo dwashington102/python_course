@@ -24,7 +24,7 @@ import shutil
 import sys
 from pathlib import Path
 
-logfile = "bf_beekeper-invalid-intranetid.py"
+logfile = "bf_beekeper-invalid-intranetid.log"
 
 try:
     from ibmlog.ibmlogger import IBMLogger
