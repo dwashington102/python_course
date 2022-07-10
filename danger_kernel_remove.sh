@@ -39,7 +39,6 @@ func_set_colors () {
     normal=$(tput setaf 9)
 }
 
-
 # Gather the max. number of kernels setting from dnf.conf
 get_limit_value (){
     limit_value=$(grep installonly /etc/dnf/dnf.conf | awk -F"=" '{print $2}')
@@ -103,7 +102,7 @@ MAIN (){
     if [[ "${#dir_total[@]}" -gt "$limit_value" ]]; then
         if [[ "${#dir_total[@]}" -gt "${#kernel_rpms[@]}" ]]; then
             printf "\n"
-            printf "\nThe number of directories (%s) exceeds number of installed kernels" "${#dir_total[@]}"
+            printf "\nThe number of directories (%s) exceeds installonly_limit setting in dnf.conf" "${#dir_total[@]}"
             printf "\n\n${bold}${redfg}${whitebg}${blink}>>> DANGEROUS WORK FOLLOWS BE CAREFUL <<<${offall}"
             printf "\n"
             deleteCount=0
@@ -141,12 +140,10 @@ MAIN (){
 
     fi
 
-
     printf "\n"
     printf "\nInstalled RPMS:"
     printf "\n%s" "${kernel_rpms[*]}" | sort -V
     printf "\n"
 }
-
 
 MAIN
