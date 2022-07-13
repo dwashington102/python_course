@@ -1,4 +1,4 @@
-'''
+"""
 Program  will read csv file that contains contributions, dividends, and fees
 for an investment account.  The values are then inserted into a MySQL database
 
@@ -21,7 +21,7 @@ CSV file header and content format:
 Date,Investment,Transaction Type,Amount,Shares/Unit
 11/15/2019,VANG SM CAP IDX INST,CONTRIBUTION,"122.36","1.587"
 11/15/2019,VANG PRIMECAP CORE,CONTRIBUTION,"122.36","4.228"
-'''
+"""
 
 # Import common modules
 import os
@@ -42,12 +42,14 @@ from clear_screen import clear
 HOMEDIR = str(Path.home())
 CSVFILELOC = HOMEDIR + '/databases/data/'
 
+
 def main():
     clear()
     get_csvfile()
 
-#Function opens the csv file for reading and calls the export_csvfile().
+
 def get_csvfile():
+#Function opens the csv file for reading and calls the export_csvfile().
     csvfile_hist = CSVFILELOC + 'history_ytd.csv'
     try:
         with open(csvfile_hist, 'r') as datafile:
@@ -58,8 +60,9 @@ def get_csvfile():
         print(err)
         exit(1)
 
-# Function defines db connection engine and exports contents of csv file
+
 def export_csvfile(datafile):
+# Function defines db connection engine and exports contents of csv file
     try:
         engine = sqlalchemy.create_engine('mysql+pymysql://x1user:cxgg65$.#@localhost/TRANSACTIONS')
     except ConnectionError as dbconnErr: 

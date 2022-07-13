@@ -1,9 +1,10 @@
 import mysql.connector as MySQL
-from mysql.connector import errorcode
 import os
-from csv import reader, writer
 import random
 import time
+
+from csv import reader, writer
+from mysql.connector import errorcode
 
 conn = MySQL.connect(
     host='localhost',
@@ -17,7 +18,7 @@ cur.execute('DROP TABLE IF EXISTS VSTATS')
 DB_NAME = 'CRASHDB'
 TABLES = {}
 
-'''
+"""
 See url: https://www.youtube.com/watch?v=4N5ykIF1vU4
 
 -create table statement taken from mysql workbench
@@ -28,7 +29,7 @@ CREATE TABLE `CRASHDB`.`VSTATS` (
   `CACHE` INT NULL,
   `BUFFER` VARCHAR(45) NULL,
   PRIMARY KEY (`RowID`));
-'''
+"""
 
 TABLES['VSTATS'] = (
     "CREATE TABLE `VSTATS`("

@@ -1,17 +1,17 @@
-'''
+"""
 Progam gathers a list of files (vmstat*csv) from the $HOME/databases/sqlite_db/csv_files directory.
 Iterates though the list and inserts data from the file(s) into the table VSTATS at the database
 testdb2.
-'''
+"""
 
 import os
 import pandas as pd
-from glob import glob
 import sqlalchemy
 import pymysql
+
+from glob import glob
 from  pathlib import Path
 from time import sleep
-
 
 HOMEDIR = str(Path.home())
 CSVFILELOC = HOMEDIR + '/databases/sqlite_db/csv_files/'

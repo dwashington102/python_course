@@ -1,9 +1,8 @@
-# Program will gather a list to text files, loop through the text files, and
-# strip the lines that include the text "http".  Using the http lines a
-# pull request will be initiated to pull the files to the local workstation. 
+""" 
+Program will gather a list to text files, loop through the text files, and
+strip the lines that include the text "http".  Using the http lines a
+pull request will be initiated to pull the files to the local workstation. 
 
-
-'''
 Steps required:
 1) Copy and paste chat text into a text file located in ~/Temp/static
     cd ~/Temp/static &&  touch afile_`date +%Y%m%d-%H%M`.txt
@@ -13,20 +12,20 @@ Steps required:
 3) Call script:  
     python3 striphttp.py
 4) Downloaded images are stored in ~/Temp/images
-'''
+"""
 
-from datetime import datetime
 import os
-from os import path
-from pathlib import Path
 import re
 import subprocess
-from time import sleep
 import wget
 import colorama
 
-# Custom modules/python file that sits in the same directory as the striphttp.py script
+from datetime import datetime
+from os import path
+from pathlib import Path
+from time import sleep
 
+# Custom modules/python file that sits in the same directory as the striphttp.py script
 
 # Define GLOBAL CONSTANTS
 TSTAMP=datetime.now()
@@ -43,6 +42,7 @@ def main():
     get_httpEntries()
     create_outputhtml()
     parse_htmlfiles()
+
 
 def display_header():
     print(DISPLAY_SPACER * 50)
@@ -109,7 +109,6 @@ def parse_htmlfiles():
             search_file.close()
             print('\nNo WGET Action against --->', rline, ftype)
            #pass
-
 
 def get_httpEntries():
     # Convert the current time to use format yearmondayhourminute

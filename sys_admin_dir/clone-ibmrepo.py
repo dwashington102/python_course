@@ -2,12 +2,15 @@
 
 import os
 import argparse
-from pathlib import Path
 import subprocess
 import sys
 
+from pathlib import Path
+
+
 def main():
     do_work()
+
 
 def do_work():
     parser = argparse.ArgumentParser(description='Script takes 2 arguments {pkg-name} and {branch ID}. Using these arguments the script attempts a git clone for the package and branch, saving the repo to defined git directory')

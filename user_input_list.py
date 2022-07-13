@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-'''
+"""
 Step 1: Create flowchart / pseudocode and Python for a program that stores numbers in an
 array. 
 
@@ -9,7 +9,7 @@ The numbers are to be stored in an array.
 After all of the numbers have been entered by the user (and stored), the program
 displays all of the numbers (in the order they were entered), as well as the largest
 number and the smallest number.
-'''
+"""
 
 from os import system
 import random

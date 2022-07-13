@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 
-'''
+"""
 Another useful example of argparse library can be found in the clone-ibmrepo.py script
-'''
+"""
 
 import os
 import argparse

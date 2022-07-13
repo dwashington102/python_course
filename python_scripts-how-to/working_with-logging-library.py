@@ -2,7 +2,7 @@
 
 import logging
 
-'''
+"""
 Levels of logging
 - DEBUG
 - INFO
@@ -18,7 +18,7 @@ filemods (a=append (default), w=write)
 
 Default format:
 logging_msg_level:root:debug message
-'''
+"""
 
 def main():
     only_debug_above()

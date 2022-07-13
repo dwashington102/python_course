@@ -1,5 +1,6 @@
 import mysql.connector
 import csv
+
 from time import sleep
 
 
@@ -26,7 +27,7 @@ my_cursor = mydb.cursor()
 #    print(db[0])
 
 # Create table statement in mysql:
-'''
+"""
 CREATE TABLE `mydb`.`dayinfo` (
   `RowNum` INT UNSIGNED NOT NULL,
   `Date` VARCHAR(10) NOT NULL,
@@ -44,7 +45,7 @@ CREATE TABLE `mydb`.`dayinfo` (
 |      1 | 2016-01-04 | 27.110001 | 27.250000 | 26.080000 | 26.430000 | 26.138819 | 19107600 |
 |      2 | 2016-01-05 | 26.610001 | 26.860001 | 25.940001 | 26.120001 | 25.832235 | 16691400 |
 +--------+------------+-----------+-----------+-----------+-----------+-----------+----------+
-'''
+"""
 # Date,Open,High,Low,Close,Adj Close,Volume
 # Creating a table
 # Valid Statement
