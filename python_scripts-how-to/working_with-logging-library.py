@@ -35,11 +35,12 @@ def only_debug_above():
 def only_error_above():
     # Appends to log file due to filemode="a" writes all messages >= ERROR
     logging.basicConfig(filename="/tmp/my.log",filemode="a",level=logging.ERROR)
-    logging.info('DEBUG LEVEL: DEBUG and above with APPEND action')
+    logging.info('DEBUG LEVEL: ERROR and above with APPEND action')
     logging.debug('debug message')
     logging.info('info message')
     logging.warning('warn message')
     logging.error('error message')  
+    logging.critical('critical message')  
 
 
 if __name__ ==  "__main__":
