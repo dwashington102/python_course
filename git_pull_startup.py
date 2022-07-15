@@ -4,7 +4,7 @@ from colorama import Fore, Back, Style
 import datetime
 import os
 
-import logging
+import loggingt
 
 def main():
     
