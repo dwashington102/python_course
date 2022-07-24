@@ -16,7 +16,8 @@ def stockpps(totstockprice):
 
     # Return the output to the user
     print(gcolor, "\n===================================")
-    print("Total Price Paid for {:.2f} shares is ${:.2f}".format(totalshares, totstockprice))
+    print(f"Total Price Paid for {totalshares:.2f}"
+          + f" shares is ${totstockprice:.2f}")
     print("Cost per share: ${:.2f}".format(costpershare))
     print("===================================\n", resetcolor)
 

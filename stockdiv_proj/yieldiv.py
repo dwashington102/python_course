@@ -8,9 +8,12 @@ resetcolor = colorama.Fore.RESET
 
 
 def compute_yield(stockprice):
-#print("Debug stockprice: {:.2f}".format(stockprice))
-# Gather user input dividend payout per share (divamount) and payout frequency per year (yrdist)
-    divamount = float(input("What is the dividend amount per share per payout: "))
+    ''' print("Debug stockprice: {:.2f}".format(stockprice))
+    Gather user input dividend payout per share (divamount) and
+    payout frequency per year (yrdist)
+    '''
+    divamount = float(input("What is the dividend amount per share "
+                            + "per payout: "))
     yrdist = int(input("How many times per year is the dividend paid: "))
 
     # Compute dividend percent
