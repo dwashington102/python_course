@@ -13,15 +13,16 @@ DISPLAY_SPACER = "="
 MONTHS = 12
 
 
-# Function used to display header/banner 
 def display_header():
+    # Function used to display header/banner
     print(DISPLAY_SPACER * 50)
     print('Future Value')
     print(DISPLAY_SPACER * 50)
 
 
-# Function used to gather user input for current balance, interest rate, and duration.
 def user_principal():
+    '''Function used to gather user input for current balance
+    interest rate, and duration.'''
     user_choice = 'y'
     while user_choice == 'y':
         print()
@@ -43,12 +44,12 @@ def user_principal():
         compute_future_value(u_principal, u_rate, u_months)
         print()
         user_choice = input('Would you like to compute anoter future value (y/n): ')
-        
 
 
-# Function used to compute future value based on values passed from user_principal() 
 def compute_future_value(u_principal, u_rate, u_months):
-    #fut_value = u_principal * (1 + (u_rate/u_months) ** u_months
+    ''' Function used to compute future value based on values passed from
+    user_principal()'''
+    # fut_value = u_principal * (1 + (u_rate/u_months) ** u_months
     convert_rate = u_rate / 100
     print()
     print('Current Value: ${:,.2f}'.format(u_principal))
@@ -64,7 +65,6 @@ def compute_future_value(u_principal, u_rate, u_months):
     print('Profit/Loss: ${:,.2f}'.format(chg_value))
 
 
-# Do the work
 def main():
     clear()
     display_header()
@@ -74,6 +74,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-   
-

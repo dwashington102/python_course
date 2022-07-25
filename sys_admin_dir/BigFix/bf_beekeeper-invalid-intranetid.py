@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 '''
-Script pulls the IntranetID from the /var/opt/beekeeper/beekeeper.ini file,
-performs an ldapsearch using the IntranetID, if the search fails the script
-pulls the uid from the beekeeper.ini file, performs and ldapsearch gathering the
-correct IntranetID.
+Script pulls the IntranetID from the /var/opt/beekeeper/beekeeper.ini
+file, performs an ldapsearch using the IntranetID, if the search
+fails the script pulls the uid from the beekeeper.ini file, performs
+and ldapsearch gathering the correct IntranetID.
 
-Using the correct IntranetID, the beekeeper.ini file is updated replacing the 
-failing IntranetID with the valid IntranetID.
+Using the correct IntranetID, the beekeeper.ini file is updated
+replacing the failing IntranetID with the valid IntranetID.
 
 Associated Jira Story:
     https://jsw.ibm.com/browse/LINUXIBM-12737
@@ -18,7 +18,7 @@ Exit Codes:
     3 - IntranetID nor uid found in beekeeper.ini
     4 - ldapsearch for uid failed
     5 - Write to /tmp/beekeeper.ini failed
-    6 - beekeeper.ini IntranetID matches mail address in LDAP 
+    6 - beekeeper.ini IntranetID matches mail address in LDAP
     7 - copy beekeeper.ini to /tmp/bf_linuxatibm/beekeeper.ini failed
     8 - move /tmp/beekeeper.ini failed
 '''
@@ -35,25 +35,29 @@ logfile = "bf_beekeper-invalid-intranetid.log"
 try:
     from ibmlog.ibmlogger import IBMLogger
     log = IBMLogger(__name__, filename=logfile)
-except:
+except AttributeError:
     import logging
     logfile = "/tmp/{}".format(logfile)
-    logging.basicConfig(filename=logfile,level=logging.DEBUG)
+    logging.basicConfig(filename=logfile, level=logging.DEBUG)
     log = logging
     log.warning("unable to load ibmlogger, using standard logging instead ({})".format(logfile))
+
 
 def main():
     bkeeperini = check_beekeeper()
     validEmail = test_intranetid(bkeeperini)
-    #log.info("VALID EMAIL: {}".format(validEmail)) 
+    # log.info("VALID EMAIL: {}".format(validEmail))
     update_beekeeper(validEmail)
     copy_tmp_beekeeper()
 
-'''
-check_beekeeper() - Performs a is.file check of the /var/opt/beekeeper/beekeeper.ini
-returns bkeeperini variable
-'''
+
+
 def check_beekeeper():
+    '''
+    check_beekeeper() - Performs a is.file check of the
+    var/opt/beekeeper/beekeeper.ini
+    returns bkeeperini variable
+    '''
     log.info("Starting check_beekeeper()")
     bkeeperini = "/var/opt/beekeeper/beekeeper.ini"
     bkeeperiniPath = Path(bkeeperini)
@@ -65,12 +69,16 @@ def check_beekeeper():
         log.critical("Existing {} NOT FOUND...exit(1)".format(bkeeperini))
         sys.exit(1)
 
-'''
-test_intranetid() - Searches the beekeeper.ini file for the string IntranetID and uid.
-Performs an ldapsearch using the IntranetID, if the ldapsearch results in an array with size 0 - an ldapsearch using uid is attempted.  Both ldapsearchs gather the ldapEmail associated.
-returns ldapEmail
-'''
+
 def test_intranetid(bkeeperini):
+    '''
+    test_intranetid() - Searches the beekeeper.ini file for the string
+    IntranetID and uid.
+    Performs an ldapsearch using the IntranetID, if the ldapsearch
+    results in an array with size 0 - an ldapsearch using uid is
+    attempted.  Both ldapsearchs gather the ldapEmail associated.
+    returns ldapEmail
+    '''
     log.info("Starting test_intranetid()")
     searchEmail = "^IntranetID=.*"
     searchUid = "^uid=.*"
@@ -91,7 +99,7 @@ def test_intranetid(bkeeperini):
                 uidList.append(line)
             else:
                 pass
-    
+
     emailListSize = len(emailList)
     if emailListSize <= 0:
         log.info("IntranetID: NOT Found")
@@ -102,7 +110,7 @@ def test_intranetid(bkeeperini):
         ldapSearch = "mail=" + intranetid
         log.info("ldapsearch string:  {}".format(ldapSearch))
 
-    result = l.search_s(ldapBase,ldap.SCOPE_SUBTREE,ldapSearch)
+    result = l.search_s(ldapBase, ldap.SCOPE_SUBTREE, ldapSearch)
     resultSize = len(result)
     if resultSize <= 0:
         log.warning("LDAP search failed for address {}".format(ldapSearch))
@@ -117,7 +125,7 @@ def test_intranetid(bkeeperini):
             uid = re.sub("\n", "", uid)
             ldapSearchUid = "uid=" + uid
             log.info("ldapSearchUid string: {}".format(ldapSearchUid))
-        result = l.search_s(ldapBase,ldap.SCOPE_SUBTREE,ldapSearchUid)
+        result = l.search_s(ldapBase, ldap.SCOPE_SUBTREE, ldapSearchUid)
         resultSize = len(result)
         if resultSize <= 0:
             log.critical("LDAP search failed for uid {}".format(ldapSearchUid))
@@ -126,8 +134,8 @@ def test_intranetid(bkeeperini):
             for dn, mail in result:
                 emailFound = mail[ldapattr][0]
                 ldapEmail = emailFound.decode("utf-8", "ignore")
-                #ldapUid = uidFound.decode("utf-8", "ignore")
-                #log.info("uid: {}".format(ldapUid))
+                # ldapUid = uidFound.decode("utf-8", "ignore")
+                # log.info("uid: {}".format(ldapUid))
                 log.info("LDAP email id returned: {}".format(ldapEmail))
                 return(ldapEmail)
     else:
@@ -143,10 +151,12 @@ def test_intranetid(bkeeperini):
             else:
                 return(ldapEmail)
 
-'''
-Generates a /tmp/beekeeper.ini file by replacing the invalid entry for IntranetID with the valid ldapEmail address
-'''
+
 def update_beekeeper(validEmail):
+    '''
+    Generates a /tmp/beekeeper.ini file by replacing the invalid
+    entry for IntranetID with the valid ldapEmail address
+    '''
     log.info("Starting update_beekeeper()")
     try:
         input_file = "/var/opt/beekeeper/beekeeper.ini"
@@ -158,10 +168,11 @@ def update_beekeeper(validEmail):
                     oFile.write(updatedline)
                 else:
                     oFile.write(line)
-    except:
+    except IOError:
         log.error('Write to {} failed...exit(5)'.format(output_file))
         sys.exit(5)
     log.info("{} generated".format(output_file))
+
 
 def copy_tmp_beekeeper():
     log.info("Starting copy_tmp_beekeeper()")
@@ -172,14 +183,16 @@ def copy_tmp_beekeeper():
     if bkeeper_v1Path.is_file():
         log.info("Existing {} FOUND".format(bkeeper_v1))
         try:
-            shutil.copy("/var/opt/beekeeper/beekeeper.ini", "/tmp/bf_linuxatibm/beekeeper.ini")
+            shutil.copy("/var/opt/beekeeper/beekeeper.ini",
+                        "/tmp/bf_linuxatibm/beekeeper.ini")
             os.chmod("/var/opt/beekeeper/beekeeper.ini", 0o664)
             log.info('{} copy completed'.format(bkeeper_v1))
         except IOError as e:
             log.error('Beekeeper copy failed...rc=({})'.format(e))
             sys.exit(7)
         try:
-            shutil.move("/tmp/beekeeper.ini", "/var/opt/beekeeper/beekeeper.ini")
+            shutil.move("/tmp/beekeeper.ini",
+                        "/var/opt/beekeeper/beekeeper.ini")
             os.chmod("/var/opt/beekeeper/beekeeper.ini", 0o664)
             log.info('{} move completed'.format(bkeeper_v2))
         except IOError as e:
@@ -188,6 +201,7 @@ def copy_tmp_beekeeper():
     else:
         log.critical("Existing {} NOT FOUND...exiting(7)".format(bkeeper_v1))
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

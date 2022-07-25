@@ -1,14 +1,19 @@
-# Make a two player Rock-Paper-Scissors game.  Ask for the players’ names. On each play, have
-# the players enter their move choice (rock, paper, or scissors). Then compare the moves,
-# and print out the players’ moves, a message of congratulations to the winner,
-# and ask if the players want to play again.
-#
-# Keep a running total of the wins/losses for each player, and when the players end the game,
-# print out the final wins / losses results for the players.
-# Remember the game rules:
-# - Rock beats scissors
-# - Scissors beats paper
-# - Paper beats rock
+#!/usr/bin/env python3
+'''Make a two player Rock-Paper-Scissors game.  Ask for the players’
+names. On each play, have the players enter their move choice (rock,
+paper, or scissors). Then compare the moves, and print out the
+players’ moves, a message of congratulations to the winner, and ask
+if the players want to play again.
+
+Keep a running total of the wins/losses for each player, and when the
+players end the game, print out the final wins / losses results for
+the players.
+
+Remember the game rules:
+- Rock beats scissors
+- Scissors beats paper
+- Paper beats rock
+'''
 
 # Define GLOBAL CONSTANTS
 DISPLAY_SPACER = "="
@@ -41,16 +46,16 @@ def play_game(player_1, player_2):
         p2_move = input('Player-2 {}: Enter rock, paper, or scissors: '.format(player_2)).lower()
 
         if p1_move == p2_move:
-            #print("Player 1 Move", p1_move)
-            #print("Player 2 Move", p2_move)
+            # print("Player 1 Move", p1_move)
+            # print("Player 2 Move", p2_move)
             print('We have a tie')
         elif p1_move == 'rock':
             if p2_move == 'paper':
                 print('Player 2 wins!')
-                total_p2_wins +=1
+                total_p2_wins += 1
             else:
                 print('Player 1 wins!')
-                total_p1_wins +=1
+                total_p1_wins += 1
 
         elif p1_move == 'scissors':
             if p2_move == 'rock':
@@ -70,9 +75,8 @@ def play_game(player_1, player_2):
         else:
             print('Invalid entry received.  Try again')
 
-
-            #print('DEBUG >>> p1 wins', total_p1_wins)
-            #print('DEBUG >>> p2 wins', total_p2_wins)
+            # print('DEBUG >>> p1 wins', total_p1_wins)
+            # print('DEBUG >>> p2 wins', total_p2_wins)
         play_again = input('Do you want to play again (y/n): ').lower()
 
     print()
@@ -80,8 +84,6 @@ def play_game(player_1, player_2):
     print('Player-2 {} '.format(player_2), 'Total Wins: ', total_p2_wins, sep='')
 
 
-main()
-print()
+if __name__ == '__main__':
+    main()
 print('end of program')
-
-
