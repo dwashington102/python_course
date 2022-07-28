@@ -1,8 +1,9 @@
 #!/bin/sh 
-# Version 0.0.5
+# Version 0.0.7
 
 # Script run on startup to pull git projects.
 
+# 07-27-2022: Added sysadmin repo
 # 03-21-2022: Updated regex find statement 
 # 03-04-2022: Updated listdirs adding regex to find command
 # 02-06-2022: Changed retention from from 20 days to 10 days
@@ -117,22 +118,22 @@ func_pull_zshsyntax (){
 func_check_pythoncourse (){
     printf "\n"
     if [ -d "$pythonCourse" ]; then
-        cd "$pythonCourse"
+        pushd "$pythonCourse"
         git status . | grep 'working tree clean' &>/dev/null
         if [ $? == 0 ]; then
             printf "git status did not detect any uncommitted changes...creating backup of local repo directory and pulling repo from github\n"
             func_rename_pythoncourse
         else
-            func_pull_pythoncourse
+            printf '\ngit status indicates "$pythonCourse" has uncommited changes'
         fi
     else
-        printf '\ngit status indicates "$pythonCourse" has uncommited changes'
+        func_pull_pythoncourse
     fi
     printf "\n"
 }
 
 func_rename_pythoncourse (){
-    cd $GITDIR
+    pushd $GITDIR
     mv $pythonCourse $pythonCourse.$timeStamp
     if [[ $? != 0 ]]; then
         printf "${red}"
@@ -145,7 +146,7 @@ func_rename_pythoncourse (){
 }
 
 func_pull_pythoncourse (){
-    cd $GITDIR
+    pushd $GITDIR
     printf "${green}"
     printf "git clone attempt for $pythonCourse\n"
     printf "${normal}"
@@ -164,16 +165,16 @@ func_pull_pythoncourse (){
 func_check_sysadmin (){
     printf "\n"
     if [ -d "$sysadmin" ]; then
-        cd "$sysadmin"
+        pushd "$sysadmin"
         git status . | grep 'working tree clean' &>/dev/null
         if [ $? == 0 ]; then
             printf "git status did not detect any uncommitted changes...creating backup of local repo directory and pulling repo from github\n"
             func_rename_sysadmin
         else
-            func_pull_sysadmin
+            printf '\ngit status indicates "$sysadmin" has uncommited changes'
         fi
     else
-        printf '\ngit status indicates "$sysadmin" has uncommited changes'
+        func_pull_sysadmin
     fi
     printf "\n"
 }
@@ -181,7 +182,7 @@ func_check_sysadmin (){
 
 func_rename_sysadmin (){
     cd $GITDIR
-    mv $pythonCourse $sysadmin.$timeStamp
+    mv $sysadmin $sysadmin.$timeStamp
     if [[ $? != 0 ]]; then
         printf "${red}"
         printf "$sysadmin NOT COPIED\n"
