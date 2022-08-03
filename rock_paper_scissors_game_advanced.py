@@ -1,3 +1,4 @@
+# /usr/bin/env python3
 # Make a two player Rock-Paper-Scissors game.  Ask for the players’ names. On each play, have
 # the players enter their move choice (rock, paper, or scissors). Then compare the moves,
 # and print out the players’ moves, a message of congratulations to the winner,
@@ -43,6 +44,9 @@ def start_game():
 
         try:
             num_of_players = int(float(input('Enter # of player(s): ')))
+        except KeyboardInterrupt:
+            print('\nShutdown reqeusted...exit(0)')
+            exit(0)
         except ValueError:
             print('Value entered must be an integer')
             continue
