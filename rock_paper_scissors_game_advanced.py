@@ -1,30 +1,26 @@
-#!/usr/bin/env python3
-'''Make a two player Rock-Paper-Scissors game.  Ask for the players’
-names. On each play, have the players enter their move choice
-(rock, paper, or scissors). Then compare the moves, and print out the
-players’ moves, a message of congratulations to the winner, and ask
-if the players want to play again.
+# /usr/bin/env python3
+# Make a two player Rock-Paper-Scissors game.  Ask for the players’ names. On each play, have
+# the players enter their move choice (rock, paper, or scissors). Then compare the moves,
+# and print out the players’ moves, a message of congratulations to the winner,
+# and ask if the players want to play again.
+#
+# Keep a running total of the wins/losses for each player, and when the players end the game,
+# print out the final wins / losses results for the players.
+# Remember the game rules:
+# - Rock beats scissors
+# - Scissors beats paper
+# - Paper beats rock
 
-Keep a running total of the wins/losses for each player, and when
-the players end the game, print out the final wins / losses results
-for the players.
-
-Remember the game rules:
-- Rock beats scissors
-- Scissors beats paper
-- Paper beats rock
-
-Additional Features Added
-- Game can be played 1-player, 2-player, or 2-player with random moves
-- Keeping a running count and total of ties between the players
-'''
+# Additional Features Added
+# - Game can be played as 1-player, 2-player, or 2-player with random moves
+# - Keeping a running count and total of ties between the players
 
 # Import required modules
 import random
 
 
 # Define GLOBAL CONSTANTS
-DISPLAY_SPACER = "="   # Set character "=" used for header
+DISPLAY_SPACER = "="                            # Set character "=" used for header
 
 
 # Print the banner header
@@ -34,8 +30,8 @@ def display_menu():
     print(DISPLAY_SPACER * 50)
 
 
+# start_game() gathers the user name(s) and calls get_*_players functions
 def start_game():
-    # start_game() gather the user name(s) and calls get_*_players functions
     stop_game = 'start'
     while stop_game != 'y':
         print()
@@ -68,40 +64,33 @@ def start_game():
         print()
 
 
+# one_player function takes user input for Player_1 while setting player_2 to Computer passing to play_game_1p()
 def one_player():
-    ''' one_player function takes user input for Player_1 while setting
-    player_2 to Computer passing to play_game_1p()
-    '''
     player_1 = input('Player 1 Name: ').capitalize()
     player_2 = "Computer"
     print()
     play_game_1p(player_1, player_2)
 
 
+# two_player function takes user input for player_1  and player_2 and passes to play_game_2p ()
 def two_player():
-    '''two_player function takes user input for player_1  and player_2
-    and passes to play_game_2p ()
-    '''
     player_1 = input('Player 1 Name: ').capitalize()
     player_2 = input('Player 2 Name: ').capitalize()
     print()
     play_game_2p(player_1, player_2)
 
 
+# two_player function takes user input for player_1  and player_2 and passes to play_game_9 ()
 def random_player():
-    '''two_player function takes user input for player_1 and player_2
-    and passes to play_game_9 ()
-    '''
     player_1 = input('Player 1 Name: ').capitalize()
     player_2 = input('Player 2 Name: ').capitalize()
     print()
     play_game_9(player_1, player_2)
 
 
+# play_game_1p() requests player_1 variable, sets total wins for each user to 0,
+# creates options_list[], sets play_again sentinel value, and plays rock-paper-scissors
 def play_game_1p(player_1, player_2):
-    '''play_game_1p() requests player_1 variable, sets total wins for each user to 0,
-    creates options_list[], sets play_again sentinel value, and plays rock-paper-scissors
-    '''
     total_p1_wins = 0
     total_p2_wins = 0
     total_tie = 0
@@ -150,12 +139,15 @@ def play_game_1p(player_1, player_2):
                 print('Player 1 wins!')
                 total_p1_wins += 1
         else:
+            #p1_move == 'paper'
             if p2_move == 'scissors':
                 print('Player 2 wins!')
                 total_p2_wins += 1
             else:
                 print('Player 1 wins!')
                 total_p1_wins += 1
+        #else:
+            #print('Invalid entry received.  Try again')
 
         print()
         total_games += 1
@@ -290,10 +282,8 @@ def final_results(player_1, player_2, total_p1_wins, total_p2_wins, total_tie, t
     print(DISPLAY_SPACER * 50)
     print('Total Games Played: {}'.format(total_games))
     print('Total Games Tied: {}'.format(total_tie))
-    print('Player-1 {} '.format(player_1), 'Total Wins: '
-          , total_p1_wins, sep='')
-    print('Player-2 {} '.format(player_2), 'Total Wins: '
-          , total_p2_wins, sep='')
+    print('Player-1 {} '.format(player_1), 'Total Wins: ', total_p1_wins, sep='')
+    print('Player-2 {} '.format(player_2), 'Total Wins: ', total_p2_wins, sep='')
     print(DISPLAY_SPACER * 50)
     print()
 
@@ -305,8 +295,9 @@ def main():
     except KeyboardInterrupt:
         print('\nCtrl-c received...exiting(0)')
         exit(0)
-    # final_results(player_1, player_2, total_p1_wins, total_p2_wins)
+    #final_results(player_1, player_2, total_p1_wins, total_p2_wins)
 
 
 main()
 print('end of program')
+
