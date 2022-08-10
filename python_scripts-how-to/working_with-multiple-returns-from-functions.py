@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-'''
+"""
 Ask the user for a number. Depending on whether the number is even
 or odd, print out an appropriate message to the user. Hint: how does
 an even / odd number react differently when divided by 2?
@@ -11,7 +11,7 @@ Extras:
     and one number to divide by (check). If check divides evenly into
     num, tell that to the user. If not, print a different appropriate
     message.
-'''
+"""
 
 
 def main():
@@ -21,21 +21,21 @@ def main():
 
 
 def getinput_1():
-    '''
+    """
     Request user input an integer
-    '''
+    """
     try:
         getnum = int(input("enter number: "))
     except ValueError as err:
         print(f"Incorrect integer received {err}")
         exit(1)
-    return(getnum)
+    return getnum
 
 
 def compute_getnum(getnum):
     getmod = getnum % 2
     getmod4 = getnum % 4
-    return(getmod, getmod4)
+    return (getmod, getmod4)
 
 
 def evenodd(getnum, getmod, getmod4):
