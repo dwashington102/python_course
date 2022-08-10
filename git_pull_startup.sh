@@ -171,7 +171,7 @@ func_check_sysadmin (){
             printf "git status did not detect any uncommitted changes...creating backup of local repo directory and pulling repo from github\n"
             func_rename_sysadmin
         else
-            printf '\ngit status indicates "$sysadmin" has uncommited changes'
+            printf '\ngit status indicates $sysadmin has uncommited changes'
         fi
     else
         func_pull_sysadmin
