@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-'''
+"""
 Script will print
 99 bottles of beer on the wall
 take 1 down pass it around...
@@ -7,7 +7,7 @@ take 1 down pass it around...
 ...
 1 bottle of beer on the wall
 No more bottles of beer on the wall
-'''
+"""
 
 
 from time import sleep
