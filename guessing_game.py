@@ -67,7 +67,7 @@ def do_work():
             increment_guess_count += 1
             try:
                 s_loopcount = str(loopcount)
-                print('Attempt #' + s_loopcount + ': ' , end='')
+                print('Attempt #' + s_loopcount + ': ', end='')
                 get_user_guess = int(float(input('Guess a Number: ')))
             except ValueError:
                 print(Style.BRIGHT)
@@ -100,7 +100,7 @@ def do_work():
         increment_num_games += 1
         tot_guess_count = increment_guess_count
 
-        ''' If the user decides not to play again add the total 
+        ''' If the user decides not to play again add the total
         number of games played, total number of guesses,
         and avg. guesses per game
         '''
