@@ -6,15 +6,17 @@ Examples of working with the len function
 """
 
 mystring = "Hello World"
-fruits = ["apples", "oranges", "grapes", "olives"]
-animals = ("cat", "dog", "mouse", "turtle")
+fruits = ["apples", "oranges", "grapes", "olives",]
+animals = ("cat", "dog", "mouse", "turtle",)
 
 for char in mystring:
     print(char)
 
+print("fruits type: ", type(fruits))
 for fruit in fruits:
     print(fruit)
 
+print("animals type: ", type(animals))
 for i in animals:
     print(i)
 
