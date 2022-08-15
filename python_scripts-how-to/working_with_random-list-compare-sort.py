@@ -1,12 +1,14 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3 
 """
 Write a program that returns a list that contains only the elements
 that are common between the lists (without duplicates). Make sure
 your program works on two lists of different sizes.
 
 Extras:
-Randomly generate two lists, print only the items that exists in both
-lists (do not print duplicates)
+
+Randomly generate two lists to test this
+Write this in one line of Python (don’t worry if you can’t figure
+this out at this point - we’ll get to it soon)
 """
 
 import random
@@ -30,15 +32,15 @@ def original_assignment():
                 c.append(anum)
         else:
             pass
-    print(f"Original List: {c}")
+    print(c)
 
 
 def extra_credit():
     alist = []
     blist = []
     clist = []
-    counta = random.randint(1, 10)
-    countb = random.randint(1, 10)
+    counta = random.randint(1, 20)
+    countb = random.randint(1, 20)
 
     while counta > 0:
         a = random.randint(1, 10)
@@ -60,6 +62,8 @@ def extra_credit():
     print(f"Alist: {alist}")
     print(f"Blist: {blist}")
     print(f"Common Items in lists\n{clist}")
+    clist.sort()
+    print(f"Common Items Sorted in lists\n{clist}")
 
 
 if __name__ == "__main__":
