@@ -1,12 +1,12 @@
-import os
-from os import path
-
+#!/usr/bin/env python3
 """
 Program will gather a list of the files and subdirectories in the current directory
 prints out the filename and "True"  --> if the item is a file 
 prints out the directory name and "is a directory"  --> if the item is a directory
 """
 
+import os
+from os import path
 # Create an empty list and then add the files/subdirectories in the current directory into the list
 mydirlist = []
 mydirlist = os.listdir()
@@ -14,6 +14,7 @@ mydirlist = os.listdir()
 
 def main():
     myloop()
+    print(f"Type mydirlist = {type(mydirlist)}")
 
 # Look  throught the list (mydirlist).  Print only the "files", ignore the subdirectories
 # The loopcount variable is used for a counting the iterations through list(mydirlist)
@@ -25,16 +26,17 @@ def main():
 
 
 def myloop():
+    filemsg = "Entry {}\t{}\t{}"
     loopcount = 1
     for myfile in mydirlist:
         myfile = myfile.rstrip()
         ftype = str(path.isfile(myfile))
-        if ftype == 'True':
+        if ftype:
             loop = str(loopcount)
-            print(loop+ ':', myfile, '\t', ftype)
+            print(f"{loop}: {myfile}\t {ftype}")
             loopcount += 1
         else:
-            pass
+            print(f"{ftype =}")
 
 if __name__ == '__main__':
     main()
