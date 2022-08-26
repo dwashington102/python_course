@@ -118,7 +118,7 @@ func_pull_zshsyntax (){
 func_check_pythoncourse (){
     printf "\n"
     if [ -d "$pythonCourse" ]; then
-        pushd "$pythonCourse"
+        pushd "$pythonCourse" &>/dev/null
         git status . | grep 'working tree clean' &>/dev/null
         if [ $? == 0 ]; then
             printf "git status did not detect any uncommitted changes...creating backup of local repo directory and pulling repo from github\n"
@@ -133,7 +133,7 @@ func_check_pythoncourse (){
 }
 
 func_rename_pythoncourse (){
-    pushd $GITDIR
+    pushd $GITDIR &>/dev/null
     mv $pythonCourse $pythonCourse.$timeStamp
     if [[ $? != 0 ]]; then
         printf "${red}"
@@ -146,7 +146,7 @@ func_rename_pythoncourse (){
 }
 
 func_pull_pythoncourse (){
-    pushd $GITDIR
+    pushd $GITDIR &>/dev/null
     printf "${green}"
     printf "git clone attempt for $pythonCourse\n"
     printf "${normal}"
@@ -165,7 +165,7 @@ func_pull_pythoncourse (){
 func_check_sysadmin (){
     printf "\n"
     if [ -d "$sysadmin" ]; then
-        pushd "$sysadmin"
+        pushd "$sysadmin" &>/dev/null
         git status . | grep 'working tree clean' &>/dev/null
         if [ $? == 0 ]; then
             printf "git status did not detect any uncommitted changes...creating backup of local repo directory and pulling repo from github\n"
