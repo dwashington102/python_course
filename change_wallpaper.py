@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 import gi
-gi.require_version('Gtk', '3.0')
+from gi.repository import Gio
+# gi.require_version('Gtk', '3.0')
 import os
 import sys
 import random
