@@ -23,9 +23,15 @@ DISPLAY_SPACER = "="
 
 
 def main():
-    clear()
-    display_menu()
-    do_work()
+    try:
+        clear()
+        display_menu()
+        do_work()
+    except KeyboardInterrupt as keyerr:
+        print(f"{keyerr}")
+    except:
+        print("Unexpected Exception")
+        raise
 
 
 def display_menu():
