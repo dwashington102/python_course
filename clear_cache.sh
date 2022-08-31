@@ -1,6 +1,8 @@
 #!/bin/sh
 # 2021-01-15
 # Script clears cache items
+# 2022-08-30:
+# - Added opera browser cleaner
 # 
 # 2022-03-30:
 # - Added scriptName variable
@@ -36,6 +38,7 @@ func_browser_cleaner (){
     get_chrome_pid=$(echo "${get_pids[*]}" | grep -E '/google.*/chrome')
     get_brave_pid=$(echo "${get_pids[*]}" | grep -E '/brave.*/brave')
     get_ff_pid=$(echo "${get_pids[*]}" | grep -E '/firefox.*/firefox')
+    get_opera_pid=$(echo "${get_pids[*]}" | grep -E '/opera.*/opera')
 
     printf "\n"
     if [ -z "$get_chrome_pid" ]; then
@@ -48,6 +51,19 @@ func_browser_cleaner (){
     printf "\nRan browser cleaner for Chrome"
     else
         printf "\nRunning Chrome process detected...skipping cleanup"
+    fi
+
+    printf "\n"
+    if [ -z "$get_opera_pid" ]; then
+    printf "\nOpera PID not found...running cleaners"
+        printf "\n"
+        for cleaner in $(bleachbit -l | command grep opera)
+    do
+        bleachbit -c $cleaner 
+    done
+    printf "\nRan browser cleaner for Opera"
+    else
+        printf "\nRunning Opera process detected...skipping cleanup"
     fi
 
     printf "\n"
