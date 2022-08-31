@@ -15,7 +15,9 @@ def main():
 
 def do_work():
     parser = argparse.ArgumentParser(
-        description='Simple script to demonstrate using argparse library.  The script allows the user to pass an argument as a directory name.  The script will then attempt to cd to the "/tmp/{arg}" directory'
+        description='Simple script to demonstrate using argparse library'
+        'The script allows the user to pass an argument as a directory name'
+        'The script will then attempt to cd to the "/tmp/{arg}" directory'
     )
     parser.add_argument(
         "-d", dest="DIRECTORY", type=str, help="New Directory", required=True
@@ -23,18 +25,18 @@ def do_work():
     args = parser.parse_args()
 
     previous_dir = os.getcwd()
-    print("Current Directory: {}\n".format(previous_dir))
-    print("New Directory: {}\n".format(args.DIRECTORY))
+    print(f"Current Directory: {previous_dir}\n")
+    print(f"New Directory: {args.DIRECTORY}")
 
     newDir = "/tmp/" + args.DIRECTORY
-    print("Base Directory: {}\n".format(newDir))
+    print(f"Base Directory: {newDir}")
 
     try:
         os.chdir(newDir)
-        print("New Directory: {}\n".format(newDir))
+        print(f"New Directory: {newDir}")
         os.system("ls -l")
     except:
-        print("Unable to cd to {}\n".format(newDir))
+        print(f"Unable to cd to {newDir}")
 
 
 if __name__ == "__main__":
