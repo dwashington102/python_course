@@ -6,9 +6,15 @@ from datetime import datetime
 
 try:
     min = 1
-    psbatt = psutil.sensors_battery()
-    ipsbatt = int(psbatt.percent)
-    fpsbatt = float(psbatt.percent)
+    spsbatt = str(psutil.sensors_battery())
+    sbatt = str(psutil.sensors_battery())
+    psbatt = (psutil.sensors_battery())
+    if spsbatt.isnumeric():
+        ipsbatt = int(psbatt.percent)
+        fpsbatt = float(psbatt.percent)
+    else:
+        print('Device not connected to battery...exit(4)')
+        exit(4)
 
     while ipsbatt >= 5:
         now = datetime.now()
