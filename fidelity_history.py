@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 '''
 Progam will read in a csv file that contains contributions, dividends, and fees
 for an investment account.
@@ -36,7 +38,14 @@ DISPLAY_FOOTER = "-"
 # Call the script using: python3 fidelity_history.py {history.csv}
 
 def main():
-    get_filename()
+    try:
+        u_history = get_filename()
+        compute_totals(u_history)
+        get_daterange(u_history)
+    except KeyboardInterrupt:
+        print("\nUser terminate request received")
+        exit(0)
+
 
 
 def get_filename():    # Prompt the user for the path to the csv file
@@ -46,7 +55,8 @@ def get_filename():    # Prompt the user for the path to the csv file
     try:
         with open(u_history, 'r') as atest:
             # If file is found begin work
-            compute_totals(u_history)
+            # compute_totals(u_history)
+            return u_history
             atest.close()
     except FileNotFoundError:
             # If file is not found exit(1)
@@ -138,7 +148,7 @@ def compute_totals(u_history):
                 notFound.append(r)
     afile.close()       # close opened csv file
     #get_lastline(u_history)   # Get the start and end dates from the csv file
-    get_daterange(u_history)
+    #get_daterange(u_history)
 
     print()
     print('Total CONTRIBUTIONS:\t ${:,.2f}'.format(tot_contr))
