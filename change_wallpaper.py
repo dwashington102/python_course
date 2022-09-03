@@ -1,11 +1,23 @@
 #!/usr/bin/env python3
-# Script changes the Linux Desktop Background using the gsettings command:
+"""
+Script changes the Linux Desktop Background using the gsettings command:
 
-from gi.repository import Gio
-import os
-import random
-import subprocess
-import time
+
+Exit Codes:
+    1 - Failure to load python module
+"""
+
+
+
+try:
+    from gi.repository import Gio
+    import os
+    import random
+    import subprocess
+    import time
+except ModuleNotFoundError as moderr:
+    print(f"{moderr}...exit(1)")
+    exit(1)
 
 
 # Define GLOBAL CONSTANTS
@@ -21,9 +33,13 @@ DEBUG Format --- Only use when troubleshooting a problem
 
 
 def main():
-    get_current_bg()
-    check_mypath()
-    get_wallpaper()
+    try:
+        get_current_bg()
+        check_mypath()
+        get_wallpaper()
+    except KeyboardInterrupt:
+        print("Received user termination request\n")
+        exit(0)
 
 
 def check_mypath():
