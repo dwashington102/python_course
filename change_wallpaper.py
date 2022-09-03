@@ -5,8 +5,8 @@ Script changes the Linux Desktop Background using the gsettings command:
 
 Exit Codes:
     1 - Failure to load python module
+    2 - gsettings list-schema did not find schemas
 """
-
 
 
 try:
@@ -34,12 +34,23 @@ DEBUG Format --- Only use when troubleshooting a problem
 
 def main():
     try:
+        gsettings_check()
         get_current_bg()
         check_mypath()
         get_wallpaper()
     except KeyboardInterrupt:
         print("Received user termination request\n")
         exit(0)
+
+
+def gsettings_check():
+    gsrc = subprocess.Popen(["gsettings", "list-schemas"],
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL)
+    rc = gsrc.wait()
+    if rc != 0:
+        print("No gsettings schemas found\n")
+        exit(2)
 
 
 def check_mypath():
