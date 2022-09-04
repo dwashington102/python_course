@@ -33,6 +33,9 @@ DEBUG Format --- Only use when troubleshooting a problem
 
 
 def main():
+    """
+    Script changes the Linux Desktop Background using the gsettings command:
+    """
     try:
         gsettings_check()
         get_current_bg()
