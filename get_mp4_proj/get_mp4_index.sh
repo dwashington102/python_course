@@ -150,16 +150,16 @@ func_get_index_rc (){
     index_plugcontent=`grep plugcontent index.html | awk -F'a href=' '{print $2}' | awk -F'[""]' '{print $2}' | sort -u |  wc -l`
     index_div_video=`grep div\ id=\"video index.html | awk -F"a href" '{print $2}' | awk -F'[""]' '{print $2}' | sort -u | wc -l`
     index_a_href=`grep href=\"/download index.html | awk -F'[""]' '{print $2}' | sort -u | wc -l`
-    index_a_href_vid=`grep ^'<a href="/video' index.html | awk -F'[""]' '{print $2}' | sort -u | wc -l`
-    index_a_href_vid_title=`grep 'a href=.*title=' index.html | awk -F'[""]' '{print $2}' | sort -u | wc -l`
+    index_a_href_vid=$(grep '[[:digit:]] views.*<a href="/video' index.html | awk -F'[""]' '{print $2}' | sort -u | wc -l)
     index_a_href_fileurl=`grep 'a href=.*http.*title=.*class=' index.html | awk -F'[""]' '{print $2}' | sort -u | wc -l`
+    index_a_href_vid_title=$(grep 'a href=.*title=' index.html | awk -F'[""]' '{print $2}' | sort -u | wc -l)
 }
 
 func_test_index_rc (){
-    # Site: m_ot
-    if [ ${index_a_href_fileurl} -gt 0 ]; then
-        echo "Calling get_mp4_fileurl.sh" > ./logs/get_mp4_index.log
-        get_mp4_fileurl.sh
+    # Site: x_ra 
+    if [ ${index_a_href_vid} -gt 0 ]; then
+        echo "Calling get_mp4_a_href_vid.sh" > ./logs/get_mp4_index.log
+        get_mp4_a_href_vid.sh
         printf "\n"
 
     # Site: d_af
@@ -179,16 +179,19 @@ func_test_index_rc (){
         echo "Calling get_mp4_a_href.sh" > ./logs/get_mp4_index.log
         get_mp4_a_href.sh
         printf "\n"
-    # Site: x_ra 
-    elif [ ${index_a_href_vid} -gt 0 ]; then
-        echo "Calling get_mp4_a_href_vid.sh" > ./logs/get_mp4_index.log
-        get_mp4_a_href_vid.sh
+
+    # Site: m_ot
+    elif [ ${index_a_href_fileurl} -gt 0 ]; then
+        echo "Calling get_mp4_fileurl.sh" > ./logs/get_mp4_index.log
+        get_mp4_fileurl.sh
         printf "\n"
+
     # Site: s_ho
     elif [ ${index_a_href_vid_title} -gt 0 ]; then
         echo "Calling get_mp4_a_href_vid_title.sh" > ./logs/get_mp4_index.log
         get_mp4_a_href_vid_title.sh
         printf "\n"
+
 
     else
         printf "\nIndex type: NOT FOUND" > ./logs/get_mp4_index.log
