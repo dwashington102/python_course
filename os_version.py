@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 
-"""
-Script gather the Operating System Version
-
-"""
 
 import platform as p
 
 
 try:
     def main():
+        """
+        Script gather the Operating System Version
+        """
         pyver = get_python_version()
         do_work(pyver)
 except KeyboardInterrupt:
@@ -39,14 +38,17 @@ def get_python_version():
 def do_work(pyver):
     if float(pyver) < 3.10:
         # print(f"python version {pyver} is less than 3.10")
-        osversion = p.linux_distribution()
+        hostos = p.linux_distribution()
+        osname = hostos[0]
+        osver = hostos[1]
+
     else:
         # print(f"python version {pyver} at or above 3.10")
         hostos = p.freedesktop_os_release()
         osname = hostos['NAME']
         osver = hostos['VERSION_ID']
-        osversion = osname + " " + osver
 
+    osversion = osname + " " + osver
     print(f"{osversion}")
 
 
