@@ -29,7 +29,7 @@ def do_work(psbatt):
             print(f"{now_str} Minute {min} - Battery Percent {fpsbatt:.2f}%")
             psbatt = psutil.sensors_battery()
             min += 1
-            sleep(5)
+            sleep(60)
             ipsbatt = int(psbatt.percent)
 
         print(f"***WARNING BATTERY {ipsbatt}% IS LOW***")
