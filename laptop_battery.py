@@ -22,11 +22,12 @@ def do_work(psbatt):
         min = 1
         ipsbatt = int(psbatt.percent)
         while ipsbatt >= 5:
+            cpupct = float(psutil.cpu_percent())
             check_ac(psbatt)
             fpsbatt = float(psbatt.percent)
             now = datetime.now()
             now_str = now.strftime("%Y%m%d-%H:%M:%S")
-            print(f"{now_str} Minute {min} - Battery Percent {fpsbatt:.2f}%")
+            print(f"{now_str} Minute {min} - Battery Percent {fpsbatt:.2f}% - CPU Percent {cpupct:.2f}%")
             psbatt = psutil.sensors_battery()
             min += 1
             sleep(60)
