@@ -20,7 +20,15 @@ def check_ac(psbatt):
 def do_work(psbatt):
     try:
         min = 1
-        ipsbatt = int(psbatt.percent)
+        try:
+            ipsbatt = int(psbatt.percent)
+        except AttributeError:
+            print("Device does not have a battery...exit(0)")
+            exit(0)
+        if type(ipsbatt) == "None":
+            print("Type is NONE")
+            exit(0)
+
         while ipsbatt >= 5:
             cpupct = float(psutil.cpu_percent())
             check_ac(psbatt)
