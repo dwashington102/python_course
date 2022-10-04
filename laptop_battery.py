@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 
-import psutil
-from time import sleep
-from datetime import datetime
+try:
+    import psutil
+    from time import sleep
+    from datetime import datetime
+except ImportError as e:
+    print(f"\n{e}...exit(4)")
+    exit(4)
 
 
 def main():
