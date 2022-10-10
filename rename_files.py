@@ -78,8 +78,6 @@ def getext():
 def do_work(listfiles, searchpattern, userdir):
     count = 0
     orderlist = sorted(listfiles)
-    print(f"DEBUG >>> {orderlist}")
-    sys.exit(0)
     for afile in orderlist:
         ftype = str(os.path.isfile(afile))
         if ftype == 'True':
