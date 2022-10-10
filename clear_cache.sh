@@ -189,6 +189,15 @@ func_check_bleachbit (){
 
 
 MAIN() {
+if [ "${TERM}" != "dumb" ]; then
+    func_check_bleachbit
+    func_clear_files_recent 
+    func_delete_history 
+    func_trash_empty 
+    func_truncate_vlc_history 
+    func_browser_cleaner
+    exit 0
+fi
 
 if [ -d $HOME/cronlogs ]; then
     touch $logfile
