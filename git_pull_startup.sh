@@ -3,13 +3,16 @@
 
 # Script run on startup to pull git projects.
 
-# 07-27-2022: Added sysadmin repo
-# 03-21-2022: Updated regex find statement 
-# 03-04-2022: Updated listdirs adding regex to find command
-# 02-06-2022: Changed retention from from 20 days to 10 days
-# 01-10-2022: Updated func_check_pythoncourse to check/confirm git updates are not pending
-# 07-11-2021: Added func_pull_Docker_build
-# 05-02-2021: Added func_pull_zsh_syntax  
+:<<"COMMENT"
+11-03-2022: Changed "git status" to use "git diff"
+07-27-2022: Added sysadmin repo
+03-21-2022: Updated regex find statement 
+03-04-2022: Updated listdirs adding regex to find command
+02-06-2022: Changed retention from from 20 days to 10 days
+01-10-2022: Updated func_check_pythoncourse to check/confirm git updates are not pending
+07-11-2021: Added func_pull_Docker_build
+05-02-2021: Added func_pull_zsh_syntax  
+COMMENT
 
 # Set variables
 timeStamp=$(date +%Y%m%d_%H%M)
@@ -119,7 +122,8 @@ func_check_pythoncourse (){
     printf "\n"
     if [ -d "$pythonCourse" ]; then
         pushd "$pythonCourse" &>/dev/null
-        git status . | grep 'working tree clean' &>/dev/null
+        #git status . | grep 'working tree clean' &>/dev/null
+        git diff --exit-code &>/dev/null
         if [ $? == 0 ]; then
             printf "git status did not detect any uncommitted changes...creating backup of local repo directory and pulling repo from github\n"
             func_rename_pythoncourse
@@ -166,7 +170,8 @@ func_check_sysadmin (){
     printf "\n"
     if [ -d "$sysadmin" ]; then
         pushd "$sysadmin" &>/dev/null
-        git status . | grep 'working tree clean' &>/dev/null
+        #git status . | grep 'working tree clean' &>/dev/null
+        git diff --exit-code &>/dev/null
         if [ $? == 0 ]; then
             printf "git status did not detect any uncommitted changes...creating backup of local repo directory and pulling repo from github\n"
             func_rename_sysadmin
