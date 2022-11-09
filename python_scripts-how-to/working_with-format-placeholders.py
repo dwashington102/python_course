@@ -12,7 +12,7 @@ user3 = input("Enter UserName3: ")
 print(user1, user2, user3)
 
 # New Method using format method
-getuser = "Enter UserName{}"
+getuser = "NEW - Enter UserName{}"
 
 user1 = input(getuser.format("1: "))
 user2 = input(getuser.format("2: "))
