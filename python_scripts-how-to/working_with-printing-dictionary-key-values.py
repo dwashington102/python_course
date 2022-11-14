@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 
 """
-Script gather the Operating System Version
+Script gather the Operating System Version and python version
+
+Output:
+$ ./working_with-printing-dictionary-key-values.py
+python version 3.06 is less than 3.10
+('Red Hat Enterprise Linux', '8.6', 'Ootps')
 
 """
 
