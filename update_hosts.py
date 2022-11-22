@@ -24,7 +24,7 @@ import sys
 
 
 def main():
-    enable_loggging()
+    enable_logging()
     logging.info("main()")
     get_hosts()
     move_hosts()
@@ -32,17 +32,22 @@ def main():
     logging.info("main completed")
 
 
-def enable_loggging():
-    try:
-        logging.basicConfig(filename="/root/cronlogs/update_hosts-timestamp.log",
-                            format='%(asctime)s %(levelname)-5s %(message)s',
-                            filemode="w",
-                            level=logging.DEBUG,
-                            datefmt='%Y-%m-%d %H:%M:%S')
-        logging.info("Logging enabled")
-    except PermissionError as perr:
-        print("Permission denied creating logfile")
-        sys.exit(101)
+def enable_logging():
+    if not os.path.isdir("/root/cronlogs"):
+        os.mkdir("/root/cronlogs")
+
+    if not os.path.isfile("/root/cronlogs/update_hosts-timestamp.log"):
+        os.mknod("/root/cronlogs/update_hosts-timestamp.log")
+        try:
+            logging.basicConfig(filename="/root/cronlogs/update_hosts-timestamp.log",
+                                format='%(asctime)s %(levelname)-5s %(message)s',
+                                filemode="w",
+                                level=logging.DEBUG,
+                                datefmt='%Y-%m-%d %H:%M:%S')
+            logging.info("Logging enabled")
+        except PermissionError as perr:
+            print("Permission denied creating logfile")
+            sys.exit(101)
 
 
 def check_uid():
