@@ -49,10 +49,11 @@ func_start () {
 
 
 func_create_dirs () {
-        mkdir ./tmp > /dev/null 2>&1 
-        mkdir ./mp4 > /dev/null 2>&1 
-        mkdir ./rawfiles > /dev/null 2>&1 
-        mkdir ./logs > /dev/null 2>&1 
+        # Function creates the directories where downloads, logs, and files are stored
+        mkdir ./tmp &>/dev/null
+        mkdir ./mp4 &>/dev/null
+        mkdir ./rawfiles &>/dev/null
+        mkdir ./logs &>/dev/null
 }
 
 func_get_dir_userInput () {
@@ -94,7 +95,7 @@ func_get_dir_userInput () {
             fi
         elif [ ${choice} = 'n' ]; then
             printf "Ok not removing existing files\n"
-            ls -1 index.html > /dev/null 2>&1
+            ls -1 index.html &>/dev/null
             if [ $? -eq 0 ]; then
                 current_indexFile=`ls -1 index.html` 
                 printf "\nExisting index.html file being renamed index.html_${tStamp}"
@@ -121,7 +122,7 @@ func_get_index_userInput () {
     IFS=$'\n'
     wget --no-check-certificate -a ./logs/get_getIndex.log ${getUrl} -O index.html
     if [ $? -eq 0 ]; then
-        ls -1 index.html > /dev/null 2>&1
+        ls -1 index.html &>/dev/null
         if [ $? -ne 0 ]; then
             printf "\nDownload file name is not index.html"
             printf "\n"
@@ -153,6 +154,7 @@ func_get_index_rc (){
     index_a_href_vid=$(grep '[[:digit:]] views.*<a href="/video' index.html | awk -F'[""]' '{print $2}' | sort -u | wc -l)
     index_a_href_fileurl=`grep 'a href=.*http.*title=.*class=' index.html | awk -F'[""]' '{print $2}' | sort -u | wc -l`
     index_a_href_vid_title=$(grep 'a href=.*title=' index.html | awk -F'[""]' '{print $2}' | sort -u | wc -l)
+    index_view_source=$(grep ${viewsrc} index.html | awk -v http=$viewsrc -F'http' '{print $2}' | grep ${url} | awk -F'"' '{print "http"$1}')
 }
 
 func_test_index_rc (){
@@ -192,6 +194,11 @@ func_test_index_rc (){
         get_mp4_a_href_vid_title.sh
         printf "\n"
 
+    # Site x_nx + search 
+    elif [ ${index_view_source}] -gt 0 ]; then
+        echo "Calling get_mp4_view-source.sh" > ./logs/get_mp4_index.log
+        get_mp4_view-source.sh
+        printf "\n"
 
     else
         printf "\nIndex type: NOT FOUND" > ./logs/get_mp4_index.log
