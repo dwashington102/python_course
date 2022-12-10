@@ -1,32 +1,32 @@
 #!/usr/bin/env python3
 """
-Although this works, there is a major flaw.
-Example:
-    In a directory there are files names 1.txt, 2.txt through 12.txt
-    The os.listdir output will list the files in this order
-    ['1.txt', '10.txt', '11.txt', '12.txt', '2.txt', '3.txt'...]
-
-    The script uses count=0, increments by 1, for each file that needs
-    to be renamed.
-    This means when renaming the list this takes place:
-        1.txt  becomes 1.txt
-        10.txt becomes 2.txt
-        11.txt becomes 3.txt
-        2.txt  becomes 4.txt
-        3.txt  becomes 5.txt <---here is the problem,
-        the original 3.txt was overwritten when we renamed
-        11.txt.  So now we are renaming 3.txt (originally 11.txt)
 """
 
 import os
+import re
 import sys
 
 
 def main():
-    userdir = getdir()
-    listfiles = getfiles(userdir)
-    searchpattern = getext()
-    do_work(listfiles, searchpattern, userdir)
+    try:
+        defaultdir = currentdir()
+        if defaultdir == "n":
+            userdir = getdir()
+        else:
+            userdir = defaultdir
+            listfiles = getfiles(userdir)
+            searchpattern = getext()
+            do_work(listfiles, searchpattern, userdir)
+    except KeyboardInterrupt as ke:
+        print("\nUser Interrupt received...exit(0)")
+        sys.exit(0)
+
+
+def currentdir():
+    mydir = os.getcwd()
+    print(f"Current Directory: {mydir}")
+    defaultdir = input("Use current directory (y/n): ")
+    return(defaultdir)
 
 
 def getdir():
@@ -77,8 +77,9 @@ def getext():
 
 def do_work(listfiles, searchpattern, userdir):
     count = 0
-    orderlist = sorted(listfiles)
-    for afile in orderlist:
+    orderlist = listfiles.sort(key=lambda f: int(''. join(filter(str. isdigit, f))))
+    listfiles.sort(key=lambda f: int(''. join(filter(str. isdigit, f))))
+    for afile in listfiles:
         ftype = str(os.path.isfile(afile))
         if ftype == 'True':
             if searchpattern in afile:
