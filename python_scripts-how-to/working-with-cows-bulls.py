@@ -13,6 +13,7 @@ the number of guesses the user makes throughout teh game and tell the
 user at the end.
 """
 
+import colorama
 from random import randint
 import sys
 
@@ -55,6 +56,9 @@ def get_guess(mynum):
 
 
 def compare_guess(mynum, userguess, totalguess, cows, bulls):
+    green = colorama.Fore.GREEN
+    yellow = colorama.Fore.YELLOW
+    normal = colorama.Fore.RESET
     if userguess == mynum:
         print(f"\nSuccessfully guessed number {mynum}."
               f"\n\tTotal Attempts: {totalguess - 1}")
@@ -80,7 +84,9 @@ def compare_guess(mynum, userguess, totalguess, cows, bulls):
         else:
             pass
         itemcount += 1
-    print(f"Total Cows: {cows}\n\tTotal Bulls: {bulls}\n")
+    print(green + f"Total Cows: {cows}\r")
+    print(yellow + f"\tTotal Bulls: {bulls}\n")
+    print(normal)
 
 
 if __name__ == "__main__":
