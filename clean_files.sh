@@ -13,7 +13,8 @@ func_dd () {
                 getsize=$(ls -l ${getfile} | awk '{print $5}')
                 echo "Filename: ${getfile} --- Size: ${getsize}"
                 sleep 1
-                # dd if=/dev/urandom of=${getfile} bs=${getsize} count=2 conv=notrunc
+                dd if=/dev/urandom of=${getfile} bs=${getsize} count=2 conv=notrunc
+                truncate -s0 ${getfile}
             done
     else
         printf "\nNo files with the extension ${ext_type} found in current directory"
@@ -68,13 +69,13 @@ main () {
 }
 
 
-"""
+:<<'COMMENTS'
 Following 2 lines takes user argument ("$@") as array
 Sets ext_type to 1st element in the array, before beginning the process
 to clean file types of the ext_type
 
 Found I have to pass that $@ BEFORE going into main()
-"""
+COMMENTS
 
 ext=("$@")
 ext_type=${ext[0]}
