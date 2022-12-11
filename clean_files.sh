@@ -68,6 +68,14 @@ main () {
 }
 
 
+"""
+Following 2 lines takes user argument ("$@") as array
+Sets ext_type to 1st element in the array, before beginning the process
+to clean file types of the ext_type
+
+Found I have to pass that $@ BEFORE going into main()
+"""
+
 ext=("$@")
 ext_type=${ext[0]}
 main 
