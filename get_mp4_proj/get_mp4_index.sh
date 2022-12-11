@@ -154,7 +154,7 @@ func_get_index_rc (){
     index_a_href_vid=$(grep '[[:digit:]] views.*<a href="/video' index.html | awk -F'[""]' '{print $2}' | sort -u | wc -l)
     index_a_href_fileurl=`grep 'a href=.*http.*title=.*class=' index.html | awk -F'[""]' '{print $2}' | sort -u | wc -l`
     index_a_href_vid_title=$(grep 'a href=.*title=' index.html | awk -F'[""]' '{print $2}' | sort -u | wc -l)
-    index_view_source=$(grep ${viewsrc} index.html | awk -v http=$viewsrc -F'http' '{print $2}' | grep ${url} | awk -F'"' '{print "http"$1}')
+    index_view_source=$(grep view-source:https index.html | awk -F'view-source:https' '{print $2}' | grep "x.com\/video-" | awk -F'"' '{print "http"$1}' |  sort -u | wc -l)
 }
 
 func_test_index_rc (){
