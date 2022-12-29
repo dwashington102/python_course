@@ -1,21 +1,29 @@
 #!/usr/bin/env python3
+"""
+Script gathers these items:
+> 5 most recent successful SSH connections with date & time
+> List of IP addresses in sshd jail
+> Top-5 same userid & hostname attempts
+> Top-5 common login userids
+"""
 
+import os
 import sys
 
 try:
     import colorama
     import datetime
-    import re
+    # import re
     import subprocess
     from systemd import journal
     from datetime import datetime
-    from time import sleep
 except ModuleNotFoundError:
     print("Unable to load all modules")
     sys.exit(101)
 
 
 def main():
+    check_uid()
     try:
         set_header()
         set_timestamp()
@@ -27,6 +35,16 @@ def main():
         print("\n\nUser Termination received")
 
 
+def check_uid():
+    """
+    Function confirms the script is being ran as the root user
+    """
+    uid = os.getuid()
+    if uid != 0:
+        print("Script must be ran as root...exit(102)")
+        sys.exit(102)
+
+
 def set_header():
     print("*" * 50)
 
@@ -35,7 +53,7 @@ def set_timestamp():
     # Sets timestamp value to the current time
     timestamp = datetime.now()
     now_tstamp = datetime.strftime(timestamp, "%Y%m%d_%H%M")
-    print(now_tstamp)
+    print(f"Current Time: {now_tstamp}\n")
 
 
 def get_ssh_cons():
@@ -46,23 +64,27 @@ def get_ssh_cons():
     normal = colorama.Fore.RESET
     ssh_cons = []
 
-
     readjournal = journal.Reader()
     readjournal.this_boot()
     readjournal.add_match(_SYSTEMD_UNIT="sshd.service")
     readjournal.seek_tail()
-    readjournal.get_previous(10)
+    readjournal.get_previous(200)
 
+    count = 0
     for entry in readjournal:
         strEntry = str(entry)
         if searchAccepted in strEntry:
-            ssh_cons.append(entry['MESSAGE'])
+            count += 1
+            if count > 5:
+                break
+            entryDate = entry['__REALTIME_TIMESTAMP']
+            result = str(entryDate), entry['MESSAGE']
+            ssh_cons.append(result)
 
     if ssh_cons:
         print(red + "Successful Connections:" + normal)
         for index, sshconnection in enumerate(ssh_cons, 1):
-            entryDate = entry['__REALTIME_TIMESTAMP']
-            print(f"{index} {entryDate} {sshconnection}")
+            print(f"{index}: {sshconnection}")
     else:
         print(green + "No successful connection found in journal")
         print(normal)
@@ -73,7 +95,7 @@ def get_ip_fail2ban():
     output = subprocess.Popen(['fail2ban-client', 'get', 'sshd', 'banned'],
                               stdout=subprocess.DEVNULL,
                               encoding="utf-8")
-    print(f"DEBUG >>> output {output}") 
+    print(f"DEBUG >>> output {output}")
 
 
 def get_banned_ips():
@@ -86,6 +108,6 @@ def get_banned_ips():
     for line in lines:
         print(line)
 
-    
+
 if __name__ == "__main__":
     main()
