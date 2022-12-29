@@ -82,7 +82,7 @@ def get_ssh_cons():
             ssh_cons.append(result)
 
     if ssh_cons:
-        print(red + "Successful Connections:" + normal)
+        print(red + "Last 5 Successful Connections:" + normal)
         for index, sshconnection in enumerate(ssh_cons, 1):
             print(f"{index}: {sshconnection}")
     else:
@@ -102,12 +102,10 @@ def get_banned_ips():
     print("\n\nBanned IP Address List:")
     # Run the fail2ban-client command to get a list of banned IP addresses
     output = subprocess.run(['fail2ban-client', 'get', 'sshd', 'banned'], stdout=subprocess.PIPE).stdout.decode('utf-8')
-    lines = output.split('\n')
-
-    # Find the line containing the list of banned IP addresses
-    for line in lines:
-        print(line)
-
+    if len(output) < 5:
+        print("No banned IPs returned by fail2ban-client")
+    else:
+        print(output)
 
 if __name__ == "__main__":
     main()
