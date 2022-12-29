@@ -6,13 +6,17 @@ COMMENTS
 
 
 func_dd () {
+    IFS=$'\n'
     file_count=$(find . -maxdepth 1 -type f -name "*${ext_type}" | wc -l)
+    printf "Total Files to Clean: ${file_count}\n\n"
     if [ ${file_count} -gt 0 ]; then
         for getfile in $(ls -1 *${ext_type})
             do
                 getsize=$(ls -l ${getfile} | awk '{print $5}')
-                echo "Filename: ${getfile} --- Size: ${getsize}"
+                printf "\nFilename: \"${getfile}\" --- Size: ${getsize}"
+                # echo "This is my \"${myvar}\""
                 sleep 1
+                printf "\nStarting dd process for ${getfile}\n"
                 dd if=/dev/urandom of=${getfile} bs=${getsize} count=2 conv=notrunc
                 truncate -s0 ${getfile}
             done
@@ -61,7 +65,7 @@ main () {
     printf "Preparing to dd files with ext. ${ext_type}\n"
     sleep 5
     func_dd
-    file $(command bleachbit -v) &>/dev/null
+    file $(command bleachbitxxx -v) &>/dev/null
     if [ "$?" == "0" ]; then
         printf "\nCalling bleachbit..."
         bleachbit -s *${ext_type} 2>/dev/null
