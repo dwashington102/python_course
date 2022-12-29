@@ -65,9 +65,10 @@ main () {
     printf "Preparing to dd files with ext. ${ext_type}\n"
     sleep 5
     func_dd
-    file $(command bleachbitxxx -v) &>/dev/null
+    #file $(command bleachbit -v &>/dev/null) &>/dev/null
+    command bleachbit -v &>/dev/null
     if [ "$?" == "0" ]; then
-        printf "\nCalling bleachbit..."
+        printf "\nCalling bleachbit...\n"
         bleachbit -s *${ext_type} 2>/dev/null
     fi
 }
