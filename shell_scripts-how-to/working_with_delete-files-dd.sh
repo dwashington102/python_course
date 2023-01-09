@@ -17,3 +17,6 @@ do
     truncate -s0 "${i}"
     rm -f "${i}"
 done
+
+# Added following line to rm a generated ${i} file
+rm -rf \$\{i\}

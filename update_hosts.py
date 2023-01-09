@@ -24,37 +24,50 @@ import sys
 
 
 def main():
-    enable_logging()
-    logging.info("main()")
-    get_hosts()
-    move_hosts()
-    check_se()
-    logging.info("main completed")
+    check_uid()
+    try:
+        enable_logging()
+        logging.info("main()")
+        get_hosts()
+        move_hosts()
+        check_se()
+        logging.info("main completed")
+    except KeyboardInterrupt:
+        print("\nUser Termination received...exit")
 
 
 def enable_logging():
     if not os.path.isdir("/root/cronlogs"):
         os.mkdir("/root/cronlogs")
+        print("DEBUG >> CREATED cronlogs dir")
 
     if not os.path.isfile("/root/cronlogs/update_hosts-timestamp.log"):
         os.mknod("/root/cronlogs/update_hosts-timestamp.log")
-        try:
-            logging.basicConfig(filename="/root/cronlogs/update_hosts-timestamp.log",
-                                format='%(asctime)s %(levelname)-5s %(message)s',
-                                filemode="w",
-                                level=logging.DEBUG,
-                                datefmt='%Y-%m-%d %H:%M:%S')
-            logging.info("Logging enabled")
-        except PermissionError as perr:
-            print("Permission denied creating logfile")
-            sys.exit(101)
+        print("DEBUG >> CREATED logfile")
+    
+    try:
+        logging.basicConfig(filename="/root/cronlogs/update_hosts-timestamp.log",
+                            format='%(asctime)s %(levelname)-5s %(message)s',
+                            filemode="a",
+                            level=logging.info,
+                            datefmt='%Y-%m-%d %H:%M:%S')
+        logging.info("Logging enabled")
+        logging.info("DEBUG LEVEL: ERROR and above with APPEND action")
+        logging.debug("debug message")
+        logging.info("info message")
+        logging.warning("warn message")
+        logging.error("error message")
+        logging.critical("critical message")
+    except PermissionError as perr:
+        print("Permission denied creating logfile")
+        sys.exit(101)
 
 
 def check_uid():
     logging.info("check_uid()")
     uid = os.getuid()
     if uid != 0:
-        logging.error("Script must be ran as root...exit(102)")
+        print("Script must be ran as root...exit(102)")
         sys.exit(102)
 
 def get_hosts():
