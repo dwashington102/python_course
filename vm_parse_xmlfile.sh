@@ -28,7 +28,7 @@ func_get_session (){
     read get_session
 
     if [[ "$get_session" == "system" ]]; then
-        if [[ $(id -u) != 0 ]]; then                                                                                                                                                                                                                                           
+        if [[ $(id -u) != 0 ]]; then
             printf "To view System Virtual Machines\n"
             printf "Script must be ran as root...exit (1)\n"
             exit 1
@@ -56,7 +56,7 @@ func_ls_vms (){
     listFiles=( $(command ls -1 ${PWD} | command grep --regexp='.*.xml$')) 
     len=${#listFiles[@]}
     if [[ "${len}" == "0" ]]; then
-        printf "\nNo XML files found in ${vmdir}...exit(5)\n"    
+        printf "\nNo XML files found in ${vmdir}...exit(5)\n"
         exit 5
     fi
 
@@ -85,14 +85,14 @@ func_select_xml (){
 func_get_tags (){
 # Loops through the XML file pulling the tags
 # Example of "cpu" tag in XML file
-#      <cpu mode='host-model' check='partial'/>                                                                                                                                                                                                                                    
-#        <clock offset='utc'>                                                                                                                                                                                                                                                        
-#         <timer name='rtc' tickpolicy='catchup'/>                                                                                                                                                                                                                                  
-#         <timer name='pit' tickpolicy='delay'/>                                                                                                                                                                                                                                    
+#      <cpu mode='host-model' check='partial'/>
+#        <clock offset='utc'>
+#         <timer name='rtc' tickpolicy='catchup'/>
+#         <timer name='pit' tickpolicy='delay'/>
 #         <timer name='hpet' present='no'/>
 
     IFS=$'\n'
-    taglist=( $(command grep -E ^"\s{2}<" ${domainxml} | command grep -v -E "\s{2}</") )  
+    taglist=( $(command grep -E ^"\s{2}<" ${domainxml} | command grep -v -E "\s{2}</") )
     lentaglist=${#taglist[@]}
     if [[ "$lentaglist" == "0" ]]; then
         printf "\nNo tags found in ${domainxml}...exit(7)\n"
