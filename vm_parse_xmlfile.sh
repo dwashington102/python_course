@@ -21,6 +21,7 @@ COMMENTS
 
 
 func_get_session (){
+    # Function requests user input and confirms userid
     shopt -s nocasematch
     printf '\nIs Virtual Machine a "User" or "System" Session\n'
     printf 'Type "user" or "system"\t'
@@ -168,5 +169,26 @@ main (){
     printf "\n\n"
 }
 
-domainxml=("$@")
+if [[ ! -z "$1" ]]; then
+    if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+            printf "Program parses Virtual Machine XML File."
+            printf "\nRunning the script without -f flag prompts for the XML filename"
+            printf "\n\nUsage : vm_parse_xmlfile.sh [options] XMLFILENAME"
+            printf "\n  -h, --help   Print this help text"
+            printf "\n  -f, --file   XML File name\n"
+            exit 0
+    elif [[ "$1" == "--file" || "$1" == "-f" ]]; then
+            domainxml=("$2")
+            if [[ -z "${domainxml}" ]]; then
+                 printf "Missing filename"
+                 printf "\n  -f  --file   XML File name\n"
+                 exit 0
+            fi
+    else
+            printf "$0: Invalid option -- '${1}'"
+            printf "\nTry '$0 --help'\n"
+            exit 0
+    fi
+fi
+
 main
