@@ -4,6 +4,7 @@
 # Script run on startup to pull git projects.
 
 :<<"COMMENT"
+01-17-2023: Added ARCHIVEDIR
 11-03-2022: Changed "git status" to use "git diff"
 07-27-2022: Added sysadmin repo
 03-21-2022: Updated regex find statement 
@@ -12,6 +13,11 @@
 01-10-2022: Updated func_check_pythoncourse to check/confirm git updates are not pending
 07-11-2021: Added func_pull_Docker_build
 05-02-2021: Added func_pull_zsh_syntax  
+
+
+EXIT Codes:
+100 : func_check_conn_github() - Connection to github down
+101 : MAIN() - Failed to create ARCHIVEDIR
 COMMENT
 
 # Set variables
@@ -48,7 +54,8 @@ func_print_spacer (){
 # Directory name will include the timestamp "*202*"
 func_remove_old_dirs (){
     IFS=$'\n'
-    cd $GITDIR
+    #cd $GITDIR
+    pushd $ARCHIVEDIR &>/dev/null
     listDirs=$(find . -maxdepth 1 -mtime +10 -type d -regextype posix-extended -regex '.*202[[:digit:]].*_[[:digit:]]{3,}$')
     if [[ ${#listDirs[@]} -ne 0 ]]; then
     for dirName in ${listDirs[*]}
@@ -88,7 +95,8 @@ func_check_zshsyntax () {
 
 func_rename_zshsyntax (){
     cd $GITDIR
-    mv $zshdir $zshdir.$timeStamp   
+    mv $zshdir $zshdir.$timeStamp && mv $zshdir.$timeStamp $ARCHIVEDIR/.
+    #mv $zshdir $ARCHIVEDIR/$zshdir.$timeStamp   
     if [[ $? != 0 ]]; then
         printf "${red}"
         printf "$zshdir NOT COPIED\n"
@@ -138,7 +146,8 @@ func_check_pythoncourse (){
 
 func_rename_pythoncourse (){
     pushd $GITDIR &>/dev/null
-    mv $pythonCourse $pythonCourse.$timeStamp
+    mv $pythonCourse $pythonCourse.$timeStamp && mv $pythonCourse.$timeStamp $ARCHIVEDIR/.
+    #mv $pythonCourse $ARCHIVEDIR/$pythonCourse.$timeStamp
     if [[ $? != 0 ]]; then
         printf "${red}"
         printf "$pythonCourse NOT COPIED\n"
@@ -187,7 +196,8 @@ func_check_sysadmin (){
 
 func_rename_sysadmin (){
     cd $GITDIR
-    mv $sysadmin $sysadmin.$timeStamp
+    #mv $sysadmin $ARCHIVEDIR/$sysadmin.$timeStamp
+    mv $sysadmin $sysadmin.$timeStamp && mv $sysadmin.$timeStamp $ARCHIVEDIR/.
     if [[ $? != 0 ]]; then
         printf "${red}"
         printf "$sysadmin NOT COPIED\n"
@@ -233,7 +243,8 @@ func_check_dotfiles (){
 
 func_rename_dotfiles (){
     cd $GITDIR
-    mv $dotfiles $dotfiles.$timeStamp
+    #mv $dotfiles $ARCHIVEDIR/$dotfiles.$timeStamp
+    mv $dotfiles $dotfiles.$timeStamp && mv $dotfiles.$timeStamp $ARCHIVEDIR/.
     if [[ $? != 0 ]]; then
         printf "$dotfiles NOT COPIED\n"
         printf "No git clone will be attempted for $dotfiles\n"
@@ -264,7 +275,8 @@ func_pull_dotfiles (){
 func_rename_dockerbuild (){
     cd $GITDIR
     if [ -d $dockerBuild ]; then
-        mv $dockerBuild $dockerBuild.$timeStamp
+        mv $dockerBuild $dockerBuild.$timeStamp && mv $dockerBuild.$timeStamp $ARCHIVEDIR/.
+        #mv $dockerBuild $ARCHIVEDIR/$dockerBuild.$timeStamp
         if [[ $? != 0 ]]; then
             printf "$dockerBuild NOT COPIED\n"
             printf "No git clone will be attempted for $dockerBuild"
@@ -313,7 +325,17 @@ func_check_conn_github () {
     fi
 }
 
+
 function MAIN (){
+    ARCHIVEDIR="$GITDIR/archived"
+    if [ ! -d $ARCHIVEDIR ]; then
+        /usr/bin/mkdir $ARCHIVEDIR
+        if [ "$?" != "0" ]; then
+            printf "\nFailed to create ARCHIVEDIR...exit(101)"
+            exit 101
+        fi
+    fi
+
     #func_set_colors
     #2022-01-13: Replaced func_set_colors with if clause below in order to avoid tput command from dumping errors to console when running script against remote computer.
     if [ $TERM != "dumb" ]; then
