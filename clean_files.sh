@@ -83,10 +83,10 @@ COMMENTS
 if [[ ! -z "$1" ]]; then
         if [[ "$1" == "-h" || "$1" == "-help" ]]; then
                 printf "Program attempts to overwrite and remove all files in current directory\n"
-                printf "Running the script without any flags will prompt for file"
+                printf "\nRunning the script without any flags will prompt for file"
                 printf "\n\nUsage : clean_files.sh [options]"
                 printf "\n  -h, --help    Print this help text"
-                printf "\n  -e, --ext <extensiont type>   Delete files with given ext.type"
+                printf "\n  -e, --ext <extension type>   Delete files with given ext.type"
                 printf "\n  -a, --all     Overwrite  and delete all files in the directory"
                 printf "\n"
                 exit 0
