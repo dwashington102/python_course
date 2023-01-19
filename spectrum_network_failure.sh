@@ -15,11 +15,12 @@ do
     ping -W2 -c3 8.8.8.8 &>/dev/null
     if [[ "$?" != "0" ]]; then
         lostcount=$((lostcount+1))
-        printf "Connection #${lostcount} failed at $(date +%Y%m%d_%H%M%S)"
+        printf "Connection #${lostcount} failed at $(date +%Y%m%d_%H%M%S)\n"
         restoreconrc=1
     else
         if [[ "${restoreconrc}" == "1" ]]; then
-            printf "Connection restored at $(date +%Y%m%d_%H%M%S)"
+            printf "Connection restored at $(date +%Y%m%d_%H%M%S)\n"
+            restoreconrc=0
         fi
         :
     fi
