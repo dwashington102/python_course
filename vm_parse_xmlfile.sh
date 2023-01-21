@@ -185,8 +185,8 @@ if [[ ! -z "$1" ]]; then
                  exit 0
             fi
     else
-            printf "$0: Invalid option -- '${1}'"
-            printf "\nTry '$0 --help'\n"
+            printf "$0: Invalid option -- '${1}'\n"
+            printf "Try '$0 --help'\n"
             exit 0
     fi
 fi
