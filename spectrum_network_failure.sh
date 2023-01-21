@@ -1,12 +1,19 @@
 #!/usr/bin/sh
+
+:<<'COMMENTS'
+Script sends a ping to 8.8.8.8 every 10 seconds to confirm
+if Spectrum network connection is still active.
+When Spectrum network is down, script writes a connection failed
+message to console.
+When Spectrum network connect is restored, script writes a restored
+connection message to console.
 #
-# Script sends a ping to 8.8.8.8 every 10 seconds to confirm
-# if Spectrum network connection is still active.
-# When Spectrum network is down, script writes a connection failed
-# message to console.
-# When Spectrum network connect is restored, script writes a restored
-# connection message to console.
-#
+The script is meant to be ran in a console or in background mode
+DO NOT RUN from cron
+
+CRITICAL: If running script spans multiple days, A new LOGFILE is not 
+generated.  A sleeping script holds open connection to LOGFILE
+COMMENTS
 
 tstamp=$(date +'%Y%m%d')
 logfile=$HOME/cronlogs/$(basename --suffix=.sh $0)_${tstamp}.log
@@ -20,25 +27,37 @@ func_check_logdir (){
 
 
 do_work (){
+    # The do-done loop sends a ping to google
+    # if the ping fails, jump into IF block 
+    # Action of IF block: information is written showing # of loops the connection has been out,
+    # date&time of outage, nmcli GENERAL.STATE info
+    # Once the connection is restored, jump into ELSE block
+    # the restoreconrc is reset to 0, information is written whowing Connection restore msg
+    # Attempts to start VPN
+
     restoreconrc=0
     lostcount=0
     while true
     do
         ping -W2 -c3 8.8.8.8 &>/dev/null
         if [[ "$?" != "0" ]]; then
+            if [ ! -f ${logfile} ]; then
+                touch ${logfile}
+            fi
             lostcount=$((lostcount+1))
             constate=$(nmcli -t con show SpectrumSetup-AF | command grep "GENERAL.STATE")
             printf "Connection #${lostcount} failed at $(date +%Y%m%d_%H%M%S)\tSTATE:${constate}\n"
             restoreconrc=1
         else
             if [[ "${restoreconrc}" == "1" ]]; then
-                nmcli -t con show "IBM Secure Access Service"
+                printf "Connection restored at $(date +%Y%m%d_%H%M%S)\n"
+                restoreconrc=0
+
+                nmcli -t con show "IBM Secure Access Service" &>/dev/null
                 nmclirc="$?"
                 if [[ "{$nmclirc}" == "0" ]]; then
                     $HOME/bin/connect-ibm-vpn.sh
                 fi
-                printf "Connection restored at $(date +%Y%m%d_%H%M%S)\n"
-                restoreconrc=0
             fi
             :
         fi
