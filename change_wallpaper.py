@@ -4,8 +4,11 @@ Script changes the Linux Desktop Background using the gsettings command:
 
 
 Exit Codes:
-    1 - Failure to load python module
-    2 - gsettings list-schema did not find schemas
+101 - Failure to load python module
+102 - gsettings_check(): No gsettings found
+103 - set_backgroundsdir(): Unaccounted for XDG_CURRENT_DESKTOP
+104 - check_mypath(): Unable to find dirbackgrounds directory
+105 - get_wm(): Unaccounted for XDG_CURRENT_DESKTOP
 """
 
 
@@ -15,14 +18,11 @@ try:
     import random
     import subprocess
     import time
+    import sys
 except ModuleNotFoundError as moderr:
-    print(f"{moderr}...exit(1)")
-    exit(1)
+    print(f"{moderr}...exit(101)")
+    exit(101)
 
-
-# Define GLOBAL CONSTANTS
-# Location of directory where the pictures are stored
-BACKGROUNDS = '/usr/share/backgrounds/various'
 
 """
 DEBUG Format --- Only use when troubleshooting a problem
@@ -37,13 +37,28 @@ def main():
     Script changes the Linux Desktop Background using the gsettings command:
     """
     try:
+        dirbackgrounds = set_backgroundsdir()
         gsettings_check()
         get_current_bg()
-        check_mypath()
-        get_wallpaper()
+        check_mypath(dirbackgrounds)
+        get_wallpaper(dirbackgrounds)
     except KeyboardInterrupt:
         print("Received user termination request\n")
         exit(0)
+
+
+def set_backgroundsdir():
+    desktopenv = os.getenv("XDG_CURRENT_DESKTOP")
+    if "gnome" in desktopenv.lower():
+        dirbackgrounds = "/usr/share/backgrounds/various"
+        print("Gnome")
+    elif "cinnamon" in desktopenv.lower():
+        dirbackgrounds = "/usr/share/backgrounds/various/images"
+        print("Cinnamon")
+    else:
+        print(f"UNKNOWN: XDG_CURRENT_DESKTOP - {desktopenv}")
+        sys.exit(103)
+    return dirbackgrounds
 
 
 def gsettings_check():
@@ -52,31 +67,31 @@ def gsettings_check():
                             stderr=subprocess.DEVNULL)
     rc = gsrc.wait()
     if rc != 0:
-        print("No gsettings schemas found\n")
-        exit(2)
+        print("No gsettings schemas found...exit(102)\n")
+        sys.exit(102)
 
 
-def check_mypath():
-    """ Function will confirm if directory defined by BACKGROUNDS exists.
+def check_mypath(dirbackgrounds):
+    """ Function will confirm if directory defined by dirbackgrounds exists.
     If not the program exits
     """
-    test_dir = (os.path.isdir(BACKGROUNDS))
+    test_dir = (os.path.isdir(dirbackgrounds))
     if test_dir is True:
         time.sleep(3)
     else:
-        print('PATH:', BACKGROUNDS, " does not exists")
+        print('PATH:', dirbackgrounds, " does not exists")
         print('Exiting...')
         exit(1)
 
 
-def get_wallpaper():
+def get_wallpaper(dirbackgrounds):
     """ Function builds a list of backgrounds stored in
-    directory assigned to BACKGROUNDS variable and then
+    directory assigned to dirbackgrounds variable and then
     selects a random item from the list
     """
     wallpaper_lst = []
 
-    for (dirpath, dirname, filenames) in os.walk(BACKGROUNDS):
+    for (dirpath, dirname, filenames) in os.walk(dirbackgrounds):
         for afile in filenames:
             wallpaper_lst.append(afile)
 
@@ -88,20 +103,20 @@ def get_wallpaper():
     my_rand = random.randint(0, mytest)
     # Sets the wallpaper to a random item from the wallpaper_lst
     wallpaper = wallpaper_lst[my_rand]
-    get_wm(wallpaper)
+    get_wm(wallpaper, dirbackgrounds)
 
 
-def set_wallpaper(wallpaper):
+def set_wallpaper(wallpaper, dirbackgrounds):
     """ For GNOME WM function uses gi module to set schema
     org.gnome.desktop.background
     """
     settings = Gio.Settings.new("org.gnome.desktop.background")
-    settings.set_string("picture-uri", "file://" + BACKGROUNDS + '/' + wallpaper)
+    settings.set_string("picture-uri", "file://" + dirbackgrounds + '/' + wallpaper)
     settings.apply()
-    print(f"Updated Background image: 'file:///{BACKGROUNDS}/{wallpaper}'")
+    print(f"Updated Background image: 'file:///{dirbackgrounds}/{wallpaper}'")
 
 
-def cinnamon_set_wallpaper(wallpaper):
+def cinnamon_set_wallpaper(wallpaper, dirbackgrounds):
     """ For Cinnamon WM function uses gi module to set schema
     org.cinnamon.desktop.background
     """
@@ -111,18 +126,21 @@ def cinnamon_set_wallpaper(wallpaper):
 
     settings = Gio.Settings.new("org.cinnamon.desktop.background")
     settings.set_string("picture-uri",
-                        "file://" + BACKGROUNDS + '/' + wallpaper)
+                        "file://" + dirbackgrounds + '/' + wallpaper)
     settings.apply()
-    print(f"\nUpdated Background image: {BACKGROUNDS}/{wallpaper}")
+    print(f"\nUpdated Background image: {dirbackgrounds}/{wallpaper}")
 
 
-def get_wm(wallpaper):
+def get_wm(wallpaper, dirbackgrounds):
     # Confirm if the WM is GNOME or Cinnamon
-    try:
-        subprocess.check_output('pgrep gdm', shell=True)
-        set_wallpaper(wallpaper)
-    except subprocess.CalledProcessError:
-        cinnamon_set_wallpaper(wallpaper)
+    desktopenv = os.getenv("XDG_CURRENT_DESKTOP")
+    if "gnome" in desktopenv.lower():
+        set_wallpaper(wallpaper, dirbackgrounds)
+    elif "cinnamon" in desktopenv.lower():
+        cinnamon_set_wallpaper(wallpaper, dirbackgrounds)
+    else:
+        print(f"UNKNOWN: XDG_CURRENT_DESKTOP - {desktopenv}")
+        sys.exit(103)
 
 
 def get_current_bg():
