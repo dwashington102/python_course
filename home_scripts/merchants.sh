@@ -19,7 +19,7 @@ COMMENTS
 export LC_NUMERIC=en_US.UTF-8
 
 IFS=$'\n'
-csvfile="/tmp/banking.csv"
+csvfile="/tmp/banking_2021.csv"
 loopcount=1
 totalvisits=0
 totalspent=0
@@ -35,18 +35,17 @@ gen_logfile (){
 
 do_work (){
     declare -a merchantarr=()
-    for line in $(command grep -E ",Debit," ${csvfile} | command grep -E "\/22,-" | awk -F',' '{print $5}' | sort -u)
+    for line in $(command grep -E ",Debit," ${csvfile} | command grep -E "\/2[[:digit:]],-" | awk -F',' '{print $5}' | sort -u)
     do
         merchantarr+=("$line")    
     done
 
     for eachmerchant in ${merchantarr[@]}
     do
-        printf "\n\n"
         printf "%0.s=" {1..50}
         printf "\n"
         printf "Transactions for ${eachmerchant}:\n"
-        for getamount in $(command grep -E ",Debit," ${csvfile} | command grep -E "\/22,-" | grep ${eachmerchant})
+        for getamount in $(command grep -E ",Debit," ${csvfile} | command grep -E "\/2[[:digit:]],-" | grep ${eachmerchant})
         do
              getdollars=$(echo $getamount | awk -F',' '{print $3}' | awk -F'-' '{print $2}')
              getdate=$(echo $getamount | awk -F',' '{print $2}')
@@ -68,7 +67,9 @@ do_work (){
     done
     printf "\n"
     printf "%0.s=" {1..50}
-    printf "Total Number of Merchant Transactions: ${#merchantarr[*]}\n"
+    printf "\n"
+    printf "Total Number of Unique Merchants: ${#merchantarr[*]}\n"
+    printf "Total Number of DEBITS from account: $(command grep -c -E ',Debit,' ${csvfile})\n"
     printf "%0.s=" {1..50}
     printf "\n"
 }
@@ -84,12 +85,15 @@ atm_cash (){
 
 
 main (){
+    printf "Processing ${csvfile} files...\n"
     gen_logfile
     IFS=$'\n'
     (
     do_work
     atm_cash
     ) >> ${logfile}
+    printf "\n"
+    printf "Output written to ${logfile}\n"
 }
 
 
