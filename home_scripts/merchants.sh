@@ -12,6 +12,21 @@ Column 3 = amount
 Sorts all transactions for each merchant and then totals
 all transactions for the merchant.  If there were 4+ transactions at the merchangt, 
 the script computes the avg. per transaction.
+
+Same of output:
+Transactions for ATM Withdrawal - BIG BUCKET -449808 A449808 AUSTIN  TX:  
+12/30/21 - 63.00
+12/05/21 - 63.00
+11/22/21 - 63.00
+10/24/21 - 63.00
+07/20/21 - 63.00
+05/08/21 - 43.00
+03/23/21 - 43.00
+02/01/21 - 103.00
+
+Total Visits: 8
+Cost per Visit: $63.00
+Total Spent: $504.00
 COMMENTS
 
 
@@ -34,6 +49,11 @@ gen_logfile (){
 }
 
 do_work (){
+    # Function reads csv file extracting column 5 (sort for unique) and add each entry to the array merchantarr
+    #  - foreach item in array merchantarr, extract column 3 and remove preceding "-"
+    #  -  extract date from csv 
+    #  Write merchant, date - amount, total visits and if total visit 4+, print avg cost per visit, total cost
+
     declare -a merchantarr=()
     for line in $(command grep -E ",Debit," ${csvfile} | command grep -E "\/2[[:digit:]],-" | awk -F',' '{print $5}' | sort -u)
     do
@@ -42,6 +62,7 @@ do_work (){
 
     for eachmerchant in ${merchantarr[@]}
     do
+        #Next line adds 50 = just for formatting
         printf "%0.s=" {1..50}
         printf "\n"
         printf "Transactions for ${eachmerchant}:\n"
