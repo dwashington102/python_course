@@ -23,6 +23,8 @@ printf "\nTotal Length Of Array myList: %s" "${#myList}"
 
 # Iterate through array
 loopCount=1
+# NOTE:  Remember to add the following export in order to handle spaces/special chars
+export IFS=$'\n'
 for eachItem in ${myList[@]}
 do
     printf "\n(%s) Filename: %s" "$loopCount" "$eachItem"
