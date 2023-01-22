@@ -25,7 +25,7 @@ totalvisits=0
 totalspent=0
 totalatm=0
 
-logfile=/tmp/output.txt
+logfile=/tmp/$(basename --suffix=.sh $0)_$(date +'%Y%m%d_%H%M').txt
 
 gen_logfile (){
     if [ -f ${logfile} ]; then
@@ -66,6 +66,9 @@ do_work (){
         totalvisits=0
         totalspent=0
     done
+    printf "\n"
+    printf "%0.s=" {1..50}
+    printf "Total Number of Merchant Transactions: ${#merchantarr[*]}\n"
     printf "%0.s=" {1..50}
     printf "\n"
 }
@@ -80,33 +83,12 @@ atm_cash (){
 }
 
 
-get_transactions (){
-    for eachmerchant in ${merchantarr[@]}
-    do
-        for line in $(command grep -E ",Debit," ${csvfile} | grep ${eachmerchant} | awk -F',' '{print $3}')
-        do
-             totalspent=$(echo "$totalspent + $line" | bc)
-             totalvisit=$((totalvisit+1))
-        done
-        printf "\n\n"
-        printf "%0.s=" {1..50}
-        printf "\n"
-        printf "Transactions for ${eachmerchant}:\n"
-        printf "Total Visits: ${totalvisit}\n"
-        printf "Total Spent: $%.2f\n" "${totalspent}"
-        totalvisit=0
-        totalspent=0
-     done
-}
-
-
 main (){
     gen_logfile
     IFS=$'\n'
     (
     do_work
     atm_cash
-    #----XXX----get_transactions
     ) >> ${logfile}
 }
 
