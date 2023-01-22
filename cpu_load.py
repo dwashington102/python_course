@@ -1,5 +1,22 @@
 #!/usr/bin/env python3
+"""
+Script gathers the 1,5,15 minute load avg of the CPUs
 
+
+Exit Codes:
+
+
+Output of script:
+Total Number of CPUs: 20
+
+CPU 1-min load: 1.52490234375
+CPU 5-min load: 1.484375
+CPU 15-min load: 1.181640625
+
+CPU 1min AVG: 9.53%
+CPU 5min AVG: 9.28%
+CPU 15min AVG: 7.39%
+"""
 import os
 
 
