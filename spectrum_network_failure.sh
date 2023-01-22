@@ -35,7 +35,7 @@ func_check_logdir (){
 
 
 func_check_spectrum (){
-    nmcli con | command grep Spectrum
+    nmcli con | command grep Spectrum &>/dev/null
     if [[ "$?" != "0" ]]; then
         printf "Not connected to Spectrum Network..exit 101\n"
         exit 101
@@ -81,7 +81,7 @@ do_work (){
                 nmcli -t con show "IBM Secure Access Service" &>/dev/null
                 nmclirc="$?"
                 if [[ "${nmclirc}" == "0" ]]; then
-                    nmcli -t con show "IBM Secure Access Service" | /usr/bin/grep --regexp="GENERAL.*activated" &>/dev/null
+                    nmcli -t con show "IBM Secure Access Service" | command grep --regexp="GENERAL.*activated" &>/dev/null
                     if [[ "$?" != "0" ]]; then
                         # starting using nmcli due to connect-ibm-vpn.sh requiring sudo auth
                         nmcli con up "IBM Secure Access Service"
