@@ -55,11 +55,21 @@ do_work (){
 
                 nmcli -t con show "IBM Secure Access Service" &>/dev/null
                 nmclirc="$?"
-                if [[ "{$nmclirc}" == "0" ]]; then
-                    $HOME/bin/connect-ibm-vpn.sh
+                if [[ "${nmclirc}" == "0" ]]; then
+                    # starting using nmcli due to connect-ibm-vpn.sh requiring sudo auth
+                    nmcli con up "IBM Secure Access Service"
+                fi
+            else
+                nmcli -t con show "IBM Secure Access Service" &>/dev/null
+                nmclirc="$?"
+                if [[ "${nmclirc}" == "0" ]]; then
+                    nmcli -t con show "IBM Secure Access Service" | /usr/bin/grep --regexp="GENERAL.*activated" &>/dev/null
+                    if [[ "$?" != "0" ]]; then
+                        # starting using nmcli due to connect-ibm-vpn.sh requiring sudo auth
+                        nmcli con up "IBM Secure Access Service"
+                    fi
                 fi
             fi
-            :
         fi
         sleep 10
     done
