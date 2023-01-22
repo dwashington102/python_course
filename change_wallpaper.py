@@ -9,6 +9,7 @@ Exit Codes:
 103 - set_backgroundsdir(): Unaccounted for XDG_CURRENT_DESKTOP
 104 - check_mypath(): Unable to find dirbackgrounds directory
 105 - get_wm(): Unaccounted for XDG_CURRENT_DESKTOP
+106 - set_backgroundsdir(): XDG_CURRENT_DESKTOP is None
 """
 
 
@@ -49,6 +50,10 @@ def main():
 
 def set_backgroundsdir():
     desktopenv = os.getenv("XDG_CURRENT_DESKTOP")
+    if desktopenv is None:
+        print("XDG_CURRENT_DESKTOP is None...exit(106)")
+        sys.exit(106)
+
     if "gnome" in desktopenv.lower():
         dirbackgrounds = "/usr/share/backgrounds/various"
         print("Gnome")
