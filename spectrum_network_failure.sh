@@ -13,16 +13,34 @@ DO NOT RUN from cron
 
 CRITICAL: If running script spans multiple days, A new LOGFILE is not 
 generated.  A sleeping script holds open connection to LOGFILE
+
+Exit Codes:
+101 - func_check_spectrum(): Not connected to Spectrum network
 COMMENTS
 
 tstamp=$(date +'%Y%m%d')
 logfile=$HOME/cronlogs/$(basename --suffix=.sh $0)_${tstamp}.log
 
+func_help(){
+    printf "Usage: $0\n" 
+    printf "'-h, --help: print this usage statement'\n"
+    exit 0
+}
 
 func_check_logdir (){
    if [ ! -d $HOME/cronlogs ]; then
        mkdir -p $HOME/cronlogs
    fi
+}
+
+
+func_check_spectrum (){
+    nmcli con | command grep Spectrum
+    if [[ "$?" != "0" ]]; then
+        printf "Not connected to Spectrum Network..exit 101\n"
+        exit 101
+    fi
+
 }
 
 
@@ -77,21 +95,43 @@ do_work (){
 
 
 main (){
-    (
+    # Add the : before the option allows script to handle errors
+    # Without : before the option the script returns the following when invalid option passed:
+    # ./spectrum_network_failure.sh --help
+    # ./spectrum_network_failure.sh: illegal option -- -
+    while getopts ":h" opt;
+    do
+    case $opt in
+        h) func_help ;;
+        *) func_help ;;
+    esac
+    done
+
     func_check_logdir
+    if [ ! -f $logfile ]; then
+            touch $logfile
+    fi
+
+    (
+    func_check_spectrum
     do_work
     ) >> ${logfile}
 }
 
-if [[ ! -z "$1" ]]; then
-    if [[ "$1" == "-h" || "$1" == "--help" ]]; then
-        printf "Checks the device is connected to the network\n"
-        printf "If the network is down, script write to the log and\n"
-        printf "attempt to restart IBM VPN if it exists"
-    else
-        printf "spectrum_network_failure: Invalid option --- '$1'\n"
-        printf "Try 'spectrum_network_failure.sh --help'\n"
-    fi
-    exit 0
-fi
-main
+#if [[ ! -z "$1" ]]; then
+#    if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+#        printf "Usage and Help:\n"
+#        printf "Checks the device is connected to the network\n"
+#        printf "If the network is down, script write to the log and\n"
+#        printf "attempts to restart IBM VPN if it exists"
+#    else
+#        printf "spectrum_network_failure: Invalid option --- '$1'\n"
+#        printf "Try 'spectrum_network_failure.sh --help'\n"
+#    fi
+#    printf "\n"
+#    exit 0
+#fi
+
+
+
+main $@
