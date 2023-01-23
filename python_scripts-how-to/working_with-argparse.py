@@ -22,11 +22,17 @@ def do_work():
     parser.add_argument(
         "-d", dest="DIRECTORY", type=str, help="New Directory", required=True
     )
+
+    parser.add_argument(
+        "-o", metavar="myfile", type=str, help="this is help", required=True
+    )
+
     args = parser.parse_args()
 
     previous_dir = os.getcwd()
     print(f"Current Directory: {previous_dir}\n")
     print(f"New Directory: {args.DIRECTORY}")
+    print(f"myfile is {args.myfile}\n")
 
     newDir = "/tmp/" + args.DIRECTORY
     print(f"Base Directory: {newDir}")
