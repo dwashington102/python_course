@@ -6,17 +6,22 @@
  Deposits appear in the CSV file in this format:
  584,01/07/22,6700.00,Credit,Deposit from FID BKG SVC LLC MONEYLINE,7504.81
 
+
+ Output:
+Total Paychecks: $117,758.58
+Total Investments $25,850.00
+Total: $143,608.58
 COMMENTS
 
 # Used to handle currency display
 export LC_NUMERIC=en_US.UTF-8
 
 IFS=$'\n'
-csvfile="/tmp/banking.csv"
+csvfile="/tmp/banking_2022.csv"
 loopcount=1
 totalmel=0.00
 totaldavid=0.00
-totalfidelity=0.00
+totalinvestments=0.00
 total=0.00
 
 mel=TASB
@@ -32,21 +37,15 @@ do
         elif  echo "$line" | grep -q "$david"; then
             totaldavid=$(echo "$totaldavid + $amount" | bc)
         else
-            totalfidelity=$(echo "$totalfidelity + $amount" | bc)
+            totalinvestments=$(echo "$totalinvestments + $amount" | bc)
         fi
 
         total=$(echo "$total + $amount" | bc)
         loopcount=$((loopcount + 1))
-
-#        printf "Total Mel: $%.2f*s\n" 40 "${totalmel}"
-#        printf "Total David: $%.2f*s\n" 40 "${totaldavid}"
-#        printf "Total Fidelity $%.2f*s\n" 40 "${totalfidelity}"
-#        printf "Total: ${total}\n"
-#        sleep 1
 done
 
 totalpaychecks=$(echo ${totalmel} + ${totaldavid} | bc) 
 printf "Total Paychecks: $%'.2f\n" "${totalpaychecks}"
-printf "Total Fidelity $%'.2f\n" "${totalfidelity}"
+printf "Total Investments $%'.2f\n" "${totalinvestments}"
 printf "Total: $%'.2f\n" "${total}"
 
