@@ -2,7 +2,7 @@
 """
 Script allows user to input extension type (old), select new extension type,
 and rename all files in a directory using the old extension type to
-use the new extension type. 
+use the new extension type.
 
 
 Exit Codes:
@@ -15,11 +15,51 @@ Exit Codes:
 
 import argparse
 import os
-import re
 import sys
+import pprint
 
 
 def main():
+    extnew=""
+    extold=""
+
+    parser = argparse.ArgumentParser(
+        description='Script renames files in a directory replace the'
+        ' existing extension with the new extension given at runtime.'
+    )
+    parser.add_argument(
+        "-d", "--dir",
+        metavar="", type=str,
+        help="Directory location", required=True
+    )
+
+    parser.add_argument(
+        "-o", "--old",
+        metavar="", type=str,
+        help="Current file ext. type", required=True
+    )
+
+    parser.add_argument(
+        "-n", "--new",
+        metavar="", type=str,
+        help="New file ext. type", required=True
+    )
+
+    args = parser.parse_args()
+
+    userdir = args.directory
+    oldext = args.old
+    newext = args.new
+
+    pprint.pprint(userdir)
+    print(userdir)
+    pprint.pprint(oldext)
+    print(oldext)
+    pprint.pprint(newext)
+    print(newext)
+    sys.exit(0)
+
+
     get_platform()
     try:
         userdir = os.getcwd()
@@ -33,7 +73,7 @@ def main():
         searchpattern = getext()
         newext = getnewext()
         do_work(listfiles, searchpattern, userdir, newext)
-    except KeyboardInterrupt as ke:
+    except KeyboardInterrupt:
         print("\nUser Interrupt received...exit(0)")
         sys.exit(0)
 
@@ -43,6 +83,7 @@ def get_platform():
     if linuxplat != 'linux':
         print("\nScript must be ran on Linux device...exit(103)")
         sys.exit(103)
+
 
 def currentdir():
     defaultdir = input("Use current directory (y/n): ")
@@ -102,7 +143,7 @@ def getnewext():
     print("Input the new extension type:")
     newext = str(input("New Extension type: "))
     return (newext)
-    
+
 
 def do_work(listfiles, searchpattern, userdir, newext):
     """
@@ -117,8 +158,8 @@ def do_work(listfiles, searchpattern, userdir, newext):
     count = 0
     # If all filenames in the list begin with a digit lamba would be useful
     # ---> see working_with-sort.py
-    #orderlist = listfiles.sort(key=lambda f: int(''. join(filter(str. isdigit, f))))
-    #listfiles.sort(key=lambda f: int(''. join(filter(str. isdigit, f))))
+    # orderlist = listfiles.sort(key=lambda f: int(''. join(filter(str. isdigit, f))))
+    # listfiles.sort(key=lambda f: int(''. join(filter(str. isdigit, f))))
     for afile in listfiles:
         ftype = str(os.path.isfile(afile))
         if ftype == 'True':
@@ -126,7 +167,7 @@ def do_work(listfiles, searchpattern, userdir, newext):
                 count += 1
                 oldnametup = os.path.splitext(afile)
                 oldname = oldnametup[0]
-                #newname = str(count) + "." + searchpattern
+                # newname = str(count) + "." + searchpattern
                 newname = oldname + "." + newext
                 print(f"RENAME {afile} to {newname}")
                 try:
