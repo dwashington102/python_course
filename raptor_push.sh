@@ -7,36 +7,78 @@ Exit Codes:
 101 - check_copyfile(): $copyfile NOT FOUND
 COMMENTS
 
-check_copyfile (){
-copyfile=$HOME/keydb_20190510.kdbxDEBUG
-if [ ! -f $copyfile ]; then
-    printf "$copyfile NOT FOUND...exit(1)\n"
-    exit 101
-fi
+function usage (){
+        printf "DEBUG >>> Entered ${FUNCNAME}\n"
+        exit 1
 }
 
 
-do_scp (){
-declare -a raptors=("k430-raptor" "x1-raptor" "p50-raptor")
-IFS=$'\n'
-for target in ${raptors[@]}
-do
-     baseuserid=$(basename --suffix=-raptor "$target")
-     userid="$baseuserid""user"
+function help (){
+   printf "DEBUG >>> Entered ${FUNCNAME}\n"
+   exit 0
+}
 
-    ping -W2 -c1 -i1 ${target} &>/dev/null
-    if [ "$?" == "0" ]; then 
-        printf "scp to ${target}\n"
-        scp ${copyfile} ${userid}@${target}:~/.
-    else
-        printf "Unable to reach ${target}\n"
+
+function checkcopy (){
+    printf "DEBUG >>> Entered ${FUNCNAME}\n"
+    if [ -z ${copyfile} ]; then
+        copyfile=$HOME/keydb_20190510.kdbx
     fi
-done
+
+    if [ ! -f $copyfile ]; then
+        printf "$copyfile NOT FOUND...exit(1)\n"
+        exit 101
+    fi
+}
+
+
+function do_scp (){
+    printf "DEBUG >>> Entered ${FUNCNAME}\n"
+    declare -a raptors=("k430-raptor" "x1-raptor" "p50-raptor")
+    IFS=$'\n'
+    for target in ${raptors[@]}
+    do
+        baseuserid=$(basename --suffix=-raptor "$target")
+        userid="$baseuserid""user"
+    
+        ping -W2 -c1 -i1 ${target} &>/dev/null
+        if [ "$?" == "0" ]; then 
+            printf "scp to ${target}\n"
+            # scp ${copyfile} ${userid}@${target}:~/.
+        else
+            printf "Unable to reach ${target}\n"
+        fi
+    done
+}
+
+
+function test_raptors() {
+    printf "DEBUG >>> Entered ${FUNCNAME}\n"
+    declare -a raptors=("k430-raptor" "x1-raptor" "p50-raptor")
+    IFS=$'\n'
+    for target in ${raptors[@]}
+    do
+        baseuserid=$(basename --suffix=-raptor "$target")
+        userid="$baseuserid""user"
+        ping -W2 -c1 -i1 ${target} 
+    done
 }
 
 
 main (){
-    check_copyfile
+    printf "DEBUG >>> Entered ${FUNCNAME}\n"
+    copyfile=""
+    while getopts ":f:t:h" FLAG;
+    do
+        case $FLAG in
+            h) help  ;;
+            f) copyfile="$OPTARG";;
+            t) test_raptors ;;
+            \?) usage ;;
+        esac
+    done
+
+    checkcopy
     do_scp
 }
 
