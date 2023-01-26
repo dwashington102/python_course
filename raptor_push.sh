@@ -25,8 +25,10 @@ function help (){
 
 function checkcopy (){
     if [ -z ${copyfile} ]; then
-        printf "\nCopyfile not set: '${copyfile}'\n"
+        printf "\n"
+        printf "Copyfile not set: '${copyfile}'\n"
         copyfile=$HOME/keydb_20190510.kdbx
+        printf "Setting copyfile to ${copytfile}.\n"
     fi
 
     if [ ! -f $copyfile ]; then
@@ -79,10 +81,11 @@ main (){
         esac
     done
 
-    if [ -z "$1" ]; then
-        printf "NO ARGS passed\n"
-        usage
-    fi    
+    # Enable if user must pass argument to script
+    #if [ -z "$1" ]; then
+    #    printf "NO ARGS passed\n"
+    #    usage
+    #fi    
 
     checkcopy
     do_scp
