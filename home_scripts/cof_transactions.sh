@@ -58,7 +58,7 @@ do_work() {
         do
              getdollars=$(echo $getamount | awk -F',' '{print $3}' | awk -F'-' '{print $2}')
              getdate=$(echo $getamount | awk -F',' '{print $2}')
-             totalspent=$(echo "$totalspent + $getdollars" | bc)
+             totalspent=$(echo "$totalspent + $getdollars" | bc -l)
              totaltransactions=$((totaltransactions + 1))
              printf "${getdate} - ${getdollars}\n"
         done
@@ -67,7 +67,7 @@ do_work() {
         printf "\n"
         printf "Total Visits: ${totaltransactions}\n"
         if [[ "$totaltransactions" -gt "3" ]]; then
-            avgcost=$(echo "$totalspent / $totaltransactions" | bc)
+            avgcost=$(echo "$totalspent / $totaltransactions" | bc -l)
             printf "Cost per Visit: $%.2f\n" "${avgcost}"
         fi
         printf "Total Spent: $%.2f\n" "${totalspent}"
@@ -87,7 +87,7 @@ atm_cash (){
     printf "\n"
     for line in $(command grep -E ",Debit," ${csvfile} | command grep -E "\/22,-" | command grep "ATM Withdrawal" | awk -F',' '{print $3}' | awk -F'-' '{print $2}')
     do
-        totalatm=$(echo "$totalatm + $line" | bc)
+        totalatm=$(echo "$totalatm + $line" | bc -l)
     done
     printf "Total of all ATM Withdrawals: $%'.2f\n" "$totalatm"
 }
