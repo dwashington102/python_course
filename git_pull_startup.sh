@@ -53,7 +53,6 @@ func_print_spacer (){
 # Function will remove all directories from $GITDIR older than 20days
 # Directory name will include the timestamp "*202*"
 func_remove_old_dirs (){
-    printf "Starting ${FUNCNAME}\n"
     IFS=$'\n'
     #cd $GITDIR
     pushd $ARCHIVEDIR &>/dev/null
