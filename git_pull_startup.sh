@@ -53,30 +53,35 @@ func_print_spacer (){
 # Function will remove all directories from $GITDIR older than 20days
 # Directory name will include the timestamp "*202*"
 func_remove_old_dirs (){
+    printf "Starting ${FUNCNAME}\n"
     IFS=$'\n'
     #cd $GITDIR
     pushd $ARCHIVEDIR &>/dev/null
-    listDirs=$(find . -maxdepth 1 -mtime +10 -type d -regextype posix-extended -regex '.*202[[:digit:]].*_[[:digit:]]{3,}$')
+    listDirs=($(find . -maxdepth 1 -mtime +10 -type d -regextype posix-extended -regex '.*202[[:digit:]].*_[[:digit:]]{3,}$'))
     if [[ ${#listDirs[@]} -ne 0 ]]; then
     for dirName in ${listDirs[*]}
     do
-        printf "\n>>> Remove dir: ${dirName}"
+        printf "\n"
+        printf ">>> Remove archive dir: ${dirName}"
         sleep 2
                rm -rf ${dirName}
         if [[ $? == 0 ]]; then
             printf "${green}"
-            printf "\nDeleted Directory ${dirName} succcessful"
+            printf "\n"
+            printf "Deleted Directory ${dirName} succcessful"
             printf "${normal}"
             sleep 1
         else
             printf "${red}"
-            printf "\nDeleted Directory ${dirName} FAILED"
+            printf "\n"
+            printf "Deleted Directory ${dirName} FAILED"
             printf "${normal}"
         fi
     printf "\n"
     done
     else
-        printf "\nNo directories older than 20 days found"
+        printf "\n"
+        printf "No directories older than 10 days found"
     fi
 }
 
@@ -319,7 +324,8 @@ func_check_conn_github () {
         exit 100
     else
         printf "${green}"
-        printf "\nConnection to Github confirmed"
+        printf "\n"
+        printf "Connection to Github confirmed"
         func_print_spacer
         printf "${normal}"
     fi
@@ -331,7 +337,8 @@ function MAIN (){
     if [ ! -d $ARCHIVEDIR ]; then
         /usr/bin/mkdir $ARCHIVEDIR
         if [ "$?" != "0" ]; then
-            printf "\nFailed to create ARCHIVEDIR...exit(101)"
+            printf "\n"
+            printf "Failed to create ARCHIVEDIR...exit(101)\n"
             exit 101
         fi
     fi
@@ -375,5 +382,6 @@ function MAIN (){
 MAIN
 printf "${yellow}"
 printf "${reverse}"
-printf "\ngit pull actions completed\n"
+printf "\n"
+printf "git pull actions completed\n"
 printf "${normal}"
