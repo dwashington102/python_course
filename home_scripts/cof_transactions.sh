@@ -85,7 +85,8 @@ do_work() {
 
 atm_cash (){
     printf "\n"
-    for line in $(command grep -E ",Debit," ${csvfile} | command grep -E "\/22,-" | command grep "ATM Withdrawal" | awk -F',' '{print $3}' | awk -F'-' '{print $2}')
+    for line in $(command grep -E ",Debit," ${csvfile} | command grep "ATM Withdrawal" | awk -F',' '{print $3}' | awk -F'-' '{print $2}')
+    #for line in $(command grep -E ",Debit," ${csvfile} | command grep -E ",[[:digit:]]{1}\/[[:digit:]]{1}\/2[[:digit:]],-" | command grep "ATM Withdrawal" | awk -F',' '{print $3}' | awk -F'-' '{print $2}')
     do
         totalatm=$(echo "$totalatm + $line" | bc -l)
     done
