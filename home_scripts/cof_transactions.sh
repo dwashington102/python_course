@@ -1,7 +1,7 @@
 #!/usr/bin/sh
 #
 :<<'COMMENTS'
-Script ingest CSV of all banking ",Debit," transactions
+Script ingest CSV for all banking ",Debit," transactions
 
 ",Debit," entries as they appear in CSV file
 0584,12/16/22,-17.50,Debit,Debit Card Purchase - SCHLOTZSKY S 2100 CEDAR PARK TX,9939.85
