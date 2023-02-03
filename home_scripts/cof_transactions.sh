@@ -84,6 +84,8 @@ do_work() {
 }
 
 atm_cash (){
+    # Entries in csv file for ATM Withdrawals appear in this format
+    # 0584,01/01/23,-63.50,Debit,ATM Withdrawal - RANDALLS LEA-K424590 LK424590 LEANDER  TX,11207.71
     printf "\n"
     for line in $(command grep -E ",Debit," ${csvfile} | command grep "ATM Withdrawal" | awk -F',' '{print $3}' | awk -F'-' '{print $2}')
     #for line in $(command grep -E ",Debit," ${csvfile} | command grep -E ",[[:digit:]]{1}\/[[:digit:]]{1}\/2[[:digit:]],-" | command grep "ATM Withdrawal" | awk -F',' '{print $3}' | awk -F'-' '{print $2}')
@@ -126,7 +128,7 @@ main() {
     totalspent=0
     totalatm=0
     csvfile=""
-    logdir=""
+    logdir="$HOME"
      
 
     if [[ "$#" -eq "0" ]]; then
