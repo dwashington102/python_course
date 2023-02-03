@@ -7,7 +7,7 @@
  584,01/07/22,6700.00,Credit,Deposit from FID BKG SVC LLC MONEYLINE,7504.81
 
 
- Output:
+Output:
 Total Paychecks: $117,758.58
 Total Investments $25,850.00
 Total: $143,608.58
