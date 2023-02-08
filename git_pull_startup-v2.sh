@@ -71,7 +71,7 @@ function func_copy_dir ()
     printf "${yellow}"
     printf "Rename existing ${localdir}\n"
     printf "${normal}"
-    sleep 5
+    sleep 2
     /bin/mv $localdir $localdir.$timestamp &>/dev/null
     if [[ $? -ne 0 ]]; then
         printf "${red}"
@@ -79,7 +79,7 @@ function func_copy_dir ()
         printf "${normal}"
     fi
     /bin/mv -v $localdir.$timestamp $ARCHIVEDIR/.
-    sleep 5
+    sleep 2
 }
 
 
