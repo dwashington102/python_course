@@ -7,7 +7,6 @@ allows user to automate the process of keeping icons updated with the latest ver
 
 
 EXIT CODES:
-1 - No existing git repo directories found in $HOME/git_icons
 COMMENT
 
 tStamp=$(date +%Y%m%d_%H%M)
@@ -33,8 +32,6 @@ rename_dirs (){
          done
       else
               printf "\nNO Directories found...exiting 1"
-              exit 1 
-
        fi
 }
 
