@@ -115,7 +115,7 @@ function func_pull_repo()
 
 function func_remove_old_dirs ()
 {
-    printf "DEBUG >>> entered ${FUNCNAME[0]}\n"
+    # printf "DEBUG >>> entered ${FUNCNAME[0]}\n"
     pushd $GITDIR/archived
     printf "DEBUG >>> $PWD\n"
     IFS=$'\n'
