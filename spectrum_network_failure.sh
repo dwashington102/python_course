@@ -18,8 +18,9 @@ Exit Codes:
 101 - func_check_spectrum(): Not connected to Spectrum network
 COMMENTS
 
-tstamp=$(date +'%Y%m%d')
-logfile=$HOME/cronlogs/$(basename --suffix=.sh $0)_${tstamp}.log
+# tstamp=$(date +'%Y%m%d')
+# logfile=$HOME/cronlogs/$(basename --suffix=.sh $0)_${tstamp}.log
+logfile=$HOME/cronlogs/$(basename --suffix=.sh $0).log
 
 func_help(){
     printf "Usage: $0\n" 
@@ -71,20 +72,20 @@ do_work (){
                 printf "Connection restored at $(date +%Y%m%d_%H%M%S)\n"
                 restoreconrc=0
 
-                nmcli -t con show "IBM Secure Access Service" &>/dev/null
+                nmcli -t con show "IBM VPN" &>/dev/null
                 nmclirc="$?"
                 if [[ "${nmclirc}" == "0" ]]; then
                     # starting using nmcli due to connect-ibm-vpn.sh requiring sudo auth
-                    nmcli con up "IBM Secure Access Service"
+                    nmcli con up "IBM VPN"
                 fi
             else
-                nmcli -t con show "IBM Secure Access Service" &>/dev/null
+                nmcli -t con show "IBM VPN" &>/dev/null
                 nmclirc="$?"
                 if [[ "${nmclirc}" == "0" ]]; then
-                    nmcli -t con show "IBM Secure Access Service" | command grep --regexp="GENERAL.*activated" &>/dev/null
+                    nmcli -t con show "IBM VPN" | command grep --regexp="GENERAL.*activated" &>/dev/null
                     if [[ "$?" != "0" ]]; then
                         # starting using nmcli due to connect-ibm-vpn.sh requiring sudo auth
-                        nmcli con up "IBM Secure Access Service"
+                        nmcli con up "IBM VPN"
                     fi
                 fi
             fi
