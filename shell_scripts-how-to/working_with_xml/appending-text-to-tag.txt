@@ -1,0 +1,30 @@
+Problem Description:
+XML file has a Target section that requires "ComputerID" entries.
+The ComputerID entries are stored in a separate text file.
+
+Format of the ComputerID file:
+<ComputerID>12342</ComputerID>
+<ComputerID>98239</ComputerID>
+
+Format of the XML Target section:
+<Target>
+</Target>
+
+Goal:
+<Target>
+<ComputerID>12342</ComputerID>
+<ComputerID>98239</ComputerID>
+</Target>
+
+
+Solution:
+Use the sed command import the contents of the text file after the start of the Target tag and then use xmllint for correctly format the entries.
+
+
+sed -e "/<Target>/r ${textfile}" ${original}.xml > ${new}.xml
+NOTE:  When passing a filename as a variable to sed, DOUBLE QUOTES ARE REQUIRED
+
+xmllint --format ${new}.xml > ${updatedformat}.xml
+
+The ${updatedformat}.xml should now contain a populated Target section.
+
