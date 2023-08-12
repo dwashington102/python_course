@@ -1,4 +1,4 @@
-!#/usr/bin/bash
+#!/usr/bin/bash
 
 <<'COMMENTS'
 Script locates the rpm files in all subdirectories
@@ -8,8 +8,13 @@ Prints the sha256sum outpu for the file name
 Run the script in a dictory, where there are subdirectories that hold multiple rpms
 COMMENTS
 
-pushd $HOME/Downloads
-for i in $(find . -name '*rpm')
+RPMDIR="$1"
+if [[ -z $RPMDIR ]]; then
+    pushd $HOME/Downloads
+    RPMDIR=$PWD
+fi
+
+for i in $(find ${RPMDIR} -name '*rpm')
     do
         fileName=$(echo $i)
         baseFileName=$(echo "$fileName" | awk -F"/" '{print $NF}')
