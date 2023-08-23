@@ -23,12 +23,6 @@
 exit code 1: bleachbit application not found
 EXITCODES
 
-# Constant Variables
-tStamp=$(date +%Y%m%d_%H%M)
-scriptName=`basename "$0"`
-logfile=$HOME/cronlogs/cron_run-"$scriptName"_"$tStamp".log
-
-spacer='-------------//-------------------'
 
 # Function runs all browser cleaners
 func_browser_cleaner (){
@@ -187,8 +181,23 @@ func_check_bleachbit (){
 }
 
 
+function clear_viminfo (){
+        if [[ -f $HOME/.viminfo ]]; then
+            /usr/bin/truncate --size=0 $HOME/.viminfo
+            printf "viminfo info:\n" 
+            ls -lth $HOME/.viminfo
+        fi
+}
+
 
 MAIN() {
+# Constant Variables
+tStamp=$(date +%Y%m%d_%H%M)
+scriptName=`basename "$0"`
+logfile=$HOME/cronlogs/cron_run-"$scriptName"_"$tStamp".log
+
+spacer='-------------//-------------------'
+/usr/bin/touch $logfile
 if [ "${TERM}" != "dumb" ]; then
     func_check_bleachbit
     func_clear_files_recent 
@@ -196,6 +205,7 @@ if [ "${TERM}" != "dumb" ]; then
     func_trash_empty 
     func_truncate_vlc_history 
     func_browser_cleaner
+    clear_viminfo
     exit 0
 fi
 
