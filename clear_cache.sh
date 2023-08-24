@@ -38,9 +38,9 @@ func_browser_cleaner (){
     if [ -z "$get_chrome_pid" ]; then
     printf "\nChrome PID not found...running cleaners"
         printf "\n"
-        for cleaner in $(bleachbit -l | command grep chrome)
+        for cleaner in $(bleachbit -l 2>/dev/null | command grep chrome)
     do
-        bleachbit -c $cleaner 
+        bleachbit -c $cleaner 2>/dev/null
     done
     printf "\nRan browser cleaner for Chrome"
     else
@@ -51,9 +51,9 @@ func_browser_cleaner (){
     if [ -z "$get_opera_pid" ]; then
     printf "\nOpera PID not found...running cleaners"
         printf "\n"
-        for cleaner in $(bleachbit -l | command grep opera)
+        for cleaner in $(bleachbit -l  2>/dev/null | command grep opera)
     do
-        bleachbit -c $cleaner 
+        bleachbit -c $cleaner  2>/dev/null
     done
     printf "\nRan browser cleaner for Opera"
     else
@@ -64,9 +64,9 @@ func_browser_cleaner (){
     if [ -z "$get_brave_pid" ]; then
     printf "\nBrave PID not found...running cleaners"
         printf "\n"
-        for cleaner in $(bleachbit -l | command grep brave)
+        for cleaner in $(bleachbit -l 2>/dev/null | command grep brave)
     do
-        bleachbit -c $cleaner
+        bleachbit -c $cleaner 2>/dev/null
     done
     printf "\nRan browser cleaner for Brave"
     else
@@ -77,9 +77,9 @@ func_browser_cleaner (){
     if [ -z "$get_ff_pid" ]; then
     printf "\nFirefox PID not found...running cleaners"
         printf "\n"
-        for cleaner in $(bleachbit -l | command grep firefox)
+        for cleaner in $(bleachbit -l 2>/dev/null | command grep firefox)
     do
-        bleachbit -c $cleaner
+        bleachbit -c $cleaner 2>/dev/null
     done
     printf "\nRan browser cleaner for Firefox"
     else
@@ -194,7 +194,8 @@ MAIN() {
 # Constant Variables
 tStamp=$(date +%Y%m%d_%H%M)
 scriptName=`basename "$0"`
-logfile=$HOME/cronlogs/cron_run-"$scriptName"_"$tStamp".log
+# logfile=$HOME/cronlogs/cron_run-"$scriptName"_"$tStamp".log
+logfile=$HOME/cronlogs/cron_run-$(basename --suffix=.sh $0)_"$tStamp".log
 
 spacer='-------------//-------------------'
 /usr/bin/touch $logfile
