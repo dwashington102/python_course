@@ -171,7 +171,7 @@ func_truncate_vlc_history (){
 }
 
 func_check_bleachbit (){
-        get_bleachbit_ver=$(bleachbit --version 2>/dev/null)
+        get_bleachbit_ver=$(bleachbit --version 2>/dev/null | command grep -E ^Bleach)
         if [ -n "$get_bleachbit_ver" ]; then
             printf "Version Info:\n %s" "$get_bleachbit_ver"
         else
