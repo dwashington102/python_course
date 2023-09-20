@@ -10,7 +10,7 @@ conn = MySQL.connect(
     host='localhost',
     database='CRASHDB',
     user='devdavid',
-    password='h3lpm3'
+    password='WHATISPASSWORD'
     )
 cur = conn.cursor()
 cur.execute('DROP TABLE IF EXISTS VSTATS')
