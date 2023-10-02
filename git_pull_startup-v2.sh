@@ -207,6 +207,4 @@ main ()
 main
 printf "${yellow}"
 printf "${reverse}"
-printf "\n"
-printf "git pull actions completed\n"
-printf "${normal}"
+printf "\ngit pull actions completed${normal}\n"
