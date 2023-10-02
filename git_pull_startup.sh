@@ -1,9 +1,10 @@
 #!/bin/sh 
-# Version 0.0.7
+# Version 0.0.8
 
 # Script run on startup to pull git projects.
 
 :<<"COMMENT"
+10-01-2023: Built ~/bin/gitpull.runtime
 01-17-2023: Added ARCHIVEDIR
 11-03-2022: Changed "git status" to use "git diff"
 07-27-2022: Added sysadmin repo
@@ -381,6 +382,4 @@ function MAIN (){
 MAIN
 printf "${yellow}"
 printf "${reverse}"
-printf "\n"
-printf "git pull actions completed\n"
-printf "${normal}"
+printf "\n$git pull actions completed${normal}\n"
