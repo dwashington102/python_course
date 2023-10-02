@@ -195,7 +195,7 @@ func_test_index_rc (){
         printf "\n"
 
     # Site x_nx + search 
-    elif [ ${index_view_source}] -gt 0 ]; then
+    elif [ ${index_view_source} -gt 0 ]; then
         echo "Calling get_mp4_view-source.sh" > ./logs/get_mp4_index.log
         get_mp4_view-source.sh
         printf "\n"
@@ -218,7 +218,10 @@ func_clean_up () {
 if [ "$1" == "" ]; then
     MAIN (){
         func_set_colors
-        func_get_dir_userInput
+        lscount=$(ls -A1 | wc -l)
+        if [[ ${lscoun} -ne 0 ]]; then
+            func_get_dir_userInput
+        fi
         func_get_index_userInput
         func_get_index_rc
         func_test_index_rc

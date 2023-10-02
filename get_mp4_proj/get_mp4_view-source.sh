@@ -42,7 +42,7 @@ func_set_colors () {
 
 
 func_start_time () {
-    rawStartTime=`date +%Y%m%d-%H:%M`
+    rawStartTime=$(date +%Y%m%d-%H:%M)
     printf "\n${green}${rawStartTime}\tBeginning process to download raw files...${normal}"
     printf "\n"
 }
@@ -50,7 +50,7 @@ func_start_time () {
 
 func_end_time () {
     printf "\n${green}==========Downloads Complete==========="
-    rawEndTime=`date +%Y%m%d-%H:%M`                                                                                                                                                                  
+    rawEndTime=$(date +%Y%m%d-%H:%M)                                                                                                                                                                  
     printf "\n${green}${rawEndTime}${normal}"
     printf "\n"
 }
