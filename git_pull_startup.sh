@@ -382,4 +382,5 @@ function MAIN (){
 MAIN
 printf "${yellow}"
 printf "${reverse}"
-printf "\n$git pull actions completed${normal}\n"
+printf "\n$git pull actions completed\n"
+printf "${normal}"
