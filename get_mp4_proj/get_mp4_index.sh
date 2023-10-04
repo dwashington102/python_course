@@ -3,10 +3,9 @@
 # 2021-06-29: Updated to accept URL via CLI
 
 
-
 # Constant Variables
 # tStamp variable is added to log files generated
-tStamp=`date +%Y%m%d_%H%M`
+tStamp=$(date +%Y%m%d_%H%M)
 export grep='grep --color=NEVER'
 export tmpDir='/tmp'
 export rootDir='/root'
@@ -26,7 +25,6 @@ func_set_colors () {
 }
 
 func_start () {
-
     func_create_dirs
     wget --no-check-certificate -a ./logs/get_getIndex.log ${getUrl} -O index.html
     if [ $? -eq 0 ]; then
@@ -55,6 +53,7 @@ func_create_dirs () {
         mkdir ./rawfiles &>/dev/null
         mkdir ./logs &>/dev/null
 }
+
 
 func_get_dir_userInput () {
     printf "\n${bold}${yellow}WARNING WARNING WARNING WARNING WARNING"
