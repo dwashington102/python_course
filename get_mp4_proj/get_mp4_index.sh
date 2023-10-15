@@ -24,6 +24,15 @@ func_set_colors () {
     boldoff=$(tput sgr0)
 }
 
+
+function prereqs() {
+    if [[ ! -f /usr/bin/wget ]]; then
+        printf "Required command(s) not found...exit(101)\n"
+        printf "\t- wget\n"
+        exit 101
+    fi
+}
+
 func_start () {
     func_create_dirs
     wget --no-check-certificate -a ./logs/get_getIndex.log ${getUrl} -O index.html
@@ -214,9 +223,12 @@ func_clean_up () {
 }
 
 # Begin MAIN function
+prereqs
 if [ "$1" == "" ]; then
     MAIN (){
-        func_set_colors
+        if [[ -f /usr/bin/tput ]]; then
+            func_set_colors
+        fi
         lscount=$(ls -A1 | wc -l)
         if [[ ${lscount} -ne 0 ]]; then
             func_get_dir_userInput
@@ -229,13 +241,14 @@ if [ "$1" == "" ]; then
 else
     getUrl=$1
     MAIN (){
-    func_set_colors
+    if [[ -f /usr/bin/tput ]]; then
+        func_set_colors
+    fi
     func_start
     func_get_index_rc
     func_test_index_rc
     func_clean_up
     }
 fi
-
 
 MAIN

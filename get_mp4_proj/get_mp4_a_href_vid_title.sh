@@ -37,6 +37,15 @@ func_set_colors () {
     boldoff=$(tput sgr0)
 }
 
+
+function prereqs() {
+    if [[ ! -f /usr/bin/wget ]]; then
+        printf "Required command(s) not found...exit(101)\n"
+        printf "\t- wget\n"
+        exit 101
+    fi
+}
+
 # Constant Variables
 export grep='grep --color=NEVER'
 
@@ -118,5 +127,34 @@ func_download_files (){
     printf "\n"
 }
 
+
+prereqs
+if [ "$1" == "" ]; then
+    MAIN (){
+        if [[ -f /usr/bin/tput ]]; then
+            func_set_colors
+        fi
+        lscount=$(ls -A1 | wc -l)
+        if [[ ${lscount} -ne 0 ]]; then
+            func_get_dir_userInput
+        fi
+        func_get_index_userInput
+        func_get_index_rc
+        func_test_index_rc
+        func_clean_up
+    }
+else
+    getUrl=$1
+    MAIN (){
+    if [[ -f /usr/bin/tput ]]; then
+        func_set_colors
+    fi
+    func_start
+    func_get_index_rc
+    func_test_index_rc
+    func_clean_up
+    }
+fi
+
+
 MAIN
-exit 0
