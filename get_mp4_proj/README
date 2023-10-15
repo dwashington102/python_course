@@ -1,5 +1,22 @@
 README
 
+Required steps:
+- On HOST OS create /data
+- sudo setfacl -R -m u:userid:rwx /data
+- podman volume create mydb    # Create a volume in podman
+- ln -s ~/.local/share/containers/storage/volumes /data
+
+Create image using Dockerfile
+GIT_REPO/python_course/get_mp4_proj/Dockerfile
+cd GIT_REPO/python_course/get_mp4_proj
+- podman build $PWD
+- podman images
+- podman run -d {imageID} 
+- podman commit containerId getmp4
+
+- Run docker5.sh
+url: m_ot
+
 
 
 *** Trouble with podman and named volumes ***
