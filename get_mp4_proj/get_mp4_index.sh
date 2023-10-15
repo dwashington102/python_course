@@ -218,7 +218,7 @@ if [ "$1" == "" ]; then
     MAIN (){
         func_set_colors
         lscount=$(ls -A1 | wc -l)
-        if [[ ${lscoun} -ne 0 ]]; then
+        if [[ ${lscount} -ne 0 ]]; then
             func_get_dir_userInput
         fi
         func_get_index_userInput
