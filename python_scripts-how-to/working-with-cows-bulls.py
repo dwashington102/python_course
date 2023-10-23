@@ -47,12 +47,15 @@ def get_guess(mynum):
     cows = 0
     bulls = 0
     while userguess != mynum:
-        userguess = int(input(f"Guess #{totalguess} - Enter 4-digit number: "))
-        if userguess < 1000 or userguess > 9999:
-            print("Guess must be between 1000 and 9999\n")
-        else:
-            totalguess += 1
-            compare_guess(mynum, userguess, totalguess, cows, bulls)
+        try:
+            userguess = int(input(f"Guess #{totalguess} - Enter 4-digit number: "))
+            if userguess < 1000 or userguess > 9999:
+                print("Guess must be between 1000 and 9999\n")
+            else:
+                totalguess += 1
+                compare_guess(mynum, userguess, totalguess, cows, bulls)
+        except ValueError:
+            print("Invalid value inserted...try again")
 
 
 def compare_guess(mynum, userguess, totalguess, cows, bulls):
