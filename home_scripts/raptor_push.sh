@@ -63,7 +63,7 @@ function do_scp (){
             printf "%0.s-" {1..50}
             printf "\n"
             printf "scp to ${target}\n"
-            scp ${copyfile} ${userid}@${target}:~/. &>/dev/null
+            scp -vp ${copyfile} ${userid}@${target}:~/. &>/dev/null
             if [[ "$?" == "0" ]]; then
                 basefile=$(basename --suffix="/.*" ${copyfile})
                 printf "File timestamp:\n"
