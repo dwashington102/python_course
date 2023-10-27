@@ -115,12 +115,9 @@ function func_pull_repo()
 
 function func_remove_old_dirs ()
 {
-    # printf "DEBUG >>> entered ${FUNCNAME[0]}\n"
     pushd $GITDIR/archived
-    printf "DEBUG >>> $PWD\n"
     IFS=$'\n'
     listDirs=($(find . -maxdepth 1 -mtime +10 -type d -regextype posix-extended -regex '.*202[[:digit:]].*_[[:digit:]]{3,}$'))
-    printf "DEBUG >>> ${#listDirs[*]}\n"
     if [[ ${#listDirs[*]} -ne 0 ]]; then
     for dirName in ${listDirs[*]}
     do
