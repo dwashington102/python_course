@@ -10,6 +10,7 @@ Exit Codes:
 104 - check_mypath(): Unable to find dirbackgrounds directory
 105 - get_wm(): Unaccounted for XDG_CURRENT_DESKTOP
 106 - set_backgroundsdir(): XDG_CURRENT_DESKTOP is None
+107 - get_current_bg(): XDG_CURRENT_DESKTOP is unknown
 """
 
 
@@ -50,15 +51,16 @@ def main():
 
 def set_backgroundsdir():
     desktopenv = os.getenv("XDG_CURRENT_DESKTOP")
+    imagesdir = "/usr/share/backgrounds/various"
     if desktopenv is None:
         print("XDG_CURRENT_DESKTOP is None...exit(106)")
         sys.exit(106)
 
     if "gnome" in desktopenv.lower():
-        dirbackgrounds = "/usr/share/backgrounds/various"
+        dirbackgrounds = imagesdir
         print("Gnome")
     elif "cinnamon" in desktopenv.lower():
-        dirbackgrounds = "/usr/share/backgrounds/various/images"
+        dirbackgrounds = imagesdir + "/images"
         print("Cinnamon")
     else:
         print(f"UNKNOWN: XDG_CURRENT_DESKTOP - {desktopenv}")
@@ -116,7 +118,8 @@ def set_wallpaper(wallpaper, dirbackgrounds):
     org.gnome.desktop.background
     """
     settings = Gio.Settings.new("org.gnome.desktop.background")
-    settings.set_string("picture-uri", "file://" + dirbackgrounds + '/' + wallpaper)
+    settings.set_string("picture-uri",
+                        "file://" + dirbackgrounds + '/' + wallpaper)
     settings.apply()
     print(f"Updated Background image: 'file:///{dirbackgrounds}/{wallpaper}'")
 
@@ -125,9 +128,9 @@ def cinnamon_set_wallpaper(wallpaper, dirbackgrounds):
     """ For Cinnamon WM function uses gi module to set schema
     org.cinnamon.desktop.background
     """
-    beforebg = subprocess.check_output('gsettings get org.cinnamon.desktop.background picture-uri', shell=True)
+    # beforebg = subprocess.check_output('gsettings get org.cinnamon.desktop.background picture-uri', shell=True)
     # Clear var beforebg from memory
-    del beforebg
+    # del beforebg
 
     settings = Gio.Settings.new("org.cinnamon.desktop.background")
     settings.set_string("picture-uri",
@@ -149,8 +152,19 @@ def get_wm(wallpaper, dirbackgrounds):
 
 
 def get_current_bg():
-    beforebg = subprocess.check_output('gsettings get org.gnome.desktop.background picture-uri', shell=True)
+    wm = os.getenv("XDG_CURRENT_DESKTOP")
+    if "gnome" in wm.lower():
+        wmschema = "gnome"
+    elif "cinnamo" in wm.lower():
+        wmschema = "cinnamon"
+    else:
+        print(f"UNKNOWN: XDG_CURRENT_DESKTOP - {wm}")
+        sys.exit(107)
+
+    beforecmd = "gsettings get org." + wmschema + ".desktop.background picture-uri"
+    beforebg = subprocess.check_output(beforecmd, shell=True)
     print(f"Current background image: {str(beforebg.decode('utf-8'))}")
+
     # Clear var beforebg from memory
     del beforebg
 
