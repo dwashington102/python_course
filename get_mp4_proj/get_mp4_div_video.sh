@@ -54,7 +54,16 @@ func_get_urls () {
     printf "\n"
     for urlPath in `cat rawUrls`
     do
-        getBaseUrl=`grep -m 1 slave index.html | awk -F'slave\"' '{print $2}' | awk -F'[""]' '{print $2}'`
+        getBaseUrl=$(grep -m 1 slave index.html | awk -F'slave\"' '{print $2}' | awk -F'[""]' '{print $2}')
+        if ! wget --spider ${getBaseUrl}; then
+            getBaseUrl=$(grep -m 1 slave index.html | awk -F'slave\"' '{print $2}' | awk -F'[""]' '{print $2}' | awk -F"www." '{print "https://www."$2}')
+        fi
+
+        if ! wget --spider ${getBaseUrl}; then
+            printf "Unable to contact ${getBaseUrl}...exit"
+            exit 13
+        fi
+
         touch ./logs/get_urls.log
         wget -a ./logs/get_urls.log -P ./rawfiles ${getBaseUrl}${urlPath}
         sleep 2
