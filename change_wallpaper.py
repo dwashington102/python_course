@@ -128,10 +128,6 @@ def cinnamon_set_wallpaper(wallpaper, dirbackgrounds):
     """ For Cinnamon WM function uses gi module to set schema
     org.cinnamon.desktop.background
     """
-    # beforebg = subprocess.check_output('gsettings get org.cinnamon.desktop.background picture-uri', shell=True)
-    # Clear var beforebg from memory
-    # del beforebg
-
     settings = Gio.Settings.new("org.cinnamon.desktop.background")
     settings.set_string("picture-uri",
                         "file://" + dirbackgrounds + '/' + wallpaper)
