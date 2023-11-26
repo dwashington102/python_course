@@ -7,7 +7,7 @@
 # 
 # 
 # Image to install
-FROM fedora
+FROM fedora:latest
 
 # Perform upgrade and install necessary packages
 RUN dnf upgrade -y
