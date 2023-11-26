@@ -131,6 +131,11 @@ func_run() {
         printf "\nCreating Docker Container\n"
         # docker run statement is adding an arguement after the Image-ID
         mkdir "$topDir/$myTag"
+        if podman ps | command grep " v${podCount}" &>/dev/null; then
+            randopod=$((RANDOM % 100 + 1))
+            printf "Selecting random number for container: ${randopod}\n"
+            $DOCKERCMD container run -d -m 512M --env TERM=dumb --rm --name ${getUserUrl}v${randopod} -w "/data" -v $topDir/$myTag:/data ${get_imgId} ${getUrl}/term/${myTag}
+        fi
         $DOCKERCMD container run -d -m 512M --env TERM=dumb --rm --name ${getUserUrl}v${podCount} -w "/data" -v $topDir/$myTag:/data ${get_imgId} ${getUrl}/term/${myTag}
         podCount=$((podCount + 1))
         sleep 3
