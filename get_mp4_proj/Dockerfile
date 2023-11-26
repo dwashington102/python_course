@@ -7,20 +7,20 @@
 # 
 # 
 # Image to install
-FROM ubuntu
+FROM fedora
 
 # Perform upgrade and install necessary packages
-RUN apt-get upgrade -y
-RUN apt-get update && \
-  apt-get install -y --no-install-recommends \
+RUN dnf upgrade -y
+RUN dnf update && \
+  dnf install -y  \
   man \
   wget \
   vim \
   mlocate \
   file \
-  iputils-ping \
+  iputils\
   && rm -rf /var/lib/apt/lists/*
-RUN apt-get clean 
+RUN dnf clean all
 
 
 # Create directories
