@@ -42,29 +42,31 @@ MAIN() {
 }
 
 func_set_dockercmd () {
-    which docker > /dev/null 2>&1
-    if [ "$?" == "0" ]; then
+    if which docker > /dev/null 2>&1; then
         DOCKERCMD='docker'
+    elif which podman &>/dev/null; then
+        DOCKERCMD='podman'
     else
-        which podman > /dev/null 2>&1                                                                                                                                       
-        if [ "$?" == "0" ]; then
-            DOCKERCMD='podman'
-        else
-            printf "docker nor podman command found on server"
-            printf "Install the required packages...exiting"
-            exit 2
-        fi
+        printf "docker nor podman command found on server\n"
+        printf "Install the required packages...exit 2\n"
+        exit 2
     fi
 }
 
 func_search_items (){
     unset itemCount
     unset loopCount
-    declare -i itemCount=1
+    declare -i itemCount=1 # sets search to be a min. of 1 item
     declare -i loopCount=1
 
     printf "\nHow many items to search: "
     read itemCount
+    re='^ [0-9]+$'
+    if ! [[ $itemCount =~ $re ]] ; then
+       printf "Entered value is not a number...exit 101"
+       exit 101
+    fi
+
 
     while [ $loopCount -le $itemCount ]
     do
@@ -130,13 +132,16 @@ func_run() {
         sleep 10
         printf "\nCreating Docker Container\n"
         # docker run statement is adding an arguement after the Image-ID
-        mkdir "$topDir/$myTag"
-        if podman ps | command grep " v${podCount}" &>/dev/null; then
+        if podman ps | command grep -E " v${podCount}$" &>/dev/null; then
+            # Using randopod allows startup of multiple docker5 procs
             randopod=$((RANDOM % 100 + 1))
             printf "Selecting random number for container: ${randopod}\n"
-            $DOCKERCMD container run -d -m 512M --env TERM=dumb --rm --name ${getUserUrl}v${randopod} -w "/data" -v $topDir/$myTag:/data ${get_imgId} ${getUrl}/term/${myTag}
+            mkdir -vp "$topDir/$randopod/$myTag"
+            $DOCKERCMD container run -d -m 512M --env TERM=dumb --rm --name ${getUserUrl}v${randopod} -w "/data" -v $topDir/$randopod/$myTag:/data ${get_imgId} ${getUrl}/term/${myTag}
+        else
+            mkdir -vp "$topDir/$podCount/$myTag"
+            $DOCKERCMD container run -d -m 512M --env TERM=dumb --rm --name ${getUserUrl}v${podCount} -w "/data" -v $topDir/$podCount/$myTag:/data ${get_imgId} ${getUrl}/term/${myTag}
         fi
-        $DOCKERCMD container run -d -m 512M --env TERM=dumb --rm --name ${getUserUrl}v${podCount} -w "/data" -v $topDir/$myTag:/data ${get_imgId} ${getUrl}/term/${myTag}
         podCount=$((podCount + 1))
         sleep 3
     done
