@@ -7,7 +7,7 @@ import ldap
 def do_ldapsearch():
     print("Starting do_ldapsearch()")
     # LDAP variables
-    ldapBase = 'ou=bluepages,o=ibm.com'
+    ldapBase = 'ou=search,o=whatever')
     l = ldap.initialize("ldaps://myldap.com")
     ldapSearch = "mail=emailaddres"
 
