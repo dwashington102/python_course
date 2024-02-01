@@ -9,19 +9,19 @@ def do_ldapsearch():
     # LDAP variables
     ldapBase = 'ou=bluepages,o=ibm.com'
     l = ldap.initialize("ldaps://myldap.com")
-    ldapSearch = "mail=washingd@us.ibm.com"
+    ldapSearch = "mail=emailaddres"
 
     print(f"DEBUG >>> ldapSearch")
     print("resultList attempt")
     resultList = l.search_s(ldapBase, ldap.SCOPE_SUBTREE,
-                            ldapSearch, ['ibm-allgroups'])
+                            ldapSearch, ['-allgroups'])
 
     if len(resultList) <= 0:
         print("resultList-2 attempt")
         try:
             l = ldap.initialize("ldap://myldap.com")
             resultList = l.search_s(ldapBase, ldap.SCOPE_SUBTREE,
-                                ldapSearch, ['ibm-allgroups'])
+                                ldapSearch, ['-allgroups'])
 
         except ldap.SERVER_DOWN as ldapdown:
             print(ldapdown)
