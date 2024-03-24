@@ -101,6 +101,18 @@ func_clear_files_recent (){
         printf "${FUNCNAME} results:  $HOME/static/recently-used.xbel does not exist."
     fi
     printf "\n"
+
+    recent_docdir="$HOME/.local/share/RecentDocuments"
+    if [[ -d "${recent_docdir}" ]]; then
+        IFS=$'\n'
+        recentdoc=( $(find $recent_docdir -mindepth 1 -maxdepth 1 -type f))
+        for fname in "${recentdoc[@]}"
+        do
+            /usr/bin/truncate --size=0 ${fname}
+            printf "Truncate file: ${fname} rc=$?\n"
+            /usr/bin/shred -f -n 25 -u -z ${fname}
+        done
+    fi
 }
 
 
@@ -190,12 +202,18 @@ function clear_viminfo (){
 }
 
 
+
 MAIN() {
 # Constant Variables
 tStamp=$(date +%Y%m%d_%H%M)
 scriptName=`basename "$0"`
 # logfile=$HOME/cronlogs/cron_run-"$scriptName"_"$tStamp".log
-logfile=$HOME/cronlogs/cron_run-$(basename --suffix=.sh $0)_"$tStamp".log
+
+if [ -d $HOME/cronlogs ]; then
+    logfile=$HOME/cronlogs/cron_run-$(basename --suffix=.sh $0)_"$tStamp".log
+else
+    logfile=/var/tmp/cron_run-$(basename --suffix=.sh $0)_"$tStamp".log
+fi
 
 spacer='-------------//-------------------'
 /usr/bin/touch $logfile
