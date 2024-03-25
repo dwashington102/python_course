@@ -1,27 +1,13 @@
 #!/bin/sh
-# 2021-01-15
-# Script clears cache items
-# 2022-08-30:
-# - Added opera browser cleaner
-# 
-# 2022-03-30:
-# - Added scriptName variable
-# 2022-03-15:
-# - Created browser_cleaner()
-#
-# 2022-01-21:
-# - Update MAIN() added if statement to check if $HOME/cronlogs exists before 'touch $logfile' 
-# - Removed ALL redirects to $logfile
-# - Added single redirect to $logfile to MAIN()
-# 2022-01-14: Updated  MAIN() to test for bleachbit before running functions that require bleachbit
-# 2022-01-11: Updated func_clear_files_recent adding a check for recently-used.xbel
-# 2021-04-18: Updated cp cmd in clear_files_recent to redirect STDOUT & STDERR to /dev/null
-# 2020-01-16: Updated trash_empty() providing FQpath to trash-empty in order to avoid rc=127
 
+:<<'COMMENTS'
+Script removes files related to browser history, cache,
+command line history, and etc.
 
-<< 'EXITCODES'
-exit code 1: bleachbit application not found
-EXITCODES
+exit codes:
+101: bleachbit application not found
+
+COMMENTS
 
 
 # Function runs all browser cleaners
