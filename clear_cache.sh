@@ -168,6 +168,26 @@ func_truncate_vlc_history (){
     printf "\n"
 }
 
+
+function truncate_dragonplayerrc (){
+        getid=$(id -u)
+        if [[ "${getid}" == 0 ]]; then
+            pathdir="/home"
+        else
+            pathdir="$HOME"
+        fi
+        printf "pathdir set to: ${pathdir}\n"
+        dragonlist=( $(find ${pathdir} -name dragonplayerrc -type f) )
+        if [[ "${#dragonlist}" -gt 0 ]]; then
+            for dragonfile in ${dragonlist[@]} 
+            do
+                command truncate -s 0 ${dragonfile}
+                printf "File to truncate: ${dragonfile}...rc=$?\n"
+            done
+        fi
+}
+
+
 func_check_bleachbit (){
         get_bleachbit_ver=$(bleachbit --version 2>/dev/null | command grep -E ^Bleach)
         if [ -n "$get_bleachbit_ver" ]; then
@@ -209,6 +229,7 @@ if [ "${TERM}" != "dumb" ]; then
     func_delete_history 
     func_trash_empty 
     func_truncate_vlc_history 
+    truncate_dragonplayerrc
     func_browser_cleaner
     clear_viminfo
     exit 0
@@ -229,7 +250,9 @@ func_clear_files_recent
 func_delete_history 
 func_trash_empty 
 func_truncate_vlc_history 
+truncate_dragonplayerrc
 func_browser_cleaner
+clear_viminfo
 
 #bleachbit functions should not append to $logfile here
 file $(command bleachbit -v) &>/dev/null
