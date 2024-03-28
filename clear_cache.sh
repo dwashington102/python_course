@@ -108,7 +108,7 @@ func_bleachbit_cron_logs (){
     # only the printf statements in this function write to log file. Output of bleachbit command not included in log file
     printf "\nStarting ${FUNCNAME}\n"
     cd $HOME/cronlogs
-    command bleachbit -s $(find . -type f -mtime +5) &>/dev/null
+    command bleachbit -so $(find . -type f -mtime +5) &>/dev/null
     printf "$FUNCNAME rc=$?\n" 
     printf "\n"
 }
@@ -144,7 +144,7 @@ func_run_bleachbit_targeted (){
     # only the printf statements in this function write to log file. Output of bleachbit command not included in log file
     printf "\nStarting ${FUNCNAME}\n"  
     cd $HOME/.cache/thumbnails &>/dev/null
-    command bleachbit -s `find . -type f -name "*.png"` &>/dev/null
+    command bleachbit -so $(find . -type f -name "*.png") &>/dev/null
     printf "$FUNCNAME rc=$?\n" >> $logfile
     printf "\n"
 }
