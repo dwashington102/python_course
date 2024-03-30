@@ -10,6 +10,11 @@ exit codes:
 COMMENTS
 
 
+function kde_recentdb ()[
+    sqlitedb="${HOME}/.local/share/kactivitymanagerd/resources/database"
+    [ -f ${sqlitedb} ] && echo "KDE RecentFiles DB Found" && truncate -s0 ${sqlitedb} ; echo "rc=$?" ||:
+]
+
 # Function runs all browser cleaners
 func_browser_cleaner (){
     printf "\nStarting function....${FUNCNAME}\n"
@@ -230,6 +235,7 @@ if [ "${TERM}" != "dumb" ]; then
     func_trash_empty 
     func_truncate_vlc_history 
     truncate_dragonplayerrc
+    kde_recentdb
     func_browser_cleaner
     clear_viminfo
     exit 0
@@ -242,7 +248,7 @@ else
     touch $logfile
 fi
 (
-start_tStamp=`date +%Y%m%d_%H:%M`
+start_tStamp=$(date +%Y%m%d_%H:%M)
 echo $spacer >> $logfile
 printf "Start Time: ${start_tStamp}\n" 
 func_check_bleachbit
@@ -251,6 +257,7 @@ func_delete_history
 func_trash_empty 
 func_truncate_vlc_history 
 truncate_dragonplayerrc
+kde_recentdb
 func_browser_cleaner
 clear_viminfo
 
