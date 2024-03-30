@@ -10,10 +10,10 @@ exit codes:
 COMMENTS
 
 
-function kde_recentdb ()[
+function kde_recentdb (){
     sqlitedb="${HOME}/.local/share/kactivitymanagerd/resources/database"
-    [ -f ${sqlitedb} ] && echo "KDE RecentFiles DB Found" && truncate -s0 ${sqlitedb} ; echo "rc=$?" ||:
-]
+    [ -f ${sqlitedb} ] && echo "KDE RecentFiles DB Found" && truncate -s0 ${sqlitedb} ; echo "rc=$?" ||: 
+}
 
 # Function runs all browser cleaners
 func_browser_cleaner (){
