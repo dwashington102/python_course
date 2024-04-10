@@ -17,8 +17,7 @@ function usage (){
 
 function check_host()
 {
-    hostmach=$(hostname -s)
-    if [[ "${hostmach}" != "p340-raptor" ]]; then
+    if [[ $(hostname-s) != "p340-raptor" ]]; then
         printf "Script is meant to be ran Production HUB...exit(102)\n"
         exit 102
     fi
