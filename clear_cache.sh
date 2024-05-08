@@ -15,6 +15,15 @@ function kde_recentdb (){
     [ -f ${sqlitedb} ] && echo "KDE RecentFiles DB Found" && truncate -s0 ${sqlitedb} ; echo "rc=$?" ||: 
 }
 
+func_ms-edge (){
+    declare -a msdirs=("")
+    msdirs=$(command find /home -type d | command grep "\/.config/microsoft-edge" | awk -F'[//]' '{print $5}' | sort -u)
+    if [[ "${#msdir[@]}" -ne 0 ]]; then
+        printf "found\n"
+    fi
+
+}
+
 # Function runs all browser cleaners
 func_browser_cleaner (){
     printf "\nStarting function....${FUNCNAME}\n"
