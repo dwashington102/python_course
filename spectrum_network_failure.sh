@@ -64,7 +64,7 @@ do_work (){
                 touch ${logfile}
             fi
             lostcount=$((lostcount+1))
-            constate=$(nmcli -t con show SpectrumSetup-AF | command grep "GENERAL.STATE")
+            constate=$(nmcli -t con show TequilaToday-AF | command grep "GENERAL.STATE")
             printf "Connection #${lostcount} failed at $(date +%Y%m%d_%H%M%S)\tSTATE:${constate}\n"
             restoreconrc=1
         else
