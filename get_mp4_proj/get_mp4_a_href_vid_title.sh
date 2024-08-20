@@ -25,16 +25,29 @@ MAIN (){
 
 # Functions
 func_set_colors () {
-    bold=$(tput bold)
-    blink=$(tput blink)
-    boldoff=$(tput sgr0)
+    if [ -f /usr/bin/tput ]; then
+        bold=$(tput bold)
+        blink=$(tput blink)
+        boldoff=$(tput sgr0)
 
-    red=$(tput setaf 1)
-    green=$(tput setaf 2)
-    yellow=$(tput setaf 3)
-    cyan=$(tput setaf 6)
-    normal=$(tput setaf 9)
-    boldoff=$(tput sgr0)
+        red=$(tput setaf 1)
+        green=$(tput setaf 2)
+        yellow=$(tput setaf 3)
+        cyan=$(tput setaf 6)
+        normal=$(tput setaf 9)
+        boldoff=$(tput sgr0)
+    else
+        bold=""
+        blink=""
+        boldoff=""
+
+        red=""
+        green=""
+        yellow=""
+        cyan=""
+        normal=""
+        boldoff=""
+    fi
 }
 
 
@@ -83,16 +96,17 @@ func_gen_rawFiles (){
     printf "\n"
     for urlPath in `cat rawUrls`
         do
+            delay=$(echo $((1 + RANDOM % 5)))
             IFS=$'\n'
-            wget --no-check-certificate -a ./logs/gen_tmpFiles -P ./rawfiles ${urlPath}
+            wget --random-wait --no-check-certificate -a ./logs/gen_tmpFiles -P ./rawfiles ${urlPath}
 	    if [ $? == 0 ]; then
             #printf "\n${green}wget rc=$?${normal}:\t${baseUrl}${urlPath}"
             printf "${green}.${normal}"
-            sleep 2
+            sleep ${delay}
 	    else
 		    #printf "\n${red}wget failed for ${baseUrl}${urlPath}${normal}"
             printf "${red}.${normal}"
-            sleep 2
+            sleep ${delay}
         fi
         done
     else
@@ -107,21 +121,21 @@ func_download_files (){
     for remoteFilename in `ls -1 ./rawfiles`
     do
         finalMp4=`grep 'video_url' ./rawfiles/${remoteFilename} | awk -F"video_url" '{print $2}' | awk -F"['']" '{print $2}'`
-        printf "\nDownloading video from file:\t ${finalMp4}\n"
-        startTime=`date +%Y%m%d-%H:%M`
-        printf "\nStart Time\t$startTime\tFilename: ${finalMp4} "
-        wget  --no-check-certificate -a ./logs/download_files -P ./mp4 ${baseUrl}${finalMp4}
-        #wget  --no-check-certificate -a ./logs/download_files -P ./mp4 `grep -m 1 source\ src= ./rawfiles/$finalMp4 | awk -F'[""]' '{print $2}'`
-        if [ $? == 0 ]; then
-            endTime=`date +%Y%m%d-%H:%M`
-            printf "\nEnd Time\t$endTime\tFilename: ${finalMp4}"
-            tot_files=$((tot_files + 1))
-        else
-            endTime=`date +%Y%m%d-%H:%M`
-            printf "\n${red}End Time\t$endTime\tFilename: ${finalMp4}${normal}"
+        if [ ! -z ${finalMpt} ]; then
+            printf "\nDownloading video from file:\t ${finalMp4}\n"
+            startTime=`date +%Y%m%d-%H:%M`
+            printf "\nStart Time\t$startTime\tFilename: ${finalMp4} "
+            if wget  --no-check-certificate -a ./logs/download_files -P ./mp4 ${baseUrl}${finalMp4}; then
+                endTime=$(date +%Y%m%d-%H:%M)
+                printf "\nEnd Time\t$endTime\tFilename: ${finalMp4}"
+                tot_files=$((tot_files + 1))
+            else
+                endTime=`date +%Y%m%d-%H:%M`
+                printf "\n${red}End Time\t$endTime\tFilename: ${finalMp4}${normal}"
+            fi
+            printf "\n======================="
+            sleep ${delay}
         fi
-        printf "\n======================="
-        sleep 2
     done
     printf "\nTotal Files Downloaded: ${tot_files}"
     printf "\n"
@@ -129,32 +143,5 @@ func_download_files (){
 
 
 prereqs
-if [ "$1" == "" ]; then
-    MAIN (){
-        if [[ -f /usr/bin/tput ]]; then
-            func_set_colors
-        fi
-        lscount=$(ls -A1 | wc -l)
-        if [[ ${lscount} -ne 0 ]]; then
-            func_get_dir_userInput
-        fi
-        func_get_index_userInput
-        func_get_index_rc
-        func_test_index_rc
-        func_clean_up
-    }
-else
-    getUrl=$1
-    MAIN (){
-    if [[ -f /usr/bin/tput ]]; then
-        func_set_colors
-    fi
-    func_start
-    func_get_index_rc
-    func_test_index_rc
-    func_clean_up
-    }
-fi
-
-
-MAIN
+func_set_colors
+MAIN 
