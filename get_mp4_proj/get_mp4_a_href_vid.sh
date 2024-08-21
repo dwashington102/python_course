@@ -51,7 +51,7 @@ func_end_time () {
 }
 
 func_get_urls (){
-    grep '<a href="/video' index.html| awk -F"a href=" '{print $2}' | awk -F'[""]' '{print $2}' | grep --color=never --extended-regexp ^"\/video" | sort -u > rawUrls
+    grep '<a href="/video' index.html| awk -F"a href=" '{print $2}' | awk -F'[""]' '{print $2}' | grep --color=never --extended-regexp ^"/video" | sort -u > rawUrls
     baseUrl=$(grep -m 1 "var base_url" index.html | awk -F'[""]' '{print $2}') 
     wget -q --no-check-certificate --spider ${baseUrl} &>/dev/null
     if [ $? -ne 0 ];then
