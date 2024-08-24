@@ -16,7 +16,9 @@
 # 2) wget mp4 files by extracting "source\ src=.*mp4" from rawfiles
 
 MAIN (){
-    func_set_colors
+    if [ -f /usr/bin/tput ]; then
+        func_set_colors
+    fi
     rawStartTime=`date +%Y%m%d-%H:%M`
     printf "\n${green}${rawStartTime}\tBeginning process to download raw files...${normal}"
     func_get_plugcontent_rawfiles

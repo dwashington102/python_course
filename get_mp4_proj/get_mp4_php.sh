@@ -11,7 +11,9 @@
 
 
 MAIN (){
-    func_set_colors
+    if [ -f /usr/bin/tput ]; then
+        func_set_colors
+    fi
     func_start_time
     func_gen_rawFiles
     func_download_files
