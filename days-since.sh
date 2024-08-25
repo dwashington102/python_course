@@ -1,9 +1,13 @@
 #!/usr/bin/bash
 
 
-echo "Start date: "
-echo "Format: YYYY-MM-DD"
-read start_date
+if [[ -z "$1"  ]]; then
+    echo "Start date: "
+    echo "Format: YYYY-MM-DD"
+    read start_date
+else
+    start_date=$1
+fi
 # start_date="2023-05-02"
 current_date=$(date +%Y-%m-%d)
 
