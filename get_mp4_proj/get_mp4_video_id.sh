@@ -9,6 +9,7 @@
 # Usage
 
 MAIN (){
+    prereqs
     if [ -f /usr/bin/tput ]; then
         func_set_colors
     fi
@@ -30,6 +31,26 @@ func_set_colors () {
     cyan=$(tput setaf 6)
     normal=$(tput setaf 9)
     boldoff=$(tput sgr0)
+}
+
+
+function prereqs (){
+    if [ ! -f /usr/bin/wget ] || ! rpm -qi --quiet wget2; then
+        printf "wget package is missing or not correctly installed...exit 101\n"
+        exit 101
+    fi
+
+    if [ ! -d ./logs ]; then
+        command mkdir ./logs
+    fi
+
+    if [ ! -d ./mp4 ]; then
+        command mkdir ./mp4
+    fi
+
+    if [ ! -d ./rawfiles ]; then
+        command mkdir ./rawfiles
+    fi
 
 }
 
@@ -70,27 +91,33 @@ func_download_files (){
     printf "\n${green}Beginning process to extract video file information from rawfiles...${normal}"
 
 
-    delay=$(echo $((1 + RANDOM % 5)))
     count=1
+    IF=$'\n'
     for urlPath in $(cat rawUrls)
     do
-
+        delay=$(echo $((1 + RANDOM % 5)))
+        printf "DEBUG >>> urlPath -> ${urlPath}\n"
+        sleep 2
         if ! wget --spider ${urlPath}; then
             printf "Unable to contact ${urlPath}...exit"
+            break
         fi
 
         wget --random-wait -a ./logs/get_urls.log -P ./rawfiles -o ${count} ${urlPath}
+        printf "DEBUG >>> delay -> $delay\n"
         sleep ${delay}
     done
 
-
+    printf "Processing rawfiles...view download_files.log"
     for finalMp4 in $(ls -1 ./rawfiles/*)
     do
         printf "\nDownloading video from file:\t ${finalMp4}\n"
         startTime=$(date +%Y%m%d-%H:%M)
         printf "\nStart Time\t$startTime\tFilename: ${finalMp4} "
-        getBaseUrl=$(command grep -m1 video_id ${finaMp4} | awk -F"video_url: " '{print $2}' | \
-            awk -F',' '{print $1}' | awk -F"['']" '{print $2}')
+        printf "DEBUG >>> grep statement:"
+        command grep -m1 video_id ${finalMp4} | awk -F"video_url: " '{print $2}' | awk -F"['']" '{print $2}'
+        getBaseUrl=$(command grep -m1 video_id ${finalMp4} | awk -F"video_url: " '{print $2}' | awk -F"['']" '{print $2}')
+        printf "DEBUG >>> getBaseUrl --> ${getBaseUrl}\n"
         if [ ! -z ${getBaseUrl} ]; then
             wget --random-wait -a ./logs/download_files.log -P ./mp4 ${getBaseUrl} 
             tot_dl_files=$((tot_files + 1))
