@@ -28,6 +28,7 @@ export IFS=$'\n'
 for eachItem in ${myList[@]}
 do
     printf "\n(%s) Filename: %s" "$loopCount" "$eachItem"
+    loopCount=$((loopCount))
 done
 
 # Grep string in array
