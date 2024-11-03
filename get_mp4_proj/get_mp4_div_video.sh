@@ -36,14 +36,14 @@ func_set_colors () {
 export grep='grep --color=NEVER'
 
 func_start_time () {
-    rawStartTime=`date +%Y%m%d-%H:%M`
+    rawStartTime=$(date +%Y%m%d-%H:%M)
     printf "\n${green}${rawStartTime}\tBeginning process to download raw files...${normal}"
     printf "\n"
 }
 
 func_end_time () {
     printf "\n${green}==========Downloads Complete==========="
-    rawEndTime=`date +%Y%m%d-%H:%M`                                                                                                                                                                  
+    rawEndTime=$(date +%Y%m%d-%H:%M)
     printf "\n${green}${rawEndTime}${normal}"
     printf "\n"
 }
@@ -54,7 +54,7 @@ func_get_urls () {
     grep div\ id=\"vide index.html |  awk -F"a href" '{print $2}' | awk -F'[""]' '{print $2}' | sort -u > rawUrls
     printf "\nDownloading rawfiles to ./rawfiles directory..."
     printf "\n"
-    for urlPath in `cat rawUrls`
+    for urlPath in $(cat rawUrls)
     do
         getBaseUrl=$(grep -m 1 slave index.html | awk -F'slave\"' '{print $2}' | awk -F'[""]' '{print $2}')
         if ! wget --spider ${getBaseUrl}; then
@@ -86,20 +86,19 @@ func_download_files (){
     tot_dl_files=0
     tot_fail_dl=0
     printf "\n${green}Beginning process to extract video file information from rawfiles...${normal}"
-    for finalMp4 in `ls -1 ./rawfiles/*`
+    for finalMp4 in $(ls -1 ./rawfiles/*)
     do
         printf "\nDownloading video from file:\t ${finalMp4}\n"
-        startTime=`date +%Y%m%d-%H:%M`
+        startTime=$(date +%Y%m%d-%H:%M)
         printf "\nStart Time\t$startTime\tFilename: ${finalMp4} "
-        grep setVideoUrlHigh ${finalMp4}
-        if [ $? == 0 ]; then
+        if grep setVideoUrlHigh ${finalMp4}; then
             wget -a ./logs/download_files.log -P ./mp4 `grep setVideoUrlHigh ${finalMp4} | awk -F"setVideoUrlHigh" '{print $2}' | awk -F"['']" '{print $2}' | sort -u`
             tot_dl_files=$((tot_files + 1))
         else
-            wget -a ./logs/download_files.log -P ./mp4 `grep setVideoUrl ${finalMp4} | awk -F"setVideoUrl" '{print $2}' | awk -F"['']" '{print $2}' | sort -u`
+            wget -a ./logs/download_files.log -P ./mp4 $(grep setVideoUrl ${finalMp4} | awk -F"setVideoUrl" '{print $2}' | awk -F"['']" '{print $2}' | sort -u)
             tot_dl_files=$((tot_files + 1))
         fi
-        endTime=`date +%Y%m%d-%H:%M`
+        endTime=$(date +%Y%m%d-%H:%M)
         printf "\nEnd Time\t$endTime\tFilename: ${finalMp4} ":
         printf "\n======================="
         sleep 2

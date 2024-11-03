@@ -65,14 +65,14 @@ function prereqs() {
 export grep='grep --color=NEVER'
 
 func_start_time () {
-    rawStartTime=`date +%Y%m%d-%H:%M`
+    rawStartTime=$(date +%Y%m%d-%H:%M)
     printf "\n${green}${rawStartTime}\tBeginning process to download raw files...${normal}"
     printf "\n"
 }
 
 func_end_time () {
     printf "\n${green}==========Downloads Complete==========="
-    rawEndTime=`date +%Y%m%d-%H:%M`                                                                                                                                                                  
+    rawEndTime=$(date +%Y%m%d-%H:%M)
     printf "\n${green}${rawEndTime}${normal}"
     printf "\n"
 }
@@ -96,7 +96,7 @@ func_gen_rawFiles (){
     if [ -s rawUrls ]; then
     printf "\nGenerating files in ./rawfiles"
     printf "\n"
-    for urlPath in `cat rawUrls`
+    for urlPath in $(cat rawUrls)
         do
             delay=$(echo $((1 + RANDOM % 5)))
             IFS=$'\n'
@@ -120,7 +120,7 @@ func_gen_rawFiles (){
 func_download_files (){
     printf "\n${green}Beginning process to extract video file information from rawfiles...${normal}"
     tot_files=0
-    for remoteFilename in `ls -1 ./rawfiles`
+    for remoteFilename in $(ls -1 ./rawfiles)
     do
         finalMp4=`grep 'video_url' ./rawfiles/${remoteFilename} | awk -F"video_url" '{print $2}' | awk -F"['']" '{print $2}'`
         if [ ! -z ${finalMpt} ]; then

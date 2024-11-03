@@ -77,7 +77,7 @@ func_gen_rawFiles (){
     if [ -s rawUrls ]; then
     printf "\nGenerating files in ./rawfiles"
     printf "\n"
-    for urlPath in `cat rawUrls`
+    for urlPath in $(cat rawUrls)
         do
             IFS=$'\n'
             wget --no-check-certificate -a ./logs/gen_tmpFiles -P ./rawfiles ${baseUrl}${urlPath}
@@ -101,18 +101,18 @@ func_download_files (){
     tot_dl_files=0
     tot_fail_dl=0
     printf "\n${green}Beginning process to extract video file information from rawfiles...${normal}"
-    for finalMp4 in `ls -1 ./rawfiles`
+    for finalMp4 in $(ls -1 ./rawfiles)
     do
         printf "\nDownloading video from file:\t ${finalMp4}\n"
-        startTime=`date +%Y%m%d-%H:%M`
+        startTime=$(date +%Y%m%d-%H:%M)
         printf "\nStart Time\t$startTime\tFilename: ${finalMp4} "
-        wget --no-check-certificate  -a ./logs/download_files -P ./mp4 `grep HD\ Quality ./rawfiles/$finalMp4 | awk -F'[""]' '{print $2}'`
+        wget --no-check-certificate  -a ./logs/download_files -P ./mp4 $(grep HD\ Quality ./rawfiles/$finalMp4 | awk -F'[""]' '{print $2}')
         if [ $? == 0 ]; then
-            endTime=`date +%Y%m%d-%H:%M`
+            endTime=$(date +%Y%m%d-%H:%M)
             printf "\nEnd Time\t$endTime\tFilename: ${finalMp4}"
             tot_dl_files=$((tot_dl_files + 1))
         else
-            endTime=`date +%Y%m%d-%H:%M`
+            endTime=$(date +%Y%m%d-%H:%M)
             printf "\n${red}End Time\t$endTime\tFailed Filename: ${finalMp4}${normal}"
             tot_fail_dl=$((tot_fail_dl + 1))
         fi

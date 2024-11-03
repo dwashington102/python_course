@@ -19,7 +19,7 @@ MAIN (){
     if [ -f /usr/bin/tput ]; then
         func_set_colors
     fi
-    rawStartTime=`date +%Y%m%d-%H:%M`
+    rawStartTime=$(date +%Y%m%d-%H:%M)
     printf "\n${green}${rawStartTime}\tBeginning process to download raw files...${normal}"
     func_get_plugcontent_rawfiles
     printf "\n${green}==========Downloads Complete==========="
@@ -50,23 +50,23 @@ export grep='grep --color=NEVER'
 
 func_get_plugcontent_rawfiles () {
 printf "\n"
-wget -a ./logs/get_plugcontent_rawfiles -P ./rawfiles `grep plugcontent index.html | awk -F"a href" '{print $2}' | awk -F'[""]' '{print $2}' | sort -u`  
+wget -a ./logs/get_plugcontent_rawfiles -P ./rawfiles $(grep plugcontent index.html | awk -F"a href" '{print $2}' | awk -F'[""]' '{print $2}' | sort -u)
 tot_files=0
 # For each php  
-for finalMp4 in `ls -1 ./rawfiles | grep php`
+for finalMp4 in $(ls -1 ./rawfiles | grep php)
     do
         printf "\nDownloading video from file:\t ${finalMp4}\n"
-        startTime=`date +%Y%m%d-%H:%M`
+        startTime=$(date +%Y%m%d-%H:%M)
         printf "\nStart Time\t$startTime\tFilename: ${finalMp4} "
         grep "source\ src=.*mp4" ./rawfiles/${finalMp4} 
         if [ $? == 0 ]; then
-            wget -a ./logs/get_plugcontent_downloads -P ./mp4 `grep "source\ src=.*mp4" ./rawfiles/${finalMp4} | awk -F'[""]' '{print $2}'`
+                wget -a ./logs/get_plugcontent_downloads -P ./mp4 $(grep -E "source src=.*mp4" ./rawfiles/${finalMp4} | awk -F'[""]' '{print $2}')
             tot_files=$((tot_files + 1))
         else
             printf "\nNo MP4 files found in ${finalMp4}"
             printf "\n"
         fi
-        endTime=`date +%Y%m%d-%H:%M`
+        endTime=$(date +%Y%m%d-%H:%M)
         printf "\nEnd Time\t$endTime\tFilename: ${finalMp4} "
         sleep 2
     done
