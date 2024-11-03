@@ -49,13 +49,15 @@ func_ls_vms (){
         exit 4
     fi
 
-    pushd ${vmdir} &>/dev/null
+    if ! pushd ${vmdir} &>/dev/null; then
+        printf "Unable to cd to ${vmdir}...exit(100)"
+        exit 100
+    fi
 
     printf "\nList of Virtual Machines for userid $(id -un)"
     printf "\n=========================================="
     listFiles=( $(command ls -1 ${PWD} | command grep --regexp='.*.xml$')) 
-    len=${#listFiles[@]}
-    if [[ "${len}" == "0" ]]; then
+    if [[ ${#listFiles[*]} -eq 0 ]]; then
         printf "\nNo XML files found in ${vmdir}...exit(5)\n"
         exit 5
     fi
@@ -104,8 +106,7 @@ func_get_tags (){
     for tagraw in ${taglist[@]}
     do
     tagloopCount=$((tagloopCount+1))
-    echo "${tagraw}" | command grep -E "</" &>/dev/null
-        if [[ "$?" == "0" ]]; then
+        if echo "${tagraw}" | command grep -E "</" &>/dev/null; then
             taglabel=$(echo "${tagraw}" | awk -F'[<>]' '{print $2}' | awk '{print $1}')
         else
             taglabel=$(echo "${tagraw}" | awk -F'[<>]' '{print $2}' | awk '{print $1}')
