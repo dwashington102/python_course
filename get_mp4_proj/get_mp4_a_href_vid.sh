@@ -40,14 +40,14 @@ func_set_colors () {
 export grep='grep --color=NEVER'
 
 func_start_time () {
-    rawStartTime=`date +%Y%m%d-%H:%M`
+    rawStartTime=$(date +%Y%m%d-%H:%M)
     printf "\n${green}${rawStartTime}\tBeginning process to download raw files...${normal}"
     printf "\n"
 }
 
 func_end_time () {
     printf "\n${green}==========Downloads Complete==========="
-    rawEndTime=`date +%Y%m%d-%H:%M`                                                                                                                                                                  
+    rawEndTime=$(date +%Y%m%d-%H:%M)                                                                                                                                                                  
     printf "\n${green}${rawEndTime}${normal}"
     printf "\n"
 }
@@ -76,12 +76,12 @@ func_gen_rawFiles (){
             #printf "\nDEBUG baseUrl: %s" "${baseUrl}"
             sleep 10
             wget --verbose --no-check-certificate -a ./logs/gen_tmpFiles -P ./rawfiles ${baseUrl}${urlPath}
-	    if [ $? == 0 ]; then
+        if [ $? == 0 ]; then
             #printf "\n${green}wget rc=$?${normal}:\t${baseUrl}${urlPath}"
             printf "${green}.${normal}"
             sleep 2
-	    else
-		    #printf "\n${red}wget failed for ${baseUrl}${urlPath}${normal}"
+        else
+            #printf "\n${red}wget failed for ${baseUrl}${urlPath}${normal}"
             printf "${red}.${normal}"
             sleep 2
         fi
@@ -99,11 +99,15 @@ func_download_files (){
     for finalMp4 in $(ls -1 ./rawfiles)
     do
         printf "\nDownloading video from file:\t ${finalMp4}\n"
-        startTime=`date +%Y%m%d-%H:%M`
+        startTime=$(date +%Y%m%d-%H:%M)
         printf "\nStart Time\t$startTime\tFilename: ${finalMp4} "
-        wget  --no-check-certificate -a ./logs/download_files -P ./mp4 `grep -m 1 source\ src= ./rawfiles/$finalMp4 | awk -F'source src=' '{print $2}' | awk -F'[""]' '{print $2}'`
-        if [ $? == 0 ]; then
-            endTime=`date +%Y%m%d-%H:%M`
+        if ! pushd ./mp4 &>/dev/null; then
+            printf "cd mp4: FAILED\n"
+            exit 110
+        fi
+
+        if wget  --no-check-certificate -a ../logs/download_files -O ${finalMp4} `grep -m 1 source\ src= ../rawfiles/$finalMp4 | awk -F'source src=' '{print $2}' | awk -F'[""]' '{print $2}'`; then
+            endTime=$(date +%Y%m%d-%H:%M)
             printf "\nEnd Time\t$endTime\tFilename: ${finalMp4}"
             tot_files=$((tot_files+1))
         else
@@ -114,6 +118,7 @@ func_download_files (){
         sleep 2
     done
     printf "\nTotal Files Downloaded: ${tot_files}"
+    popd &>/dev/null
 }
 
 MAIN
