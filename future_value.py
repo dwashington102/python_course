@@ -69,7 +69,7 @@ def main():
     clear()
     display_header()
     user_principal()
-    print('end of program')
+    print('All actions completed')
 
 
 if __name__ == '__main__':

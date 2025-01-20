@@ -86,4 +86,4 @@ def play_game(player_1, player_2):
 
 if __name__ == '__main__':
     main()
-print('end of program')
+print('All actions completed')

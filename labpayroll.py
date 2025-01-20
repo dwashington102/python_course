@@ -80,4 +80,4 @@ def get_emp_info():
 
 main()
 print()
-print('end of program')
+print('All actions completed')

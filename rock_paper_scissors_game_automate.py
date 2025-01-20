@@ -254,5 +254,5 @@ def main():
     #final_results(player_1, player_2, total_p1_wins, total_p2_wins)
 
 main()
-print('end of program')
+print('All actions completed')
 
