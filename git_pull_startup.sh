@@ -100,9 +100,7 @@ func_check_zshsyntax () {
 
 func_rename_zshsyntax (){
     cd $GITDIR
-    mv $zshdir $zshdir.$timeStamp && mv $zshdir.$timeStamp $ARCHIVEDIR/.
-    #mv $zshdir $ARCHIVEDIR/$zshdir.$timeStamp   
-    if [[ $? != 0 ]]; then
+    if ! mv $zshdir $zshdir.$timeStamp && mv $zshdir.$timeStamp $ARCHIVEDIR/.; then
         printf "${red}"
         printf "$zshdir NOT COPIED\n"
         printf "No git clone will be attempted"
@@ -115,8 +113,7 @@ func_pull_zshsyntax (){
     printf "${green}"
     printf "git clone attempt for $zshdir\n"
     printf "${normal}"
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
-        if [[ $? != 0 ]]; then
+    if ! git clone https://github.com/zsh-users/zsh-syntax-highlighting.git; then
             printf "${red}"
             printf "git clone attempted, but failed for $zshdir\n"
             printf "${normal}"
@@ -124,7 +121,7 @@ func_pull_zshsyntax (){
             printf "${green}"
             printf "git clone succeeded for $zshdir\n"
             printf "${normal}"
-        fi
+    fi
 }
 
 ########################## Python Course Functions
@@ -151,9 +148,7 @@ func_check_pythoncourse (){
 
 func_rename_pythoncourse (){
     pushd $GITDIR &>/dev/null
-    mv $pythonCourse $pythonCourse.$timeStamp && mv $pythonCourse.$timeStamp $ARCHIVEDIR/.
-    #mv $pythonCourse $ARCHIVEDIR/$pythonCourse.$timeStamp
-    if [[ $? != 0 ]]; then
+    if ! mv $pythonCourse $pythonCourse.$timeStamp && mv $pythonCourse.$timeStamp $ARCHIVEDIR/.; then
         printf "${red}"
         printf "$pythonCourse NOT COPIED\n"
         printf "No git clone will be attempted for $pythonCourse\n"
@@ -202,8 +197,7 @@ func_check_sysadmin (){
 func_rename_sysadmin (){
     cd $GITDIR
     #mv $sysadmin $ARCHIVEDIR/$sysadmin.$timeStamp
-    mv $sysadmin $sysadmin.$timeStamp && mv $sysadmin.$timeStamp $ARCHIVEDIR/.
-    if [[ $? != 0 ]]; then
+    if ! mv $sysadmin $sysadmin.$timeStamp && mv $sysadmin.$timeStamp $ARCHIVEDIR/.; then
         printf "${red}"
         printf "$sysadmin NOT COPIED\n"
         printf "No git clone will be attempted for $sysadmin\n"
@@ -249,8 +243,7 @@ func_check_dotfiles (){
 func_rename_dotfiles (){
     cd $GITDIR
     #mv $dotfiles $ARCHIVEDIR/$dotfiles.$timeStamp
-    mv $dotfiles $dotfiles.$timeStamp && mv $dotfiles.$timeStamp $ARCHIVEDIR/.
-    if [[ $? != 0 ]]; then
+    if ! mv $dotfiles $dotfiles.$timeStamp && mv $dotfiles.$timeStamp $ARCHIVEDIR/.; then
         printf "$dotfiles NOT COPIED\n"
         printf "No git clone will be attempted for $dotfiles\n"
     else
@@ -314,8 +307,7 @@ func_pull_dockerbuild (){
 #no need to continue
 
 func_check_conn_github () {
-    wget -q --spider www.github.com
-    if [ $? -ne 0 ]; then
+    if ! wget -q --spider www.github.com; then
         printf "${red}"
         printf "\nNetwork connection to github cannot be established."
         printf "\nCheck network connection...exiting"
