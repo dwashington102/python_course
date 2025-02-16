@@ -64,8 +64,7 @@ func_remove_old_dirs (){
         printf "\n"
         printf ">>> Remove archive dir: ${dirName}"
         sleep 2
-               rm -rf ${dirName}
-        if [[ $? == 0 ]]; then
+        if rm -rf ${dirName}; then
             printf "${green}"
             printf "\n"
             printf "Deleted Directory ${dirName} succcessful"
@@ -327,8 +326,7 @@ func_check_conn_github () {
 function MAIN (){
     ARCHIVEDIR="$GITDIR/archived"
     if [ ! -d $ARCHIVEDIR ]; then
-        /usr/bin/mkdir $ARCHIVEDIR
-        if [ "$?" != "0" ]; then
+        if ! /usr/bin/mkdir $ARCHIVEDIR; then
             printf "\n"
             printf "Failed to create ARCHIVEDIR...exit(101)\n"
             exit 101
