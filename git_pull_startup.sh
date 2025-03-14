@@ -62,7 +62,7 @@ func_remove_old_dirs (){
     for dirName in ${listDirs[*]}
     do
         printf "\n"
-        printf ">>> Remove archive dir: ${dirName}"
+        printf ">>> Remove archive dir: ${dirName}\n"
         sleep 2
         if rm -rf ${dirName}; then
             printf "${green}"
