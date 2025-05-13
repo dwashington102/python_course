@@ -27,9 +27,9 @@ ax1.set_ylim(580, 595)
 
 # Plot WTI price
 ax2 = ax1.twinx()
-ax2.set_ylabel('WTI Price per Barrel (USD)', color='red')
-ax2.plot(df['Date'], df['WTI Price'], marker='s', linestyle='--', color='red', label='WTI Price')
-ax2.tick_params(axis='y', labelcolor='red')
+ax2.set_ylabel('WTI Price per Barrel (USD)', color='black')
+ax2.plot(df['Date'], df['WTI Price'], marker='s', linestyle='--', color='black', label='WTI Price')
+ax2.tick_params(axis='y', labelcolor='black')
 ax2.set_ylim(55, 75)
 
 # Title and grid
