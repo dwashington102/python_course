@@ -101,9 +101,13 @@ func_download_files (){
         printf "\nDownloading video from file:\t ${finalMp4}\n"
         startTime=$(date +%Y%m%d-%H:%M)
         printf "\nStart Time\t$startTime\tFilename: ${finalMp4} "
-        if ! pushd ./mp4 &>/dev/null; then
-            printf "cd mp4: FAILED\n"
-            exit 110
+        
+        # cd to mp4 directory prior to saving the files
+        if ! echo $PWD | command grep -q mp4; then
+            if ! pushd ./mp4 &>/dev/null; then
+                printf "cd mp4: FAILED\n"
+                exit 110
+            fi
         fi
 
         if wget  --no-check-certificate -a ../logs/download_files -O ${finalMp4} `grep -m 1 source\ src= ../rawfiles/$finalMp4 | awk -F'source src=' '{print $2}' | awk -F'[""]' '{print $2}'`; then
