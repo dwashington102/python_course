@@ -51,7 +51,7 @@ func_end_time () {
 }
 
 func_gen_rawFiles (){
-    phplist=( $(command grep -E ^'<a href=.*php.*title' index | awk -F'[""]' '{print $2}' | sort -u | grep -E 'php$' | sort -u) )
+    phplist=( $(command grep -E ^'<a href=.*php.*title' index.html | awk -F'[""]' '{print $2}' | sort -u | grep -E 'php$' | sort -u) )
     if [[ ${#phplist[@]} -gt 0 ]]; then
         printf "\nGenerating files in ./rawfiles"
         printf "\n"
@@ -81,6 +81,7 @@ func_download_files (){
     tot_dl_files=0
     tot_fail_dl=0
     count=1
+    printf "Console logging stopped. Logging to ./logs/download_files\n"
     (
     printf "\n${green}Beginning process to extract video file information from rawfiles...${normal}"
     for finalMp4 in $(command ls -1 ./rawfiles)
