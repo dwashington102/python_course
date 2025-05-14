@@ -35,23 +35,17 @@ function prereqs() {
 
 func_start () {
     func_create_dirs
-    wget --no-check-certificate -a ./logs/get_getIndex.log ${getUrl} -O index.html
-    if [ $? -eq 0 ]; then
-            ls -1 index.html > /dev/null 2>&1
-            if [ $? -ne 0 ]; then
-                printf "\nDownload file name is not index.html"
-                printf "\n"
-                func_rename_index
-            else
-                printf "\nDownload file name is index.html...beginning to process"
-                printf "\n"
-            fi
-    else
-            printf "\nwget failed to pull index file"
-            printf "\nConfirm the correct URL...exiting."
-            printf "\n"
-            exit 148 
-    fi  
+
+    wget --no-check-certificate -a ./logs/get_getIndex.log ${GETURL} -O index.html
+    if [ ! -f index.html ]; then
+        printf "\nwget failed to pull index file"
+        printf "\nConfirm the correct URL...exiting."
+        printf "\n"
+        exit 148 
+    fi
+
+    # func_rename_index  <--- may no longer be necessary
+    printf "\nProcessing downloaded index.html...\n"
 }
 
 
@@ -126,9 +120,9 @@ func_get_dir_userInput () {
 func_get_index_userInput () {
     func_create_dirs
     printf "\nWhich URL: "
-    read getUrl
+    read GETURL
     IFS=$'\n'
-    wget --no-check-certificate -a ./logs/get_getIndex.log ${getUrl} -O index.html
+    wget --no-check-certificate -a ./logs/get_getIndex.log ${GETURL} -O index.html
     if [ $? -eq 0 ]; then
         ls -1 index.html &>/dev/null
         if [ $? -ne 0 ]; then
@@ -168,49 +162,49 @@ func_get_index_rc (){
 
 func_test_index_rc (){
     # Site: x_ra 
-    if [ ${index_a_href_vid} -gt 0 ]; then
+    if echo $GETURL | command grep --quiet -E '.xra' && [ ${index_a_href_vid} -gt 0 ]; then
         echo "Calling get_mp4_a_href_vid.sh" > ./logs/get_mp4_index.log
         get_mp4_a_href_vid.sh
         printf "\n"
 
     # Site: d_af
-    elif [ ${index_plugcontent} -gt 0 ]; then
+    elif echo $GETURL | command grep --quiet -E '.daf' && [ ${index_plugcontent} -gt 0 ]; then
         echo "Calling get_mp4_plugcontent.sh" > ./logs/get_mp4_index.log
         get_mp4_plugcontent.sh
         printf "\n"
 
     # Site: x_vi
-    elif [ ${index_div_video} -gt 0 ]; then
+    elif echo $GETURL | command grep --quiet -E '.xvi' && [ ${index_div_video} -gt 0 ]; then
         echo "Calling get_mp4_div_video.sh" > ./logs/get_mp4_index.log
         get_mp4_div_video.sh
         printf "\n"
 
     # Site: w_ap
-    elif [ ${index_a_href} -gt 0 ]; then
+    elif echo $GETURL | command grep --quiet -E '.wap' && [ ${index_a_href} -gt 0 ]; then
         echo "Calling get_mp4_a_href.sh" > ./logs/get_mp4_index.log
         get_mp4_a_href.sh
         printf "\n"
 
     # Site: m_ot
-    elif [ ${index_a_href_fileurl} -gt 0 ]; then
+    elif echo $GETURL | command grep --quiet -E '.mot' && [ ${index_a_href_fileurl} -gt 0 ]; then
         echo "Calling get_mp4_fileurl.sh" > ./logs/get_mp4_index.log
         get_mp4_fileurl.sh
         printf "\n"
 
     # Site: s_ho
-    elif [ ${index_a_href_vid_title} -gt 0 ]; then
+    elif echo $GETURL | command grep --quiet -E '.shoo' && [ ${index_a_href_vid_title} -gt 0 ]; then
         echo "Calling get_mp4_a_href_vid_title.sh" > ./logs/get_mp4_index.log
         get_mp4_a_href_vid_title.sh
         printf "\n"
 
     # Site x_nx + search 
-    elif [ ${index_view_source} -gt 0 ]; then
+    elif echo $GETURL | command grep --quiet -E '.xnx' && [ ${index_view_source} -gt 0 ]; then
         echo "Calling get_mp4_view-source.sh" > ./logs/get_mp4_index.log
         get_mp4_view-source.sh
         printf "\n"
 
     # Sites: t_er
-    elif [ ${#index_php_source[@]} -gt 0 ]; then
+    elif echo $GETURL | command grep --quiet -E '.ter' && [ ${#index_php_source[@]} -gt 0 ]; then
         echo "Calling get_mp4_php_source.sh" > ./logs/get_mp4_index.log
         get_mp4_php.sh
         printf "\n"
@@ -245,7 +239,7 @@ if [ "$1" == "" ]; then
         func_clean_up
     }
 else
-    getUrl=$1
+    GETURL=$1
     MAIN (){
     if [[ -f /usr/bin/tput ]]; then
         func_set_colors
