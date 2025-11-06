@@ -7,11 +7,12 @@ price = float(input("Enter the stock price per share: "))
 gain_2_percent = price * 1.02
 gain_4_percent = price * 1.04
 gain_5_percent = price * 1.05
+gain_10_percent = price * 1.10
 loss_4_percent = price * 0.96
 
 # Print table
 print("=" * 65)
-print("Price    |   2% gain    |   4% gain    |    5% gain    |    4% loss")
+print("Price    |   4% gain    |   5% gain    |    10% gain    |    4% loss")
 print("=" * 65)
-print(f"${price:<14.2f}| ${gain_2_percent:<11.2f} | ${gain_4_percent:<11.2f} | ${gain_5_percent:<11.2f} | ${loss_4_percent:<11.2f}")
+print(f"${price:<14.2f}| ${gain_4_percent:<11.2f} | ${gain_5_percent:<11.2f} | ${gain_10_percent:<11.2f} | ${loss_4_percent:<11.2f}")
 print("=" * 65)
