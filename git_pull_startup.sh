@@ -1,20 +1,9 @@
 #!/bin/sh 
-# Version 0.0.8
+# Version 26.0.10
 
 # Script run on startup to pull git projects.
 
 :<<"COMMENT"
-10-01-2023: Built ~/bin/gitpull.runtime
-01-17-2023: Added ARCHIVEDIR
-11-03-2022: Changed "git status" to use "git diff"
-07-27-2022: Added sysadmin repo
-03-21-2022: Updated regex find statement 
-03-04-2022: Updated listdirs adding regex to find command
-02-06-2022: Changed retention from from 20 days to 10 days
-01-10-2022: Updated func_check_pythoncourse to check/confirm git updates are not pending
-07-11-2021: Added func_pull_Docker_build
-05-02-2021: Added func_pull_zsh_syntax  
-
 
 EXIT Codes:
 100 : func_check_conn_github() - Connection to github down
@@ -47,6 +36,24 @@ func_set_colors () {
 func_print_spacer (){
     printf "${normal}"
     printf "\n\n\n"
+}
+
+# Move backup copies of directories to ARCHIVEDIR
+func_move_backups (){
+    IFS=$'\n'
+    pushd $GITDIR &>/dev/null
+    backups=($(find . -maxdepth 1 -type d -regextype posix-extended -regex '.*202[[:digit:]].*_[[:digit:]]{3,}$'))
+    if [[ ${#backups[@]} -ne 0 ]]; then
+        for dirname in ${backups[*]}
+            do
+                printf "\nArchiving directory: ${dirname}\n"
+                if ! mv -v ${dirname} $ARCHIVEDIR/${dirname}; then
+                    printf "${red}Archive FAILED${normal}\n"
+                else
+                    printf "${green}Archive SUCCESS${normal}\n"
+                fi
+            done
+    fi
 }
 
 
@@ -366,11 +373,14 @@ function MAIN (){
     func_print_spacer
     
     func_remove_old_dirs
+    func_print_spacer
+
+    func_move_backups
 }
 
 # Where the magic happens
 MAIN
 printf "${yellow}"
 printf "${reverse}"
-printf "\n$git pull actions completed\n"
+printf "\n${green}git pull actions completed\n"
 printf "${normal}"
