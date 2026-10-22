@@ -9,14 +9,18 @@ video_url: 'https://videos.com/foobar.mp4', preview_url:...
 ...
 ...
 
-url extracted using this grep statement:
+grep statement used to extract url from top index:
+    ar_urllist=$(grep --color=NEVER -Po '(?<=_blank").*(?=title)' ./${TOP_INDEX} \
+    | grep --color=NEVER ${search_str} \
+    | awk -F'[""]' '{print $2}' )
+
+grep statement used to extract mp4 from page index:
 
 Sites:
 c_69
 COMMENTS
 
 MAIN (){
-    # prereqs
     if [ -f /usr/bin/tput ]; then
         func_set_colors
     fi
@@ -26,14 +30,17 @@ MAIN (){
     agent_file="/root/static"
 
     # Select a random line from the file and strip the "user_agent = " string
-    WGET_AGENT=$(shuf -n 1 "$agent_file" | sed 's/^user_agent = //')
-
+    if [ -f ${agent_file} ]; then
+        log_message "agent file found"
+        WGET_AGENT=$(shuf -n 1 "$agent_file" | sed 's/^user_agent = //')
+        log_message "user agent:($WGET_AGENT)"
+    fi
 
     func_pull_files
     func_end_time
 }
 
-# Functions
+########################### Common Functions
 func_set_colors () {
     bold=$(tput bold)
     blink=$(tput blink)
@@ -67,6 +74,12 @@ function prereqs (){
     fi
 }
 
+function log_message(){
+    local message
+    message="$1"
+    printf "%s: $message\n" "$(date --rfc-3339=seconds)" >> ${logfile}
+}
+
 function func_start_time () {
     rawStartTime=`date +%Y%m%d-%H:%M`
     printf "\n${green}${rawStartTime}\tBeginning process to download raw files...${normal}"
@@ -80,6 +93,8 @@ function func_end_time () {
     printf "\n"
 }
 
+########################### End Common Functions
+
 function func_pull_top_index (){
     :<<DESCRIPTION
     - Pulls the index from a website
@@ -88,7 +103,13 @@ function func_pull_top_index (){
 DESCRIPTION
     msg_results="Pulling of index: "
 
-    if ! wget --user-agent="$WGET_AGENT" --no-check-certificate -a ./logs/get_index.log -O ${TOP_INDEX} ${GETURL} ; then
+    if [ -n $WGET_AGENT ]; then
+        wget_cmd="wget --no-check-certificate -a ./logs/get_index.log -O ${TOP_INDEX} ${GETURL}"
+    else
+        wget_cmd="wget --user-agent="$WGET_AGENT" --no-check-certificate -a ./logs/get_index.log -O ${TOP_INDEX} ${GETURL}"
+    fi
+
+    if ! $wget_cmd ; then
         printf "${red}${msg_results} FAILED ${normal}\n"
         exit 101
     fi
@@ -98,15 +119,16 @@ DESCRIPTION
 
 function func_pull_files (){
     search_str="video"
-    # ar_urllist=$(grep -Po '(?<=_blank").*(?=title)' ./${TOP_INDEX}) \
-    #  | grep ${search_str} \
-    #  | awk -F'[""]' '{print $3}'
-
     ar_urllist=$(grep --color=NEVER -Po '(?<=_blank").*(?=title)' ./${TOP_INDEX} \
     | grep --color=NEVER ${search_str} \
     | awk -F'[""]' '{print $2}' )
-    printf "DEBUG>>>list -> ${ar_urllist[*]}\n"
+
+    for $url in ${ar_urllist[@]}; do
+        printf "$url\n"
+        sleep 2
+    done
 }
+
 
 # main
 prereqs
