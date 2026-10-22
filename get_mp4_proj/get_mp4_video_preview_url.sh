@@ -25,18 +25,11 @@ MAIN (){
         func_set_colors
     fi
     func_start_time
+    func_set_useragent 
     func_pull_top_index
 
-    agent_file="/root/static"
 
-    # Select a random line from the file and strip the "user_agent = " string
-    if [ -f ${agent_file} ]; then
-        log_message "agent file found"
-        WGET_AGENT=$(shuf -n 1 "$agent_file" | sed 's/^user_agent = //')
-        log_message "user agent:($WGET_AGENT)"
-    fi
-
-    func_pull_files
+    # func_pull_files
     func_end_time
 }
 
@@ -60,24 +53,20 @@ function prereqs (){
         printf "wget package is missing or not correctly installed...exit 101\n"
         exit 101
     fi
-
-    if [ ! -d ./logs ]; then
-        command mkdir ./logs
-    fi
-
-    if [ ! -d ./mp4 ]; then
-        command mkdir ./mp4
-    fi
-
-    if [ ! -d ./rawfiles ]; then
-        command mkdir ./rawfiles
-    fi
+    
+    d_names=("logs" "mp4" "rawfiles")
+    for dirname in ${d_names[@]}; do 
+        if [ -d ${dirname} ]; then
+            rm -rf ${dirname}
+        fi
+        mkdir ${dirname}
+    done
 }
 
 function log_message(){
     local message
     message="$1"
-    printf "%s: $message\n" "$(date --rfc-3339=seconds)" >> ${logfile}
+    printf "%s: $message\n" "$(date --rfc-3339=seconds)" >> ${LOGFILE}
 }
 
 function func_start_time () {
@@ -94,6 +83,24 @@ function func_end_time () {
 }
 
 ########################### End Common Functions
+function func_set_useragent (){
+    :<<DESCRIPTION
+    - Random setting of wget user Agent using contents of static file
+    - Select a random line from the file and strip the "user_agent = " string
+
+    Format of statis file:
+    user_agent = Mozilla/5.0 (X11; Linux x86_64; rv:121.0) Gecko/20100101 Firefox/121.0
+    user_agent = Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
+DESCRIPTION
+
+    log_message "${FUNCNAME[0]}()"
+    agent_file="/root/static/static_WGETRC"
+    if [ -f ${agent_file} ]; then
+        log_message "\tagent file found"
+        WGET_AGENT=$(shuf -n 1 "$agent_file" | sed 's/^user_agent = //')
+    fi
+    log_message "\tuser agent:($WGET_AGENT)"
+}
 
 function func_pull_top_index (){
     :<<DESCRIPTION
@@ -101,29 +108,40 @@ function func_pull_top_index (){
     - Extracts URLs included in the index file
     - For each URL -> confirm page index is available -> extract mp4 file
 DESCRIPTION
+
+    log_message "${FUNCNAME[0]}()"
     msg_results="Pulling of index: "
+    wget_cmd_var=0
 
     if [ -n $WGET_AGENT ]; then
         wget_cmd="wget --no-check-certificate -a ./logs/get_index.log -O ${TOP_INDEX} ${GETURL}"
+        wget_cmd_var=1
     else
-        wget_cmd="wget --user-agent="$WGET_AGENT" --no-check-certificate -a ./logs/get_index.log -O ${TOP_INDEX} ${GETURL}"
+        wget_cmd="wget --user-agent=\"${WGET_AGENT}\" --no-check-certificate -a ./logs/get_index.log -O ${TOP_INDEX} ${GETURL}"
+        wget_cmd_var=2
     fi
 
-    if ! $wget_cmd ; then
-        printf "${red}${msg_results} FAILED ${normal}\n"
-        exit 101
-    fi
+    log_message "\tcmd var: ${wget_cmd_var}\n${wget_cmd}"
+    ${wget_cmd} >> $LOGFILE
+    #if ! $wget_cmd ; then
+    #    printf "${red}${msg_results} FAILED ${normal}\n"
+    #    exit 101
+    #fi
 
     printf "${green}${msg_results} SUCCESS ${normal}\n"
 }
 
 function func_pull_files (){
+    log_message "${FUNCNAME[0]}()"
+    target_urls="./rawfiles/urls.txt"
     search_str="video"
-    ar_urllist=$(grep --color=NEVER -Po '(?<=_blank").*(?=title)' ./${TOP_INDEX} \
+    (grep --color=NEVER -Po '(?<=_blank").*(?=title)' ./${TOP_INDEX} \
     | grep --color=NEVER ${search_str} \
-    | awk -F'[""]' '{print $2}' )
+    | awk -F'[""]' '{print $2}' ) >> ${target_urls}
 
-    for $url in ${ar_urllist[@]}; do
+
+    for $url in $(cat ${target_urls}); do
+        func_set_user_agent
         printf "$url\n"
         sleep 2
     done
@@ -131,11 +149,13 @@ function func_pull_files (){
 
 
 # main
+LOGFILE="./logs/runtime.log"
+TOP_INDEX="index.html"
+
 prereqs
 if [ "$1" == "" ]; then
     printf "Enter Target URL:\n"
     read GETURL
 fi
 
-TOP_INDEX="index"
 MAIN
