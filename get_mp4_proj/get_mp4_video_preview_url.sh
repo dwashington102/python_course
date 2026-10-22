@@ -16,12 +16,20 @@ c_69
 COMMENTS
 
 MAIN (){
-    prereqs
+    # prereqs
     if [ -f /usr/bin/tput ]; then
         func_set_colors
     fi
     func_start_time
-    func_pull_index
+    func_pull_top_index
+
+    agent_file="/root/static"
+
+    # Select a random line from the file and strip the "user_agent = " string
+    WGET_AGENT=$(shuf -n 1 "$agent_file" | sed 's/^user_agent = //')
+
+
+    func_pull_files
     func_end_time
 }
 
@@ -57,7 +65,6 @@ function prereqs (){
     if [ ! -d ./rawfiles ]; then
         command mkdir ./rawfiles
     fi
-
 }
 
 function func_start_time () {
@@ -73,11 +80,15 @@ function func_end_time () {
     printf "\n"
 }
 
-function func_pull_index (){
-    t_index="index"
+function func_pull_top_index (){
+    :<<DESCRIPTION
+    - Pulls the index from a website
+    - Extracts URLs included in the index file
+    - For each URL -> confirm page index is available -> extract mp4 file
+DESCRIPTION
     msg_results="Pulling of index: "
 
-    if ! wget --no-check-certificate -a ./logs/get_index.log -O ${t_index} ${GETURL} ; then
+    if ! wget --user-agent="$WGET_AGENT" --no-check-certificate -a ./logs/get_index.log -O ${TOP_INDEX} ${GETURL} ; then
         printf "${red}${msg_results} FAILED ${normal}\n"
         exit 101
     fi
@@ -87,10 +98,13 @@ function func_pull_index (){
 
 function func_pull_files (){
     search_str="video"
-    ar_urllist=$(grep -Po '(?<=_blank").*(?=title)' ./${t_index}) \
-     | grep ${search_str} \
-     | awk -F'[""]' '{print $2}'
+    # ar_urllist=$(grep -Po '(?<=_blank").*(?=title)' ./${TOP_INDEX}) \
+    #  | grep ${search_str} \
+    #  | awk -F'[""]' '{print $3}'
 
+    ar_urllist=$(grep --color=NEVER -Po '(?<=_blank").*(?=title)' ./${TOP_INDEX} \
+    | grep --color=NEVER ${search_str} \
+    | awk -F'[""]' '{print $2}' )
     printf "DEBUG>>>list -> ${ar_urllist[*]}\n"
 }
 
@@ -100,4 +114,6 @@ if [ "$1" == "" ]; then
     printf "Enter Target URL:\n"
     read GETURL
 fi
+
+TOP_INDEX="index"
 MAIN
