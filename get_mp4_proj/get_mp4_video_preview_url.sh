@@ -51,6 +51,9 @@ func_set_colors () {
 
 
 function func_create_dirs (){
+:<<DESCRIPTION
+
+DESCRIPTION
     d_names=("logs" "mp4" "rawfiles")
     for dirname in ${d_names[@]}; do 
         if [ -d ${dirname} ]; then
@@ -97,7 +100,7 @@ function func_end_time () {
 
 ########################### End Common Functions
 function func_set_useragent (){
-    :<<DESCRIPTION
+:<<DESCRIPTION
     - Random setting of wget user Agent using contents of static file
     - Select a random line from the file and strip the "user_agent = " string
 
@@ -116,7 +119,7 @@ DESCRIPTION
 }
 
 function func_pull_top_index (){
-    :<<DESCRIPTION
+:<<DESCRIPTION
     - Pulls the index from a website
     - Extracts URLs included in the index file
     - For each URL -> confirm page index is available -> extract mp4 file
@@ -161,11 +164,9 @@ function func_pull_files (){
     done
 }
 
-
 # main
 RUNTIMELOG="./logs/runtime.log"
 TOP_INDEX="index.html"
-#GETURL="$1"
 
 if [ "$1" == "" ]; then
     printf "Enter Target URL:\n"
