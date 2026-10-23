@@ -25,6 +25,8 @@ MAIN (){
         func_set_colors
     fi
     func_start_time
+    func_create_dirs
+    prereqs
     func_set_useragent 
     func_pull_top_index
 
@@ -48,12 +50,7 @@ func_set_colors () {
 }
 
 
-function prereqs (){
-    if [ ! -f /usr/bin/wget ] || ! rpm -qi --quiet wget2; then
-        printf "wget package is missing or not correctly installed...exit 101\n"
-        exit 101
-    fi
-    
+function func_create_dirs (){
     d_names=("logs" "mp4" "rawfiles")
     for dirname in ${d_names[@]}; do 
         if [ -d ${dirname} ]; then
@@ -61,12 +58,28 @@ function prereqs (){
         fi
         mkdir ${dirname}
     done
+
+    if [ ! -d ./logs ]; then
+        printf "Unable to created logs directory...exit(102)"
+        exit 102
+    fi
+
+    touch $RUNTIMELOG
+    log_message "${FUNCNAME[0]}()"
+}
+
+function prereqs (){
+    log_message "${FUNCNAME[0]}()"
+    if [ ! -f /usr/bin/wget ] || ! rpm -qi --quiet wget2; then
+        printf "wget package is missing or not correctly installed...exit 101\n"
+        exit 101
+    fi
 }
 
 function log_message(){
     local message
     message="$1"
-    printf "%s: $message\n" "$(date --rfc-3339=seconds)" >> ${LOGFILE}
+    printf "%s: $message\n" "$(date --rfc-3339=seconds)" >> ${RUNTIMELOG}
 }
 
 function func_start_time () {
@@ -113,20 +126,21 @@ DESCRIPTION
     msg_results="Pulling of index: "
     wget_cmd_var=0
 
-    if [ -n $WGET_AGENT ]; then
-        wget_cmd="wget --no-check-certificate -a ./logs/get_index.log -O ${TOP_INDEX} ${GETURL}"
+    if [ -n ${wget_cmd_var} ]; then
+        wget_cmd="wget --timeout=3 --no-check-certificate -a ./logs/get_index.log -O ${TOP_INDEX} ${GETURL}"
         wget_cmd_var=1
     else
-        wget_cmd="wget --user-agent=\"${WGET_AGENT}\" --no-check-certificate -a ./logs/get_index.log -O ${TOP_INDEX} ${GETURL}"
+        wget_cmd='wget --timeout=3 --user-agent="${WGET_AGENT}" --no-check-certificate -a ./logs/get_index.log -O ${TOP_INDEX} ${GETURL}'
         wget_cmd_var=2
     fi
 
-    log_message "\tcmd var: ${wget_cmd_var}\n${wget_cmd}"
-    ${wget_cmd} >> $LOGFILE
-    #if ! $wget_cmd ; then
-    #    printf "${red}${msg_results} FAILED ${normal}\n"
-    #    exit 101
-    #fi
+    log_message "\tcmd var: ${wget_cmd_var}\n\t${wget_cmd}"
+    ${wget_cmd} &>> $RUNTIMELOG
+
+    if [ ! -f ${TOP_INDEX} ] ; then
+        printf "${red}${msg_results} FAILED ${normal}\n"
+        exit 101
+    fi
 
     printf "${green}${msg_results} SUCCESS ${normal}\n"
 }
@@ -149,13 +163,14 @@ function func_pull_files (){
 
 
 # main
-LOGFILE="./logs/runtime.log"
+RUNTIMELOG="./logs/runtime.log"
 TOP_INDEX="index.html"
+#GETURL="$1"
 
-prereqs
 if [ "$1" == "" ]; then
     printf "Enter Target URL:\n"
     read GETURL
+else
+    GETURL="$1"
 fi
-
 MAIN
