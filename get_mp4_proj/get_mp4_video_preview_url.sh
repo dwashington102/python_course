@@ -117,7 +117,7 @@ DESCRIPTION
         log_message "\tagent file found"
         WGET_AGENT=$(shuf -n 1 "$agent_file" | sed 's/^user_agent = //')
     fi
-    log_message "\tuser agent:($WGET_AGENT)"
+    log_message "\tDEBUG>>>user agent:($WGET_AGENT)"
 }
 
 function func_pull_top_index (){
@@ -131,6 +131,10 @@ DESCRIPTION
     msg_results="Pulling of index: "
     wget_cmd_var=0
 
+    log_message "DEBUG>>> WGET_AGENT -> ${WGET_AGENT}"
+    log_message "DEBUG>>> TOP_INDEX -> ${TOP_INDEX}"
+    log_message "DEBUG>>> GETURL -> ${GETURL}"
+
     if [ -n ${wget_cmd_var} ]; then
         wget_cmd="wget --timeout=3 --no-check-certificate -a ./logs/get_index.log -O ${TOP_INDEX} ${GETURL}"
         wget_cmd_var=1
@@ -140,8 +144,7 @@ DESCRIPTION
     fi
 
     log_message "\tcmd var: ${wget_cmd_var}\n\t${wget_cmd}"
-    ${wget_cmd} &>> $RUNTIMELOG
-
+    ${wget_cmd}
     if [ ! -f ${TOP_INDEX} ] ; then
         printf "${red}${msg_results} FAILED ${normal}\n"
         exit 101
@@ -162,8 +165,10 @@ function func_pull_files (){
     | awk -F'[""]' '{print $2}'  >> ${target_urls}
 
 
-    for url in $(cat ${target_urls}); do
+    for url in $(tail -3 ${target_urls}); do
         func_set_useragent
+
+        dts=$(date +"%Y%m%d_%H%M%S")
 
         printf "DEBUG>>>WGET_AGENT -> ${WGET_AGENT}\n"
 
@@ -178,8 +183,16 @@ function func_pull_files (){
        # Pull mp4 using downloaded $p_index
        log_message "\twget_cmd_var: ${wget_cmd_var}"
        ${wget_cmd}
+
+       if [ ! -f ${p_index} ]; then
+           log_message "FAILED to created p_index file...exit 102"
+           printf "FAILED to created p_index file...exit 102"
+           exit 102
+       fi
+
        result=$(grep -Po '(?<=video_url:).*(?=, preview_url)' ${p_index} | awk -F"['']" '{print $2}')
-       printf "DEBUG>>> result -> ${result}\n"
+       printf "DEBUG>>> result -> ${result} saved to file: ./mp4/${dts}.mp4\n"
+       wget --timeout=3 --wait=10 --random-wait --user-agent="${WGET_AGENT}" --no-check-certificate -a ./logs/get_mp4.log -O ./mp4/${dts}.mp4 ${result}
        sleep 2
     done
 }
