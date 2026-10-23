@@ -15,6 +15,8 @@ grep statement used to extract url from top index:
     | awk -F'[""]' '{print $2}' )
 
 grep statement used to extract mp4 from page index:
+    grep -Po '(?<=video_url:).*(?=, preview_url)' page_index
+
 
 Sites:
 c_69
@@ -31,7 +33,7 @@ MAIN (){
     func_pull_top_index
 
 
-    # func_pull_files
+    func_pull_files
     func_end_time
 }
 
@@ -152,15 +154,33 @@ function func_pull_files (){
     log_message "${FUNCNAME[0]}()"
     target_urls="./rawfiles/urls.txt"
     search_str="video"
-    (grep --color=NEVER -Po '(?<=_blank").*(?=title)' ./${TOP_INDEX} \
+    p_index="page_index"
+    
+    # grep command to extract URLs from downloaded index
+    grep --color=NEVER -Po '(?<=_blank").*(?=title)' ./${TOP_INDEX} \
     | grep --color=NEVER ${search_str} \
-    | awk -F'[""]' '{print $2}' ) >> ${target_urls}
+    | awk -F'[""]' '{print $2}'  >> ${target_urls}
 
 
-    for $url in $(cat ${target_urls}); do
-        func_set_user_agent
-        printf "$url\n"
-        sleep 2
+    for url in $(cat ${target_urls}); do
+        func_set_useragent
+
+        printf "DEBUG>>>WGET_AGENT -> ${WGET_AGENT}\n"
+
+        if [ -n "${WGET_AGENT}" ]; then
+            wget_cmd="wget --timeout=3 --no-check-certificate -a ./logs/get_${p_index}.log -O ${p_index} ${url}"
+            wget_cmd_var=1
+        else
+            wget_cmd='wget --timeout=3 --user-agent="${WGET_AGENT}" --no-check-certificate -a ./logs/get_${p_index}.log -O ${p_index} ${url}'
+            wget_cmd_var=2
+       fi
+
+       # Pull mp4 using downloaded $p_index
+       log_message "\twget_cmd_var: ${wget_cmd_var}"
+       ${wget_cmd}
+       result=$(grep -Po '(?<=video_url:).*(?=, preview_url)' ${p_index} | awk -F"['']" '{print $2}')
+       printf "DEBUG>>> result -> ${result}\n"
+       sleep 2
     done
 }
 
