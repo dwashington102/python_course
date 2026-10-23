@@ -213,11 +213,32 @@ function func_pull_files (){
        fi
 
        result=$(grep --color=NEVER -Po '(?<=video_url:).*(?=, preview_url)' ${p_index} | awk -F"['']" '{print $2}')
-       log_message "\tDEBUG>>> result -> ${result} saved to file: ./mp4/${dts}.mp4\n"
+       log_message "\tDEBUG>>> result -> ${result} saving to file: ./mp4/${dts}.mp4\n"
        log_message "\tURL: $url\n\t-->result: ${result}"
 
        # Following wget writes to ./logs/get_mp4.log
        # wget --timeout=3 --wait=10 --random-wait --user-agent="${WGET_AGENT}" --no-check-certificate -a ./logs/get_mp4.log -O ./mp4/${dts}.mp4 ${result}
+       if [ -z "${WGET_AGENT}" ]; then
+            wget_mp4_args="wget --timeout=3 --no-check-certificate -a ./logs/get_mp4.log -O ./mp4/${dts}.mp4 ${result}"
+            wget_mp4_var=1
+        else
+            wget_mp4_args=(
+                --timeout=3 
+                --user-agent="${WGET_AGENT}"
+                --no-check-certificate 
+                -a "./logs/get_mp4.log"
+                -O "./mp4/${dts}.mp4"
+                ${result}
+            )
+            wget_mp4_var=2
+       fi
+
+       log_message "\twget_mp4_var -> ${wget_mp4_var}"
+       if [ "${wget_mp4_var}" == "1" ]; then
+           ${wget_mp4_args}
+       else
+           wget "${wget_mp4_args[@]}"
+       fi
        sleep 2
     done
 }
