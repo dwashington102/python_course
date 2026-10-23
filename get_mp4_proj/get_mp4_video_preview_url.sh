@@ -118,7 +118,6 @@ DESCRIPTION
         log_message "\tagent file found"
         WGET_AGENT=$(shuf -n 1 "$agent_file" | sed 's/^user_agent = //')
     fi
-    log_message "\tDEBUG>>>user agent:($WGET_AGENT)"
 }
 
 function func_pull_top_index (){
@@ -132,21 +131,31 @@ DESCRIPTION
     msg_results="Pulling of index: "
     wget_cmd_var=0
 
-    log_message "\tDEBUG>>> WGET_AGENT -> ${WGET_AGENT}"
-    log_message "\tDEBUG>>> TOP_INDEX -> ${TOP_INDEX}"
-    log_message "\tDEBUG>>> GETURL -> ${GETURL}"
-
     if [ -z "${WGET_AGENT}" ]; then
         wget_cmd="wget --timeout=3 --no-check-certificate -a ./logs/get_index.log -O ${TOP_INDEX} ${GETURL}"
         wget_cmd_var=1
     else
-        wget_cmd="wget --timeout=3 --user-agent=\"${WGET_AGENT}\" --no-check-certificate -a ./logs/get_index.log -O ${TOP_INDEX} ${GETURL}"
+        wget_cmd=(
+            --timeout=3 
+            --user-agent="${WGET_AGENT}"
+            --no-check-certificate 
+            -a "./logs/get_index.log"
+            -O "${TOP_INDEX}"
+            ${GETURL}
+        )
         wget_cmd_var=2
     fi
 
-    log_message "\tDEBUG>>>:\tcmd var: ${wget_cmd_var}\n\t${wget_cmd}"
-    ${wget_cmd}
-    log_message "\tDEBUG>>> wget_cmd rc: ($?)"
+    log_message "\twget_cmd var: t_index -> ${wget_cmd_var}\n\t${wget_cmd}"
+
+    if [ $wget_cmd_var == "1" ]; then
+        ${wget_cmd}
+    else
+        wget "${wget_cmd[@]}"
+    fi
+
+    log_message "\twget_cmd rc: ($?)"
+
     if [ ! -f ${TOP_INDEX} ] ; then
         printf "${red}${msg_results} FAILED ${normal}\n"
         exit 101
@@ -190,7 +199,7 @@ function func_pull_files (){
        fi
 
        # Pull mp4 using downloaded $p_index
-       log_message "\twget_cmd_var: ${wget_cmd_var}"
+       log_message "\twget_cmd_var: p_index -> ${wget_cmd_var}"
        if [ $wget_cmd_var == "1" ]; then
            ${wget_cmd}
         else
