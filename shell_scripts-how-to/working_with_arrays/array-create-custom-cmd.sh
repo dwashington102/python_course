@@ -19,7 +19,7 @@ COMMENT
 
 WGET_AGENT="Mozilla/5.0 (X11; Linux x86_64; rv:121.0) Gecko/20100101 Firefox/121.0"
 p_index="index.html"
-url="www.cuckold69.com"
+url="www.c_69.com"
 
 # Array contains valid arguments for the wget command
 wget_cmd=(
