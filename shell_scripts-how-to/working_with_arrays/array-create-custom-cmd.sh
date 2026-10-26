@@ -14,7 +14,11 @@ The wget command will try to connect to each item listed in $WGET_AGENT
 
 The way you work around that issue is to place all command arguments in an array and then call the array.
 
-CRITICAL: When calling the argument, enclose the array name in double quotes.
+CRITICAL: 
+    - When calling the argument, enclose the array name in double quotes.
+    - Found if remote site was enclosed in double quotes before being assigned to ${url},
+    the wget command fails with unable to connect to "https".
+
 COMMENT
 
 WGET_AGENT="Mozilla/5.0 (X11; Linux x86_64; rv:121.0) Gecko/20100101 Firefox/121.0"
