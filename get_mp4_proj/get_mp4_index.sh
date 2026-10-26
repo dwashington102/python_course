@@ -142,7 +142,7 @@ func_get_index_userInput () {
 }
 
 func_rename_index (){
-    list_indexFile=`file * | grep -E 'HTML document' | awk -F':' '{print $1}'`
+    list_indexFile=`file index* | grep -E 'HTML document' | awk -F':' '{print $1}'`
     printf "\nRenaming $list_indexFile to index.html"
     printf "\n"
     mv "${list_indexFile}" index.html
