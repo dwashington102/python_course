@@ -13,6 +13,9 @@ To extract the URL path to the mp4 file the grep command with -Po flags
 is useful
 
 grep statement used to extract url from top index:
+ar_urllist=$(grep --color=NEVER -Po '(?<=_blank" href=").*video.*(?=/" title)') ./${TOP_INDEX}
+
+OR
     ar_urllist=$(grep --color=NEVER -Po '(?<=_blank").*(?=title)' ./${TOP_INDEX} \
     | grep --color=NEVER ${search_str} \
     | awk -F'[""]' '{print $2}' )
@@ -34,9 +37,7 @@ MAIN (){
     prereqs
     func_set_useragent 
     func_pull_top_index
-
-
-    func_pull_files
+    func_pull_files2    
     func_end_time
 }
 
@@ -149,8 +150,7 @@ DESCRIPTION
         wget_cmd_var=2
     fi
 
-    log_message "\twget_cmd var: t_index -> ${wget_cmd_var}\n\t${wget_cmd}"
-
+    log_message "\tCalling wget_cmd"
     if [ $wget_cmd_var == "1" ]; then
         ${wget_cmd}
     else
@@ -167,67 +167,82 @@ DESCRIPTION
     printf "${green}${msg_results} SUCCESS ${normal}\n"
 }
 
+
 function func_pull_files (){
+:<<DESCRIPTION
+    - Using urls found in top index page this function pulls page information,
+      isolates the mp4 video url, and then downloads the mp4 file
+DESCRIPTION
     log_message "${FUNCNAME[0]}()"
-    target_urls="./rawfiles/urls.txt"
-    search_str="video"
+    log_message "\tDEBUG>>>testing ar_urllist[@]"
     p_index="./rawfiles/page_index"
-    
-    # grep command to extract URLs from downloaded index
-    grep --color=NEVER -Po '(?<=_blank").*(?=title)' ./${TOP_INDEX} \
-    | grep --color=NEVER ${search_str} \
-    | awk -F'[""]' '{print $2}'  >> ${target_urls}
-
-
-    for url in $(tail -3 ${target_urls}); do
-        log_message "\tGathering page index (url,mp4)"
-        func_set_useragent
-
-        dts=$(date +"%Y%m%d_%H%M%S")
-        log_message "\tdts=${dts}"
-
-        if [ -z "${WGET_AGENT}" ]; then
-            wget_cmd="wget --timeout=3 --no-check-certificate -a ./logs/get_${p_index}.log -O ${p_index} ${url}"
-            wget_cmd_var=1
-        else
-            wget_cmd=(
-                --timeout=3 
-                --user-agent="${WGET_AGENT}"
-                --no-check-certificate 
-                -a "./logs/get_${p_index}.log"
-                -O "${p_index}"
-                ${url}
-            )
-            wget_cmd_var=2
-       fi
-
-       # Pull mp4 using downloaded $p_index
-       log_message "\twget_cmd_var: p_index -> ${wget_cmd_var}"
-       if [ $wget_cmd_var == "1" ]; then
+    sp_count=1 # used to stop processing after x-number of intervals
+    ar_urllist=$(grep --color=NEVER -Po '(?<=_blank" href=).*video.*(?=title)' ./${TOP_INDEX} | sed -e 's/"//g')
+    for url in $(echo ${ar_urllist[@]})
+    do
+        log_message "DEBUG>>> url -> ${url}"
+        if [[ $sp_count -le 5 ]]; then
+            log_message "\tGathering page index (url,mp4)...(2)"
+            func_set_useragent
+            dts=$(date +"%Y%m%d_%H%M%S")
+            log_message "\tdts=${dts}"
+            log_message "\tDEBUG>>>: ($sp_count) - $url"
+            sp_count=$((sp_count + 1))
+            
+            # build wget command with arguments
+            touch ./logs/get_p_index.log
+            if [ -z "${WGET_AGENT}" ]; then
+                wget_cmd="wget --timeout=3 --no-check-certificate -a ./logs/get_p_index.log -O ${p_index} ${url}"
+                wget_cmd_var=21
+            else
+                wget_cmd=(
+                    --timeout=3
+                    --user-agent="\"${WGET_AGENT}\""
+                    --no-check-certificate 
+                    -a "./logs/get_p_index.log"
+                    -O "${p_index}"
+                    ${url}
+                )
+                wget_cmd_var=22
+            fi
+            # Pull mp4 using downloaded $p_index
+       log_message "\twget_cmd_var_2: p_index -> ${wget_cmd_var}"
+       if [ $wget_cmd_var == "21" ]; then
            ${wget_cmd}
+           wget_cmd_rc="$?"
         else
-           wget "${wget_cmd[@]}"
+           log_message "\tDEBUG_2>>> wget_cmd => ${wget_cmd[*]}"
+           echo "DEBUG_2>>> wget ${wget_cmd[*]}"
+           wget ${wget_cmd[@]} &>> ./logs/get_p_index.log
+           wget_cmd_rc="$?"
         fi
 
        if [ ! -f ${p_index} ]; then
+           log_message "\tDEBUG_2>>> wget rc: ${wget_cmd_rc}"
+           log_message "\tDEBUG_2>>> USERAGENT: ${WGET_AGENT}"
            log_message "\tFAILED to created p_index file...exit 102"
-           printf "FAILED to created p_index file...exit 102"
+           printf "FAILED to created p_index file...exit 102\n"
+           printf "\n\nDEBUG_2>>> logfile output:\n"
+           cat ./logs/get_p_index.log
            exit 102
        fi
 
        result=$(grep --color=NEVER -Po '(?<=video_url:).*(?=, preview_url)' ${p_index} | awk -F"['']" '{print $2}')
 
+       log_message "\tDEBUG>>> result -> ${result}"
        if [ -z "${WGET_AGENT}" ]; then
             wget_mp4_args="wget --timeout=3 --no-check-certificate -a ./logs/get_mp4.log -O ./mp4/${dts}.mp4 ${result}"
             wget_mp4_var=1
         else
+            #     ${result}
             wget_mp4_args=(
+                wget
+                --user-agent="${WGET_AGENT}" 
                 --timeout=3 
-                --user-agent="${WGET_AGENT}"
-                --no-check-certificate 
-                -a "./logs/get_mp4.log"
-                -O "./mp4/${dts}.mp4"
-                ${result}
+                --no-check-certificate  
+                -a "./logs/get_mp4.log" 
+                -O "./mp4/${dts}.mp4" 
+                www.yahoo.com
             )
             wget_mp4_var=2
        fi
@@ -236,11 +251,88 @@ function func_pull_files (){
        if [ "${wget_mp4_var}" == "1" ]; then
            ${wget_mp4_args}
        else
-           wget "${wget_mp4_args[@]}"
+           ${wget_mp4_args[@]}
        fi
        sleep 2
+       fi
     done
 }
+
+
+# function func_pull_files (){
+#     log_message "${FUNCNAME[0]}()"
+#     target_urls="./rawfiles/urls.txt"
+#     search_str="video"
+#     p_index="./rawfiles/page_index"
+#     
+#     # grep command to extract URLs from downloaded index
+#     grep --color=NEVER -Po '(?<=_blank").*(?=title)' ./${TOP_INDEX} \
+#     | grep --color=NEVER ${search_str} \
+#     | awk -F'[""]' '{print $2}'  >> ${target_urls}
+# 
+# 
+#     for url in $(head -5 ${target_urls}); do
+#         log_message "\tGathering page index (url,mp4)..."
+#         func_set_useragent
+# 
+#         dts=$(date +"%Y%m%d_%H%M%S")
+#         log_message "\tdts=${dts}"
+# 
+#         if [ -z "${WGET_AGENT}" ]; then
+#             wget_cmd="wget --timeout=3 --no-check-certificate -a ./logs/get_${p_index}.log -O ${p_index} ${url}"
+#             wget_cmd_var=1
+#         else
+#             wget_cmd=(
+#                 --timeout=3 
+#                 --user-agent="${WGET_AGENT}"
+#                 --no-check-certificate 
+#                 -a "./logs/get_${p_index}.log"
+#                 -O "${p_index}"
+#                 ${url}
+#             )
+#             wget_cmd_var=2
+#        fi
+# 
+#        # Pull mp4 using downloaded $p_index
+#        log_message "\twget_cmd_var: p_index -> ${wget_cmd_var}"
+#        if [ $wget_cmd_var == "1" ]; then
+#            ${wget_cmd}
+#         else
+#            wget "${wget_cmd[@]}"
+#         fi
+# 
+#        if [ ! -f ${p_index} ]; then
+#            log_message "\tFAILED to created p_index file...exit 102"
+#            printf "FAILED to created p_index file...exit 102"
+#            exit 102
+#        fi
+# 
+#        result=$(grep --color=NEVER -Po '(?<=video_url:).*(?=, preview_url)' ${p_index} | awk -F"['']" '{print $2}')
+# 
+#        if [ -z "${WGET_AGENT}" ]; then
+#             wget_mp4_args="wget --timeout=3 --no-check-certificate -a ./logs/get_mp4.log -O ./mp4/${dts}.mp4 ${result}"
+#             wget_mp4_var=1
+#         else
+#             wget_mp4_args=(
+#                 --timeout=3 
+#                 --user-agent="${WGET_AGENT}"
+#                 --no-check-certificate 
+#                 -a "./logs/get_mp4.log"
+#                 -O "./mp4/${dts}.mp4"
+#                 ${result}
+#             )
+#             wget_mp4_var=2
+#        fi
+# 
+#        log_message "\twget_mp4_var -> ${wget_mp4_var}"
+#        if [ "${wget_mp4_var}" == "1" ]; then
+#            ${wget_mp4_args}
+#        else
+#            wget "${wget_mp4_args[@]}"
+#        fi
+#        sleep 2
+#     done
+# }
 
 # main
 RUNTIMELOG="./logs/runtime.log"
