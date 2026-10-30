@@ -24,6 +24,7 @@ MAIN (){
     func_set_useragent 
     func_pull_top_index 
     func_pull_file
+    func_end_time
 }
 
 ########################## Common Functions
