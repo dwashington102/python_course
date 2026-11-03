@@ -46,6 +46,14 @@ echo commands build the SQL file that is responsible for dumping the contents of
 DESCRIPTION
     
     tableRows=`sqlite3 "${get_fileName}" "select count(*) from '$tableName'"`
+    if [[ ${loopcount} -le 10 ]]; then
+        echo -n '.'
+        loopcount=$((loopcount + 1))
+    else
+        printf "\n" && echo -n '.'
+        loopcount=0
+    fi
+
     if [[ $tableRows -eq 0 ]]; then
         printf "\n\tTablename: ${tableName} contains 0 rows - skipping converting table contents to text file." >> ${convertResults}
     else
@@ -62,6 +70,7 @@ DESCRIPTION
     if [ -n "${outputText}" ]; then
         printf "\n" >>${convertResults} && ls -lG "${outputText}" >> ${convertResults}
         outputText=""  # added to avoid ls command printing same file name when tableRows==0
+        debug_count=$((debug_count+1))
     fi
     # rm -f ${outputTables}
 }
@@ -79,7 +88,7 @@ DESCRIPTION
     debug_count=1
     for get_fileName in ${AR_LIST[@]}
     do
-        if [[ ${debug_count} -gt 10 ]]; then
+        if [[ ${debug_count} -gt 200 ]]; then
             printf "DEBUG>>> Stopping here\n"
             exit 0
         fi
@@ -101,14 +110,13 @@ DESCRIPTION
         if [ -s "$outputTables" ]; then
             outputLogs='./'$timeStamp'/'$get_fileName'_db_converted_dir'
             printf "\n\n${get_fileName} database: " >> ${convertResults}
+            loopcount=0
             for tableName in $(cat $outputTables)
             do
                 convert_db
                 rm -f ${outputTables}
             done
-            #rm -f convert_wdg.sql
         fi
-        debug_count=$((debug_count+1))
     done
 }
 
