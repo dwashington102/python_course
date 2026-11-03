@@ -45,7 +45,7 @@ If the number of rows > 0 the database contents are converted to a text file and
 echo commands build the SQL file that is responsible for dumping the contents of each table to the outputText file
 DESCRIPTION
     
-    tableRows=`sqlite3 "${get_fileName}" "select count(*) from '$tableName'"`
+    tableRows=`sqlite3 "${db_filename}" "select count(*) from '$tableName'"`
     if [[ ${loopcount} -le 10 ]]; then
         echo -n '.'
         loopcount=$((loopcount + 1))
@@ -61,11 +61,13 @@ DESCRIPTION
         mkdir -p ${outputLogs}
         outputText=${outputLogs}'/'$tableName.txt
         touch $outputText
+        truncate --size=0 convert_wdg.sql
         echo ".mode csv" >> convert_wdg.sql
         echo ".output '${outputText}'" >> convert_wdg.sql
         echo "select * from '${tableName}';" >> convert_wdg.sql
         echo ".quit" >> convert_wdg.sql
-        sqlite3 "${get_fileName}" ".read convert_wdg.sql"
+        printf "DEBUG>>> convert_wdg.sql -> $(cat convert_wdg.sql)" >> ${convertResults}
+        sqlite3 "${db_filename}" ".read convert_wdg.sql"
     fi                        
     if [ -n "${outputText}" ]; then
         printf "\n" >>${convertResults} && ls -lG "${outputText}" >> ${convertResults}
@@ -86,35 +88,36 @@ DESCRIPTION
 
     IFS=$'\n'
     debug_count=1
-    for get_fileName in ${AR_LIST[@]}
+    for db_filename in ${AR_LIST[@]}
     do
         if [[ ${debug_count} -gt 200 ]]; then
             printf "DEBUG>>> Stopping here\n"
             exit 0
         fi
          
-        # Page that holds list of table name found in get_fileName
-        outputTables="${timeStamp}/${get_fileName}_db.tables"
+        # Page that holds list of table name found in db_filename
+        outputTables="${timeStamp}/${db_filename}_db.tables"
 
         AR_empty=("convert_wdg.sql" "$outputTables")
 
         for create_file in ${AR_empty[@]};
         do
         if ! truncate --size=0 "${create_file}"; then
-                printf "Unable to process ${get_fileName}\n"
+                printf "Unable to process ${db_filename}\n"
                 break
         fi
         done
 
-        sqlite3 "$get_fileName" "select name from sqlite_master where type='table' group by name having name != 'sqlite_sequence';"  > "$outputTables"
+        sqlite3 "$db_filename" "select name from sqlite_master where type='table' group by name having name != 'sqlite_sequence';"  > "$outputTables"
         if [ -s "$outputTables" ]; then
-            outputLogs='./'$timeStamp'/'$get_fileName'_db_converted_dir'
-            printf "\n\n${get_fileName} database: " >> ${convertResults}
+            outputLogs='./'$timeStamp'/'$db_filename'_db_converted_dir'
+            printf "\n\n${db_filename} database: " >> ${convertResults}
             loopcount=0
             for tableName in $(cat $outputTables)
             do
+                printf "\nProcessing tableName -> ${tableName}" >> ${convertResults}
                 convert_db
-                rm -f ${outputTables}
+                # rm -f ${outputTables} <----DEBUG>>>
             done
         fi
     done
