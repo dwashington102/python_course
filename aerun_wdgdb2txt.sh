@@ -17,6 +17,7 @@ function set_logfile_dir() {
     timeStamp=$(date +"%Y%m%d_%H%M%S")
     if ! mkdir ${timeStamp}; then
         printf "\nUnable to create subdirectory...exiting now!"
+        exit 101
     else
         # Print a list of the files in the current directory.
         # Printing a list of the files is for debugging purposes
@@ -26,7 +27,7 @@ function set_logfile_dir() {
     
         # Ensure file is empty before processing
         if [ -s ${convertResults} ]; then
-            truncate -s0 "${convertResults}"
+            truncate --size=0 "${convertResults}"
         fi
     
         echo "Processing files in directory: $PWD" >> "${convertResults}"
@@ -60,9 +61,9 @@ DESCRIPTION
     fi                        
     if [ -n "${outputText}" ]; then
         printf "\n" >>${convertResults} && ls -lG "${outputText}" >> ${convertResults}
-        outputText=""
+        outputText=""  # added to avoid ls command printing same file name when tableRows==0
     fi
-    rm -f ${outputTables}
+    # rm -f ${outputTables}
 }
 
 
@@ -103,6 +104,7 @@ DESCRIPTION
             for tableName in $(cat $outputTables)
             do
                 convert_db
+                rm -f ${outputTables}
             done
             #rm -f convert_wdg.sql
         fi
