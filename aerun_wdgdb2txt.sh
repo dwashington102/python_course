@@ -23,7 +23,6 @@ function set_logfile_dir() {
         # Printing a list of the files is for debugging purposes
         convertResults=./${timeStamp}/converted_Results.txt
         touch "${convertResults}" &>/dev/null
-        #touch "${convertResults}" 2>&1 > /dev/null
     
         # Ensure file is empty before processing
         if [ -s ${convertResults} ]; then
@@ -55,7 +54,7 @@ DESCRIPTION
     fi
 
     if [[ $tableRows -eq 0 ]]; then
-        printf "\n\tTablename: ${tableName} contains 0 rows - skipping converting table contents to text file." >> ${convertResults}
+        printf "\n\tTablename: ${tableName} contains 0 rows - skipping converting table contents to text file.\n" >> ${convertResults}
     else
         printf "\n\tTablename: ${tableName} contains '${tableRows}' rows converting table contents to text file." >> ${convertResults}
         mkdir -p ${outputLogs}
@@ -66,7 +65,6 @@ DESCRIPTION
         echo ".output '${outputText}'" >> convert_wdg.sql
         echo "select * from '${tableName}';" >> convert_wdg.sql
         echo ".quit" >> convert_wdg.sql
-        printf "DEBUG>>> convert_wdg.sql -> $(cat convert_wdg.sql)" >> ${convertResults}
         sqlite3 "${db_filename}" ".read convert_wdg.sql"
     fi                        
     if [ -n "${outputText}" ]; then
@@ -90,7 +88,7 @@ DESCRIPTION
     debug_count=1
     for db_filename in ${AR_LIST[@]}
     do
-        if [[ ${debug_count} -gt 200 ]]; then
+        if [[ ${debug_count} -gt 2000 ]]; then
             printf "DEBUG>>> Stopping here\n"
             exit 0
         fi
@@ -115,9 +113,9 @@ DESCRIPTION
             loopcount=0
             for tableName in $(cat $outputTables)
             do
-                printf "\nProcessing tableName -> ${tableName}" >> ${convertResults}
+                printf "\n\tProcessing tableName -> ${tableName}" >> ${convertResults}
                 convert_db
-                # rm -f ${outputTables} <----DEBUG>>>
+                rm -f ${outputTables} 
             done
         fi
     done
