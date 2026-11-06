@@ -39,9 +39,11 @@ function set_logfile_dir() {
 function convert_db() {
 :<<'DESCRIPTION'
 Function connects to the SQLite database and counts the number of rows in the database
-If the number of rows == 0 the databse contents is not converted to a text file.
-If the number of rows > 0 the database contents are converted to a text file and stored 
-echo commands build the SQL file that is responsible for dumping the contents of each table to the outputText file
+If the number of rows == 0, no attempt is made to converts databse contents to a text file.
+If the number of rows > 0, database contents are converted to a text file
+
+The echo commands below builds the SQL file that is responsible for dumping the contents
+of each table to the outputText file
 DESCRIPTION
     
     tableRows=`sqlite3 "${db_filename}" "select count(*) from '$tableName'"`
