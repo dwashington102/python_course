@@ -56,9 +56,9 @@ DESCRIPTION
     fi
 
     if [[ $tableRows -eq 0 ]]; then
-        printf "\n\tTablename: ${tableName} contains 0 rows - skipping converting table contents to text file.\n" >> ${convertResults}
+        printf "\n\t\tTablename: ${tableName} contains 0 rows - skipping converting table contents to text file.\n" >> ${convertResults}
     else
-        printf "\n\tTablename: ${tableName} contains '${tableRows}' rows converting table contents to text file." >> ${convertResults}
+        printf "\n\t\tTablename: ${tableName} contains '${tableRows}' rows converting table contents to text file." >> ${convertResults}
         mkdir -p ${outputLogs}
         outputText=${outputLogs}'/'$tableName.txt
         touch $outputText
@@ -70,11 +70,13 @@ DESCRIPTION
         sqlite3 "${db_filename}" ".read convert_wdg.sql"
     fi                        
     if [ -n "${outputText}" ]; then
-        printf "\n" >>${convertResults} && ls -lG "${outputText}" >> ${convertResults}
+        fmt_output=$(ls -lG "${outputText}")
+        printf "\n" >>${convertResults} && printf "\t\t${fmt_output}\n" >> ${convertResults}
         outputText=""  # added to avoid ls command printing same file name when tableRows==0
         debug_count=$((debug_count+1))
     fi
     # rm -f ${outputTables}
+    rm -f ./convert_wdg.sql
 }
 
 
@@ -124,6 +126,7 @@ DESCRIPTION
 }
 
 MAIN () {
+IFS=$'\n'
 AR_LIST=( $(file * | grep --color=NEVER -E "SQLite.*?database|data or.*text" | awk -F':' '{print $1}' 2>/dev/null) )
 #if ! file * | grep -E "SQLite.*database|data\ or.*text" &>/dev/null; then 
 if [[ ${#AR_LIST[@]} -lt 1 ]]; then 
