@@ -46,7 +46,7 @@ The echo commands below builds the SQL file that is responsible for dumping the 
 of each table to the outputText file
 DESCRIPTION
     
-    tableRows=`sqlite3 "${db_filename}" "select count(*) from '$tableName'"`
+    tableRows=`sqlite3 -init /dev/null "${db_filename}" "select count(*) from '$tableName'"`
 
     # if-clause prints a period to show progress
     if [[ ${loopcount} -le 10 ]]; then
@@ -69,7 +69,7 @@ DESCRIPTION
         echo ".output '${outputText}'" >> convert_wdg.sql
         echo "select * from '${tableName}';" >> convert_wdg.sql
         echo ".quit" >> convert_wdg.sql
-        sqlite3 "${db_filename}" ".read convert_wdg.sql"
+        sqlite3 -init /dev/null "${db_filename}" ".read convert_wdg.sql"
     fi                        
     if [ -n "${outputText}" ]; then
         fmt_output=$(ls -lG "${outputText}")
@@ -112,7 +112,7 @@ DESCRIPTION
         fi
         done
 
-        sqlite3 "$db_filename" "select name from sqlite_master where type='table' group by name having name != 'sqlite_sequence';"  > "$outputTables"
+        sqlite3 -init /dev/null "$db_filename" "select name from sqlite_master where type='table' group by name having name != 'sqlite_sequence';"  > "$outputTables"
         if [ -s "$outputTables" ]; then
             outputLogs='./'$timeStamp'/'$db_filename'_db_converted_dir'
             printf "\n\n${db_filename} database: " >> ${convertResults}
