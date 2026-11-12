@@ -47,6 +47,8 @@ of each table to the outputText file
 DESCRIPTION
     
     tableRows=`sqlite3 "${db_filename}" "select count(*) from '$tableName'"`
+
+    # if-clause prints a period to show progress
     if [[ ${loopcount} -le 10 ]]; then
         echo -n '.'
         loopcount=$((loopcount + 1))
