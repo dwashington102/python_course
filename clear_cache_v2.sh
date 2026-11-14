@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 :<<'COMMENTS'
 Script removes files related to browser history, cache,
@@ -12,7 +12,12 @@ COMMENTS
 
 # Common functions
 create_log() {
-    logdir="/var/log/custom"
+    if [[ "$(id -u)" == 0 ]]; then
+        logdir="/var/log/custom"
+    else
+        logdir="/var/tmp/custom"
+    fi
+
     dts=$(date +"%Y%m%d_%H%M%S")
 
     if [ ! -d ${logdir} ]; then
@@ -27,7 +32,7 @@ create_log() {
 
     # Create log file
     if ! /usr/bin/truncate -s0 "${logfile}"; then
-        printf "Unable to creae log file %s...exit(102)" "${logfile}"
+        printf "Unable to create log file %s...exit(102)" "${logfile}"
         exit 102
     fi
 }
@@ -44,7 +49,7 @@ func_check_bleachbit (){
     log_message "${FUNCNAME[0]}()"
     get_bleachbit_ver=$(bleachbit --version 2>/dev/null | command grep -E ^'Bleach.*version')
     if [ -n "$get_bleachbit_ver" ]; then
-        log_message "\tVersion Info:\n %s" "$get_bleachbit_ver"
+        log_message "\tVersion Info: (${get_bleachbit_ver})"
     else
         printf "Bleachbit application not found...exit(101)\n" | tee --append "${logfile}"
         exit 101
@@ -66,8 +71,8 @@ cat << EOF > "${recentdocs}".new
 </xbel>
 EOF
 
-        cp --verbose "${recentdocs}" "${recentdocs}".OKTODELETE
-        cp --verbose "${recentdocs}".new "${recentdocs}"
+        cp --verbose "${recentdocs}" "${recentdocs}".OKTODELETE &>>${logfile}
+        cp --verbose "${recentdocs}".new "${recentdocs}" &>>${logfile}
     else
         log_message "\tResults: %s does not exist." "${recentdocs}"
     fi
@@ -93,10 +98,10 @@ func_delete_history (){
     mp4_str="mp4"
 
     if [[ "${u_shell}" == "zsh" ]]; then
-        log_message "\tSHELL: ($u_shell)"
+        log_message "\tSHELL: ${u_shell}"
         sed -i '/${mp4_str}/d' $HOME/.zsh_history
-    elif [ "${u_shell}" == "bash" ]; then
-        log_message "\tSHELL: ($u_shell)"
+    elif [[ "${u_shell}" == "bash" ]]; then
+        log_message "\tSHELL: ${u_shell}"
         for ln in $(history | grep ${mp4_str} \
         | awk '{print $1}' | sort -nr)
             do
@@ -104,8 +109,56 @@ func_delete_history (){
             done
     else
         log_message "\tSHELL UNKNOWN"
-        log_message "\tSHELL: ($u_shell)"
+        log_message "\tSHELL: ${u_shell}"
         log_message "\tUnable to clear shell history"
+    fi
+}
+
+
+func_trash_empty (){
+    log_message "${FUNCNAME[0]}()"
+    trash-empty -f 3 &>/dev/null
+}
+
+func_truncate_vlc_history (){
+    log_message "${FUNCNAME[0]}()"
+    if [ -f $HOME/.config/vlc/vlc-qt-interface.conf ]; then
+        log_message "\tProcessing vlc qt conf"
+        truncate -s 0 $HOME/.config/vlc/vlc-qt-interface.conf &>/dev/null
+    fi
+}
+
+
+func_run_vlc_cleaner (){
+    log_message "${FUNCNAME[0]}()"
+    command bleachbit -c vlc.mru  &>>${logfile}
+    # command bleachbit -c vlc.mru  &>/dev/null
+}
+
+
+truncate_dragonplayerrc (){
+    log_message "${FUNCNAME[0]}()"
+    dp_conf="$HOME/.config/kde.org/dragonplayer.conf"
+
+    getid=$(id -u)
+    if [[ "${getid}" == 0 ]]; then
+        pathdir="/home"
+    else
+        pathdir="$HOME"
+    fi
+    log_message "\tpathdir set to: ${pathdir}"
+    dragonlist=( $(find ${pathdir} -name dragonplayerrc -type f) )
+    if [[ "${#dragonlist}" -gt 0 ]]; then
+        for dragonfile in "${dragonlist[@]}"
+        do
+            command truncate -s 0 ${dragonfile}
+            log_message "\tFile to truncate: ${dragonfile}...rc=$?\n"
+        done
+    fi
+
+    if [ -f ${dp_conf} ] && grep --quiet -i "lastFolder=" "${dp_conf}"; then
+        log_message "\tUpdate ${dp_conf}"
+        sed -i '/^lastFolder/d' "${dp_conf}"
     fi
 }
 
@@ -113,17 +166,9 @@ func_delete_history (){
 kde_recentdb (){
     log_message "${FUNCNAME[0]}()"
     sqlitedb="${HOME}/.local/share/kactivitymanagerd/resources/database"
-    [ -f "${sqlitedb}" ] && log_message "KDE RecentFiles DB Found" && truncate -s0 ${sqlitedb} ; log_message "action rc=$?" ||: 
+    [ -f "${sqlitedb}" ] && log_message "\tKDE RecentFiles DB Found" && truncate -s0 ${sqlitedb} ; log_message "\taction rc=$?" ||: 
 }
 
-func_msedge (){
-    log_message "${FUNCNAME[0]}()"
-    declare -a msdirs=("")
-    msdirs=$(command find /home -type d | command grep "\/.config/microsoft-edge" | awk -F'[//]' '{print $5}' | sort -u)
-    if [[ "${#msdirs[@]}" -gt 0 ]]; then
-        log_message "msdirs: ${#msdirs[@]} found\n"
-    fi
-}
 
 # Function runs all browser cleaners
 func_browser_cleaner (){
@@ -140,22 +185,32 @@ func_browser_cleaner (){
         log_message "\tChrome PID not found...running cleaners"
         for cleaner in $(bleachbit -l 2>/dev/null | command grep -E ^'google_chrome.')
         do
-            log_message "Calling cleaner (${cleaner})"
+            log_message "\tCalling cleaner (${cleaner})"
             bleachbit -c $cleaner &>>${logfile}
         done
-        log_message "\tRan browser cleaner for Chrome"
+        log_message "\t*** Completed browser cleaner for Chrome ***"
     else
         log_message "\tRunning Chrome process detected...skipping cleanup"
     fi
 
     if [ -z "$get_opera_pid" ]; then
         log_message "\tOpera PID not found...running cleaners"
+        # Remove contents of Sessions
+        dir_session="$HOME/.config/opera/Default/Sessions"
+
+        if [ -d "${dir_session}" ]; then
+            for f_name in $(find ${dir_session} -type f)
+            do
+                bleachbit -so "${f_name}" &>>${logfile}
+            done
+        fi
+
         for cleaner in $(bleachbit -l  2>/dev/null | command grep -E ^'opera.')
         do
             log_message "Calling cleaner (${cleaner})"
             bleachbit -c $cleaner &>>${logfile}
         done
-        log_message "\tRan browser cleaner for Opera"
+        log_message "\t*** Completed browser cleaner for Opera ***"
     else
         log_message "\tRunning Opera process detected...skipping cleanup"
     fi
@@ -167,7 +222,7 @@ func_browser_cleaner (){
             log_message "Calling cleaner (${cleaner})"
             bleachbit -c $cleaner &>>${logfile}
         done
-        log_message "\tRan browser cleaner for Brave"
+        log_message "\t*** Completed browser cleaner for Brave ***"
     else
         log_message "\tRunning Brave process detected...skipping cleanup"
     fi
@@ -179,7 +234,7 @@ func_browser_cleaner (){
             log_message "Calling cleaner (${cleaner})"
             bleachbit -c $cleaner &>>${logfile}
         done
-        log_message "\tRan browser cleaner for Firefox"
+        log_message "\t*** Completed browser cleaner for Firefox ***"
     else
         log_message "\tRunning Firefox process detected...skipping cleanup"
     fi
@@ -191,95 +246,12 @@ func_browser_cleaner (){
             log_message "Calling cleaner (${cleaner})"
             bleachbit -c $cleaner &>>${logfile}
         done
-        log_message "\tRan browser cleaner for MS-Edge"
+        log_message "\t*** Completed browser cleaner for MS-Edge ***"
     else
         log_message "\tRunning MS-Edge process detected...skipping cleanup"
     fi
 }
         
-
-func_trash_empty (){
-    log_message "${FUNCNAME[0]}()"
-    trash-empty -f 3 &>/dev/null
-    date +%H:%M:%S
-    printf "$FUNCNAME rc=$?\n" 
-    printf "\n"
-    
-}
-
-# This function removes old logs generated by cron jobs from the $HOME/cronlogs directory
-func_bleachbit_cron_logs (){
-    log_message "${FUNCNAME[0]}()"
-    printf "\n"
-    # only the printf statements in this function write to log file. Output of bleachbit command not included in log file
-    printf "\nStarting ${FUNCNAME}\n"
-    cd $HOME/cronlogs
-    command bleachbit -so $(find . -type f -mtime +5) &>/dev/null
-    printf "$FUNCNAME rc=$?\n" 
-    printf "\n"
-}
-
-
-
-# Function cleans up browsers history and cookies along with MRU of vlc
-func_run_bleachbit_cleaners (){
-    log_message "${FUNCNAME[0]}()"
-    printf "\n"
-    # only the printf statements in this function write to log file. Output of bleachbit command not included in log file
-    printf "\nStarting ${FUNCNAME}\n"  >> $logfile
-    command bleachbit -c vlc.mru  &>/dev/null
-    #command bleachbit -c system.trash firefox.cache google_chrome.cache opera.cache chromium.cache chromium.history chromium.cookies google_chrome.history vlc.mru  &>/dev/null
-    printf "$FUNCNAME rc=$?\n" 
-    printf "\n"
-}
-
-func_run_bleachbit_targeted (){
-    log_message "${FUNCNAME[0]}()"
-    printf "\n"
-    # only the printf statements in this function write to log file. Output of bleachbit command not included in log file
-    printf "\nStarting ${FUNCNAME}\n"  
-    cd $HOME/.cache/thumbnails &>/dev/null
-    command bleachbit -so $(find . -type f -name "*.png") &>/dev/null
-    printf "$FUNCNAME rc=$?\n" >> $logfile
-    printf "\n"
-}
-
-func_truncate_vlc_history (){
-    log_message "${FUNCNAME[0]}()"
-    printf "\n"
-    printf "Starting ${FUNCNAME}\n"
-    truncate -s 0 $HOME/.config/vlc/vlc-qt-interface.conf &>/dev/null
-    printf "$FUNCNAME rc=$?\n" 
-    printf "\n"
-}
-
-
-truncate_dragonplayerrc (){
-    log_message "${FUNCNAME[0]}()"
-    dp_conf="$HOME/.config/kde.org/dragonplayer.conf"
-
-    getid=$(id -u)
-    if [[ "${getid}" == 0 ]]; then
-        pathdir="/home"
-    else
-        pathdir="$HOME"
-    fi
-    printf "pathdir set to: ${pathdir}\n"
-    dragonlist=( $(find ${pathdir} -name dragonplayerrc -type f) )
-    if [[ "${#dragonlist}" -gt 0 ]]; then
-        for dragonfile in "${dragonlist[@]}"
-        do
-            command truncate -s 0 ${dragonfile}
-            printf "File to truncate: ${dragonfile}...rc=$?\n"
-        done
-    fi
-
-    if [ -f ${dp_conf} ] && grep --quiet -i "lastFolder=" "${dp_conf}"; then
-        log_message "\tUpdate %s" "${dp_conf}"
-        sed -i '/^lastFolder/d' "${dp_conf}"
-    fi
-}
-
 
 clear_viminfo (){
     log_message "${FUNCNAME[0]}()"
@@ -288,36 +260,141 @@ clear_viminfo (){
         log_message "\tTruncate: viminfo"
         /usr/bin/truncate --size=0 $HOME/.viminfo
         size_after=$(ls -lth $HOME/.viminfo)
-        ls -lth $HOME/.viminfo &>>${logfile}
+        log_message "\tResults:\n\t${size_after}"
     fi
 }
 
+
+func_run_bleachbit_thumbnails (){
+    log_message "${FUNCNAME[0]}()"
+    # only the printf statements in this function write to log file. Output of bleachbit command not included in log file
+    if [ -d $HOME/.cache/thumbnails ]; then
+        log_message "\tProcessing thumbnails..."
+        search_path="$HOME/.cache/thumbnails"
+        command bleachbit -so $(find "${search_path}" -type f -name "*.png") &>/dev/null
+    fi
+}
+
+
+# Query/Clear sqlite3 databases
+# func_db_clean(){
+#     log_message "${FUNCNAME[0]}()"
+#     db_top_sites="$HOME/.config"
+#     IFS=$'\n'
+#     db_names=("Top Sites" "History" "Network Action Predictor")
+# 
+#     tb_names_01=("top_sites") # Top Sites database
+#     tb_names_02=("urls" "visited_links" "downloads" "downloads_url_chains") # History db
+#     tb_names_03=("network_action_predictor") # Network Action Predictor
+# 
+#     for db in ${db_names}
+#     do
+#         for db_search in $(find ${db_top_sites} -type -f -name "${db}" | grep -E '(Brave|opera|microsoft-edge)')
+#         do
+#             if [[ "${db_search}" == "Top Sites" ]]; then
+#                 tb_names=${tb_names_01}
+#             elif [[ "${db_search}" == "History" ]]; then
+#                 tb_names=${tb_names_02}
+#             else
+#                 tb_names=${tb_names_03}
+#             fi
+#         done
+# 
+#         log_message "dbName: -> ${db_search} -> Tables: ${tb_names[@]}"
+#         for t_name in "${tb_names[@]}"
+#         do
+#             log_message "DEBUG>>> db_name -> ${db_search} -> t_name -> ${t_name}"
+#             sqlite3 -init /dev/null "${db_name}" "select * from ${t_name}" &>>${logfile}
+#         done
+#     done
+# }
+
+
+func_db_top_sites (){
+    log_message "${FUNCNAME[0]}()"
+    db_top_sites="$HOME/.config"
+    IFS=$'\n'
+    for db_name in $(find ${db_top_sites} -type f -name "Top Sites" | grep -E '(Brave|opera|microsoft-edge)')
+    do
+        top_sites_tables=("top_sites")
+        for t_name in "${top_sites_tables[@]}"
+        do
+            log_message "DEBUG>>> db_name -> ${db_name} :: t_name -> ${t_name}"
+            sqlite3 -init /dev/null "${db_name}" "select * from ${t_name}" &>>${logfile}
+        done
+    done
+}
+
+func_db_history (){
+    log_message "${FUNCNAME[0]}()"
+    db_history="$HOME/.config"
+    IFS=$'\n'
+    for db_name in $(find ${db_history} -type f -name "History" | grep -E '(Brave|opera|microsoft-edge)')
+    do
+        history_tables=("urls" "visited_links" "downloads" "downloads_url_chains")
+        for t_name in "${history_tables[@]}"
+        do
+            log_message "DEBUG>>> db_name -> ${db_name} :: t_name -> ${t_name}"
+            sqlite3 -init /dev/null "${db_name}" "select * from ${t_name}" &>>${logfile}
+        done
+    done
+}
+
+func_db_network_action_predictor () {
+    log_message "${FUNCNAME[0]}()"
+    db_history="$HOME/.config"
+    IFS=$'\n'
+    for db_name in $(find ${db_history} -type f -name "Network Action Predictor" | grep -E '(Brave|opera|microsoft-edge)')
+    do
+        history_tables=("network_action_predictor")
+        for t_name in "${history_tables[@]}"
+        do
+            log_message "DEBUG>>> db_name -> ${db_name} :: t_name -> ${t_name}"
+            sqlite3 -init /dev/null "${db_name}" "select * from ${t_name}" &>>${logfile}
+        done
+    done
+}
+
+
+#func_msedge (){
+#    log_message "${FUNCNAME[0]}()"
+#    declare -a msdirs=("")
+#    msdirs=$(command find /home -type d | command grep "\/.config/microsoft-edge" | awk -F'[//]' '{print $5}' | sort -u)
+#    if [[ "${#msdirs[@]}" -gt 0 ]]; then
+#        log_message "msdirs: ${#msdirs[@]} found\n"
+#    fi
+#}
 
 MAIN() {
 # Constant Variables
 create_log
 log_message
 
-if [ "${TERM}" != "dumb" ]; then
-    func_check_bleachbit
-    func_clear_files_recent 
-    func_delete_history 
-    if -x /usr/bin/trash-empty; then
-        func_trash_empty 
-    fi
-    func_truncate_vlc_history 
+func_check_bleachbit
+func_clear_files_recent 
+func_delete_history 
+if [ -x /usr/bin/trash-empty ]; then
+    func_trash_empty 
+fi
+func_truncate_vlc_history 
+func_run_vlc_cleaner
+
+# Functions related to KDE
+if ps aux | grep --quiet -i "/bin/startplasma"; then
     truncate_dragonplayerrc
     kde_recentdb
-    func_browser_cleaner
-    clear_viminfo
-    exit 0
 fi
 
-#bleachbit functions should not append to $logfile here
-    log_message "\tCalling bleachbit functions"
-    func_bleachbit_cron_logs  
-    func_run_bleachbit_cleaners
-    func_run_bleachbit_targeted
+func_browser_cleaner
+clear_viminfo
+func_run_bleachbit_thumbnails
+
+# Cleaning up database tables
+func_db_top_sites
+func_db_history
+func_db_network_action_predictor
+log_message "actions completed see log (${logfile})"
+exit 0
 }
 
 MAIN
