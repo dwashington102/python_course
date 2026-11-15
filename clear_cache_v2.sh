@@ -2,7 +2,8 @@
 
 :<<'COMMENTS'
 Script removes files related to browser history, cache,
-command line history, and etc.
+command line history, cleans sqlite3 databases associated with browser
+and etc.
 
 exit codes:
 101: bleachbit application not found
@@ -27,7 +28,7 @@ create_log() {
     if [ -d "${logdir}" ]; then
         logfile="${logdir}/clear_cache_${dts}.log"
     else
-        logfile="$HOME/clear_cache_${dts}.log"
+        logfile="$HOME/clear_cache_${dts}.log" # Fall back location
     fi
 
     # Create log file
@@ -46,6 +47,9 @@ log_message(){
 # End Common functions
 
 func_check_bleachbit (){
+:<<'DESCRIPTION'
+This function confirms the bleachbit application is installed
+DESCRIPTION
     log_message "${FUNCNAME[0]}()"
     get_bleachbit_ver=$(bleachbit --version 2>/dev/null | command grep -E ^'Bleach.*version')
     if [ -n "$get_bleachbit_ver" ]; then
@@ -56,8 +60,10 @@ func_check_bleachbit (){
     fi
 }
 
-# This function is used to remove all entries from the "Recent Files" of file manager
 func_clear_files_recent (){
+:<<'DESCRIPTION'
+This function is used to remove all entries from the "Recent Files" of file manager
+DESCRIPTION
     log_message "${FUNCNAME[0]}()"
 
     s_str="bookmark href"
@@ -93,6 +99,9 @@ EOF
 
 
 func_delete_history (){
+:<<'DESCRIPTION'
+This function clears the shell (zsh and bash) history of mp4 file entries
+DESCRIPTION
     log_message "${FUNCNAME[0]}()"
     u_shell=$(basename "$SHELL")
     mp4_str="mp4"
@@ -116,15 +125,21 @@ func_delete_history (){
 
 
 func_trash_empty (){
+:<<'DESCRIPTION'
+Function removes all files older than 3 days in the trash
+DESCRIPTION
     log_message "${FUNCNAME[0]}()"
     trash-empty -f 3 &>/dev/null
 }
 
 func_truncate_vlc_history (){
     log_message "${FUNCNAME[0]}()"
-    if [ -f $HOME/.config/vlc/vlc-qt-interface.conf ]; then
+    vlc_conf="$HOME/.config/vlc/vlc-qt-interface.conf"
+    if [ -f "${vlc_conf}" ]; then
         log_message "\tProcessing vlc qt conf"
-        truncate -s 0 $HOME/.config/vlc/vlc-qt-interface.conf &>/dev/null
+        if grep --quiet -i -E ^list= "${vlc_conf}"; then
+            sed -i '/^list=/d' "${vlc_conf}"
+        fi
     fi
 }
 
@@ -312,49 +327,73 @@ func_run_bleachbit_thumbnails (){
 
 func_db_top_sites (){
     log_message "${FUNCNAME[0]}()"
-    db_top_sites="$HOME/.config"
     IFS=$'\n'
-    for db_name in $(find ${db_top_sites} -type f -name "Top Sites" | grep -E '(Brave|opera|microsoft-edge)')
+    for db_name in $(find ${DB_PATH} -type f -name "Top Sites" | grep -i "${BROWSER}")
+    # for db_name in $(find ${db_top_sites} -type f -name "Top Sites" | grep -E '(Brave|opera|microsoft-edge)')
     do
         top_sites_tables=("top_sites")
         for t_name in "${top_sites_tables[@]}"
         do
-            log_message "DEBUG>>> db_name -> ${db_name} :: t_name -> ${t_name}"
-            sqlite3 -init /dev/null "${db_name}" "select * from ${t_name}" &>>${logfile}
+            # sqlite3 -init /dev/null "${db_name}" "select * from ${t_name}" &>>${logfile}
+            check_table=$(sqlite3 -init /dev/null "${db_name}" "select name from sqlite_master where type='table' and name='${t_name}'")
+            if [[ "${check_table}" == "${t_name}" ]]; then
+                log_message "\tdelete action for ${t_name}"
+                sqlite3 -init /dev/null "${db_name}" "delete from ${t_name}" &>>${logfile}
+            fi
         done
     done
 }
 
 func_db_history (){
     log_message "${FUNCNAME[0]}()"
-    db_history="$HOME/.config"
     IFS=$'\n'
-    for db_name in $(find ${db_history} -type f -name "History" | grep -E '(Brave|opera|microsoft-edge)')
+    for db_name in $(find ${DB_PATH} -type f -name "History" | grep -i "${BROWSER}")
+    #for db_name in $(find ${db_history} -type f -name "History" | grep -E '(Brave|opera|microsoft-edge)')
     do
-        history_tables=("urls" "visited_links" "downloads" "downloads_url_chains")
+        history_tables=("segments" "urls" "visited_links" "downloads" "downloads_url_chains")
         for t_name in "${history_tables[@]}"
         do
-            log_message "DEBUG>>> db_name -> ${db_name} :: t_name -> ${t_name}"
-            sqlite3 -init /dev/null "${db_name}" "select * from ${t_name}" &>>${logfile}
+            # sqlite3 -init /dev/null "${db_name}" "select * from ${t_name}" &>>${logfile}
+            check_table=$(sqlite3 -init /dev/null "${db_name}" "select name from sqlite_master where type='table' and name='${t_name}'")
+            if [[ "${check_table}" == "${t_name}" ]]; then
+                log_message "\tdelete action for ${t_name}"
+                sqlite3 -init /dev/null "${db_name}" "delete from ${t_name}" &>>${logfile}
+            fi
         done
     done
 }
 
 func_db_network_action_predictor () {
     log_message "${FUNCNAME[0]}()"
-    db_history="$HOME/.config"
     IFS=$'\n'
-    for db_name in $(find ${db_history} -type f -name "Network Action Predictor" | grep -E '(Brave|opera|microsoft-edge)')
+    for db_name in $(find ${DB_PATH} -type f -name "Network Action Predictor" | grep -i "${BROWSER}")
     do
-        history_tables=("network_action_predictor")
-        for t_name in "${history_tables[@]}"
+        network_action_tables=("network_action_predictor" "resource_prefetch_predictor_host_redirect" "resource_prefetch_predictor_origin")
+        for t_name in "${network_action_tables[@]}"
         do
-            log_message "DEBUG>>> db_name -> ${db_name} :: t_name -> ${t_name}"
-            sqlite3 -init /dev/null "${db_name}" "select * from ${t_name}" &>>${logfile}
+            if [[ "${check_table}" == "${t_name}" ]]; then
+                log_message "\tdelete action for ${t_name}"
+                sqlite3 -init /dev/null "${db_name}" "delete from ${t_name}" &>>${logfile}
+            fi
         done
     done
 }
 
+func_db_load_statistics_db () {
+    log_message "${FUNCNAME[0]}()"
+    IFS=$'\n'
+    for db_name in $(find ${DB_PATH} -type f -name "load_statistics.db" | grep -i "${BROWSER}")
+    do
+        load_statistics_db_tables=("load_statistics" "redirect_statistics")
+        for t_name in "${load_statistics_db_tables[@]}"
+        do
+            if [[ "${check_table}" == "${t_name}" ]]; then
+                log_message "\tdelete action for ${t_name}"
+                sqlite3 -init /dev/null "${db_name}" "delete from ${t_name}" &>>${logfile}
+            fi
+        done
+    done
+}
 
 #func_msedge (){
 #    log_message "${FUNCNAME[0]}()"
@@ -390,9 +429,18 @@ clear_viminfo
 func_run_bleachbit_thumbnails
 
 # Cleaning up database tables
-func_db_top_sites
-func_db_history
-func_db_network_action_predictor
+ar_browsers=("Brave" "opera" "microsoft-edge" "firefox")
+log_message "Begin DB Functions"
+for BROWSER in "${ar_browsers[@]}"
+do
+    log_message "\tCalling DB functions for: ${BROWSER}"
+    DB_PATH=$HOME/.config
+    func_db_top_sites
+    func_db_history
+    func_db_network_action_predictor
+    func_db_load_statistics_db
+done
+log_message "Completed DB Functions"
 log_message "actions completed see log (${logfile})"
 exit 0
 }
