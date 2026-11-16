@@ -1,0 +1,23 @@
+History
+ServerCertificate
+Affiliation Database
+Favicons
+Trust Tokens
+Safe Browsing Cookies
+Web Data
+Login Data For Account
+CdmStorage.db
+Account Web Data
+Reporting and NEL
+heavy_ad_intervention_opt_out.db
+Top Sites
+Network Action Predictor
+DIPS-wal
+Preferences
+Login Data
+Shortcuts
+DIPS
+MediaDeviceSalts
+Cookies
+AIChat
+declarative_performance_observer.db
