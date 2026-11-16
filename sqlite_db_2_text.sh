@@ -3,7 +3,6 @@
 :<<'COMMENTS'
 Script gathers a list of files in the current directory, if the file type indicates the file is a SQLite database the
 script attempts to convert the contents of the database to a text file.
-This allows IBM L2 to view the contents of WDG log files using a standard text editor.
 
 2020-01-05:  The current WDG Log files share a common table (LogTable).  If additional tables are added to WDG Log files this script 
 will require an updated "select * from" statement.
@@ -12,16 +11,31 @@ will require an updated "select * from" statement.
 are using the common table name (LogTable).
 COMMENTS
 
+
+function func_set_colors ()
+{
+    bold=$(tput bold)
+    blink=$(tput blink)
+    offall=$(tput sgr0)
+    reverse=$(tput rev)
+    red=$(tput setaf 1)
+    green=$(tput setaf 2)
+    yellow=$(tput setaf 3)
+    cyan=$(tput setaf 6)
+    normal=$(tput setaf 9)
+}
+
+
 function set_logfile_dir() {
     # This function creates a subdirectory in the $PWD in order to store log file and converted database text files
-    timeStamp=$(date +"%Y%m%d_%H%M%S")
-    if ! mkdir "${timeStamp}"; then
+    dts=$(date +"%Y%m%d_%H%M%S")
+    if ! mkdir "${dts}"; then
         printf "\nUnable to create subdirectory...exiting now!"
         exit 101
     else
         # Print a list of the files in the current directory.
         # Printing a list of the files is for debugging purposes
-        convertResults=./${timeStamp}/converted_Results.txt
+        convertResults=./${dts}/converted_Results.txt
         touch "${convertResults}" &>/dev/null
     
         # Ensure file is empty before processing
@@ -76,10 +90,10 @@ DESCRIPTION
         fmt_output=$(ls -lG "${outputText}")
         printf "\n" >> "${convertResults}" && printf "\t\t${fmt_output}\n" >> "${convertResults}"
         outputText=""  # added to avoid ls command printing same file name when tableRows==0
-        debug_count=$((debug_count+1))
+        debug_count=$((debug_count+1)) # only used to avoid printing when table has more than 2000 rows
     fi
     # rm -f ${outputTables}
-    rm -f ./convert_wdg.sql
+    command rm -f ./convert_wdg.sql
 }
 
 
@@ -100,13 +114,14 @@ DESCRIPTION
             exit 0
         fi
          
-        # Page that holds list of table name found in db_filename
-        outputTables="${timeStamp}/${db_filename}_db.tables"
+        # Holds list of table name found in db_filename
+        outputTables="${dts}/${db_filename}_db.tables"
 
+        # Ensure both sql and .tables file is empty before running SELECT statements
         AR_empty=("convert_wdg.sql" "$outputTables")
-
         for create_file in "${AR_empty[@]}";
         do
+        # If unable to truncate files in AR_empty[], skip processing db_filename
         if ! truncate --size=0 "${create_file}"; then
                 printf "Unable to process %s\n" "${db_filename}"
                 break
@@ -116,14 +131,14 @@ DESCRIPTION
         # query table sqlite_master to gather a list of all tables in the database
         sqlite3 -init /dev/null "$db_filename" "select name from sqlite_master where type='table' group by name having name != 'sqlite_sequence';"  > "$outputTables" 2>/dev/null
         if [ -s "$outputTables" ]; then
-            outputLogs='./'$timeStamp'/'$db_filename'_db_converted_dir'
+            outputLogs='./'$dts'/'$db_filename'_db_converted_dir'
             printf "\n\n%s database: " "${db_filename}" >> "${convertResults}"
             loopcount=0
             for tableName in $(cat $outputTables)
             do
                 printf "\n\tProcessing tableName -> %s" "${tableName}" >> "${convertResults}"
                 convert_db
-                rm -f "${outputTables}"
+                command rm -f "${outputTables}"
             done
         fi
     done
@@ -131,18 +146,27 @@ DESCRIPTION
 
 MAIN () {
 IFS=$'\n'
-AR_LIST=( $(file * | grep --color=NEVER -E "SQLite.*?database|data or.*text" | awk -F':' '{print $1}' 2>/dev/null) )
-#if ! file * | grep -E "SQLite.*database|data\ or.*text" &>/dev/null; then 
+mapfile -t AR_LIST < <(file * | grep --color=NEVER -E "SQLite.*?database|data or.*text" | awk -F':' '{print $1}' 2>/dev/null) 
+
+func_set_colors
 if [[ ${#AR_LIST[@]} -lt 1 ]]; then 
-    printf "No SQLite database files found in current directory.\n"
+    printf "%sNo SQLite database files found in current directory.%s\n" "${red}" "${normal}"
     exit 0
+fi
+
+# used to ensure the convert_wdg.sql file is removed before processing
+if [ -f ./convert_wdg.sql ]; then
+    command rm -f ./convert_wdg.sql
 fi
 
 set_logfile_dir
 get_tableNames
+
+# used to ensure the convert_wdg.sql file is removed before exit
 if [ -f ./convert_wdg.sql ]; then
-    rm -f ./convert_wdg.sql
+    command rm -f ./convert_wdg.sql
 fi
+
 printf "\n------------------------------" >> "${convertResults}"
 printf "\nWork completed see %s\n" "${convertResults}"
 printf "\n"
