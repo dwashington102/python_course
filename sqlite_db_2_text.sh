@@ -15,7 +15,7 @@ COMMENTS
 function set_logfile_dir() {
     # This function creates a subdirectory in the $PWD in order to store log file and converted database text files
     timeStamp=$(date +"%Y%m%d_%H%M%S")
-    if ! mkdir ${timeStamp}; then
+    if ! mkdir "${timeStamp}"; then
         printf "\nUnable to create subdirectory...exiting now!"
         exit 101
     else
@@ -25,12 +25,12 @@ function set_logfile_dir() {
         touch "${convertResults}" &>/dev/null
     
         # Ensure file is empty before processing
-        if [ -s ${convertResults} ]; then
+        if [ -s "${convertResults}" ]; then
             truncate --size=0 "${convertResults}"
         fi
     
-        echo "Processing files in directory: $PWD" >> "${convertResults}"
-        printf "\n------------------------------" >> "${convertResults}"
+        printf "Processing files in directory: $PWD" >> "${convertResults}"
+        printf "\n" >> "${convertResults}" ; printf "%.s-" {1..25} >> "${convertResults}"
         printf "\nResults:" >> "${convertResults}"
     fi
 }
@@ -46,7 +46,8 @@ The echo commands below builds the SQL file that is responsible for dumping the 
 of each table to the outputText file
 DESCRIPTION
     
-    tableRows=`sqlite3 -init /dev/null "${db_filename}" "select count(*) from '$tableName'"`
+    tableRows=$(sqlite3 -init /dev/null "${db_filename}" "select count(*) from '$tableName'" 2>/dev/null)
+    # tableRows=($(sqlite3 -init /dev/null "${db_filename}" "select count(*) from '$tableName'" 2>/dev/null))
 
     # if-clause prints a period to show progress
     if [[ ${loopcount} -le 10 ]]; then
@@ -57,23 +58,23 @@ DESCRIPTION
         loopcount=0
     fi
 
-    if [[ $tableRows -eq 0 ]]; then
-        printf "\n\t\tTablename: ${tableName} contains 0 rows - skipping converting table contents to text file.\n" >> ${convertResults}
+    if [[ ${tableRows} -eq 0 ]]; then
+        printf "\n\t\tTablename: %s contains '0' rows - skipping converting table contents to text file.\n" "${tableName}" >> "${convertResults}"
     else
-        printf "\n\t\tTablename: ${tableName} contains '${tableRows}' rows converting table contents to text file." >> ${convertResults}
-        mkdir -p ${outputLogs}
+        printf "\n\t\tTablename: %s contains '%s' rows converting table contents to text file." "${tableName}" "${tableRows}" >> "${convertResults}"
+        mkdir -p "${outputLogs}"
         outputText=${outputLogs}'/'$tableName.txt
-        touch $outputText
+        touch "$outputText"
         truncate --size=0 convert_wdg.sql
         echo ".mode csv" >> convert_wdg.sql
         echo ".output '${outputText}'" >> convert_wdg.sql
         echo "select * from '${tableName}';" >> convert_wdg.sql
         echo ".quit" >> convert_wdg.sql
-        sqlite3 -init /dev/null "${db_filename}" ".read convert_wdg.sql"
+        sqlite3 -init /dev/null "${db_filename}" ".read convert_wdg.sql" 2>/dev/null
     fi                        
     if [ -n "${outputText}" ]; then
         fmt_output=$(ls -lG "${outputText}")
-        printf "\n" >>${convertResults} && printf "\t\t${fmt_output}\n" >> ${convertResults}
+        printf "\n" >> "${convertResults}" && printf "\t\t${fmt_output}\n" >> "${convertResults}"
         outputText=""  # added to avoid ls command printing same file name when tableRows==0
         debug_count=$((debug_count+1))
     fi
@@ -92,7 +93,7 @@ DESCRIPTION
 
     IFS=$'\n'
     debug_count=1
-    for db_filename in ${AR_LIST[@]}
+    for db_filename in "${AR_LIST[@]}"
     do
         if [[ ${debug_count} -gt 2000 ]]; then
             printf "DEBUG>>> Stopping here\n"
@@ -104,24 +105,25 @@ DESCRIPTION
 
         AR_empty=("convert_wdg.sql" "$outputTables")
 
-        for create_file in ${AR_empty[@]};
+        for create_file in "${AR_empty[@]}";
         do
         if ! truncate --size=0 "${create_file}"; then
-                printf "Unable to process ${db_filename}\n"
+                printf "Unable to process %s\n" "${db_filename}"
                 break
         fi
         done
 
-        sqlite3 -init /dev/null "$db_filename" "select name from sqlite_master where type='table' group by name having name != 'sqlite_sequence';"  > "$outputTables"
+        # query table sqlite_master to gather a list of all tables in the database
+        sqlite3 -init /dev/null "$db_filename" "select name from sqlite_master where type='table' group by name having name != 'sqlite_sequence';"  > "$outputTables" 2>/dev/null
         if [ -s "$outputTables" ]; then
             outputLogs='./'$timeStamp'/'$db_filename'_db_converted_dir'
-            printf "\n\n${db_filename} database: " >> ${convertResults}
+            printf "\n\n%s database: " "${db_filename}" >> "${convertResults}"
             loopcount=0
             for tableName in $(cat $outputTables)
             do
-                printf "\n\tProcessing tableName -> ${tableName}" >> ${convertResults}
+                printf "\n\tProcessing tableName -> %s" "${tableName}" >> "${convertResults}"
                 convert_db
-                rm -f ${outputTables} 
+                rm -f "${outputTables}"
             done
         fi
     done
@@ -138,8 +140,11 @@ fi
 
 set_logfile_dir
 get_tableNames
+if [ -f ./convert_wdg.sql ]; then
+    rm -f ./convert_wdg.sql
+fi
 printf "\n------------------------------" >> "${convertResults}"
-printf "\nWork completed see ${convertResults}\n"
+printf "\nWork completed see %s\n" "${convertResults}"
 printf "\n"
 }
 
