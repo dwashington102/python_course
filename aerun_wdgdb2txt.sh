@@ -11,6 +11,21 @@ will require an updated "select * from" statement.
 are using the common table name (LogTable).
 COMMENTS
 
+
+function func_set_colors ()
+{
+    bold=$(tput bold)
+    blink=$(tput blink)
+    offall=$(tput sgr0)
+    reverse=$(tput rev)
+    red=$(tput setaf 1)
+    green=$(tput setaf 2)
+    yellow=$(tput setaf 3)
+    cyan=$(tput setaf 6)
+    normal=$(tput setaf 9)
+}
+
+
 function set_logfile_dir() {
     # This function creates a subdirectory in the $PWD in order to store log file and converted database text files
     dts=$(date +"%Y%m%d_%H%M%S")
@@ -133,8 +148,9 @@ MAIN () {
 IFS=$'\n'
 mapfile -t AR_LIST < <(file * | grep --color=NEVER -E "SQLite.*?database|data or.*text" | awk -F':' '{print $1}' 2>/dev/null) 
 
+func_set_colors
 if [[ ${#AR_LIST[@]} -lt 1 ]]; then 
-    printf "No SQLite database files found in current directory.\n"
+    printf "%sNo SQLite database files found in current directory.%s\n" "${red}" "${normal}"
     exit 0
 fi
 
