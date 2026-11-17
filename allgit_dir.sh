@@ -6,16 +6,19 @@ COMMENT
 
 
 IFS=$'\n'
+mapfile -t topdirArray < <(find . -maxdepth 1 -type d -exec basename {} \; | sort -u | awk -F'.' '{print $1}' | sort -u)
 topdirArray=( $(find . -maxdepth 1 -type d -exec basename {} \; | sort -u | awk -F'.' '{print $1}' | sort -u) )
 
 arrCount=1
-for myDir in ${topdirArray[@]}
+for myDir in "${topdirArray[@]}"
 do
     #printf "DEBUG >>> \n%s" "${topdirArray[*]}"
     sleep 2
-    dirArray=( $(find "$myDir" -mindepth 1 -maxdepth 1 -type f -exec basename {} \;) )
+    IFS=$'\n'
+    mapfile -t ar_files < <(find "$myDir" -mindepth 1 -type f -exec basename {} \;)
+    #mapfile -t ar_files < <(find "$myDir" -mindepth 1 -maxdepth 3 -type f -exec basename {} \;)
     #printf "Count: $arrCount - $dirArray\n"
-    printf "\n(%s) Dir Name: %s\n\tNumber of Files: %s" "$arrCount" "$myDir" "${#dirArray[@]}"
+    printf "\n(%s) Dir Name: %s\n\tNumber of Files: %s" "$arrCount" "$myDir" "${#ar_files[@]}"
     arrCount=$((arrCount + 1 ))
     printf "\n"
 done
