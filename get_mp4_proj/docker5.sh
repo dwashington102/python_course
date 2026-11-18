@@ -41,7 +41,7 @@ MAIN() {
     func_getUserUrl
     func_search_items
     func_get_imageId
-    # func_run
+    func_run
     loginit=99 && log_message
 }
 
@@ -88,20 +88,23 @@ log_message(){
 # End Common functions
 
 func_set_dockercmd () {
-    log_message "${FUNCNAME[0]}"
-    if which docker > /dev/null 2>&1; then
+    log_message "${FUNCNAME[0]}()"
+    if which docker &> /dev/null; then
         DOCKERCMD='docker'
     elif which podman &>/dev/null; then
         DOCKERCMD='podman'
     else
         log_message "docker nor podman command found on server"
         log_message "Install the required packages...exit 2"
+        printf "docker nor podman command found...exit 2"
+        printf "see log %s" "${logfile}"
         exit 2
     fi
     log_message "\tpkg name: ${DOCKERCMD}"
 }
 
 func_search_items (){
+    log_message "${FUNCNAME[0]}()"
     unset itemCount
     unset loopCount
     declare -i itemCount=1 # sets search to be a min. of 1 item
@@ -121,15 +124,15 @@ func_search_items (){
     do
         echo "Enter search item number($loopCount)"
         read searchString
-        arr+=("$searchString")
+        ar_search+=("$searchString")
         ((loopCount++))
     done
-    log_message "\tSearch items: ${arr[*]}"
+    log_message "\tSearch items: ${ar_search[*]}"
 }
 
 
 func_getUserUrl () {
-    log_message "${FUNCNAME[0]}"
+    log_message "${FUNCNAME[0]}()"
 
     # Storage for Prod
     # dbStorage="$HOME/.local/share/containers/storage/volumes/mydb/_data"
@@ -143,7 +146,7 @@ func_getUserUrl () {
     printf "\nEnter URL: "
     read getUrl
     IFS=$'\n'
-    if wget --no-check-certificate ${getUrl} -O index.html; then
+    if wget --no-check-certificate ${getUrl} -O index.html &>/dev/null; then
         if ! ls -1 index.html > /dev/null 2>&1; then
             log_message "\tDownload file name is not index.html...exit 3"
 	    exit 3
@@ -153,6 +156,8 @@ func_getUserUrl () {
     else
         log_message "\twget failed to pull index from ${getUrl}"
         log_message "\tConfirm the correct URL...exit 148"
+        printf "wget failed to pull index from ${getUrl}...exit 148\n"
+        printf "\u26d4 see log: %s \u26d4\n" "${logfile}"
         exit 148
     fi
     log_message "\tindex.html from target url: (${getUrl})"
@@ -160,7 +165,7 @@ func_getUserUrl () {
 
 
 func_get_imageId() {
-    log_message "${FUNCNAME[0]}"
+    log_message "${FUNCNAME[0]}()"
     # Gather a list of docker images repo name "getmp4"
     if $DOCKERCMD images -n | grep -m1 getmp4  &>/dev/null; then
 	# Added grep -m1 in order to restrict the number of images being returned
@@ -177,22 +182,24 @@ func_get_imageId() {
 
 
 func_run() {
+    log_message "${FUNCNAME[0]}()"
     unset podCount
     podCount=1
-    for myTag in "${arr[@]}"
+    for myTag in "${ar_search[@]}"
     do
-        printf "\nRetrieving: ${myTag}"
+        log_message "\tRetrieving: ${myTag}"
         sleep 10
-        printf "\nCreating Docker Container\n"
+        log_message "\tCreating Docker Container"
         # docker run statement is adding an arguement after the Image-ID
         if podman ps | command grep -E " v${podCount}$" &>/dev/null; then
             # Using randopod allows startup of multiple docker5 procs
             randopod=$((RANDOM % 100 + 1))
-            printf "Selecting random number for container: ${randopod}\n"
-            mkdir -vp "$topDir/$randopod/$myTag"
+            log_message "\tSelecting random number for container: ${randopod}\n"
+            mkdir -vp "$topDir/$randopod/$myTag" & >> "${logfile}"
             $DOCKERCMD container run -d -m 512M --env TERM=dumb --rm --name ${getUserUrl}v${randopod} -w "/data" -v $topDir/$randopod/$myTag:/data ${get_imgId} ${getUrl}/term/${myTag}
         else
-            mkdir -vp "$topDir/$podCount/$myTag"
+            mkdir -vp "$topDir/$podCount/$myTag" && >> "${logfile}"
+            log_message "\tSelecting podcount number for container: ${podCount}\n"
             $DOCKERCMD container run -d -m 512M --env TERM=dumb --rm --name ${getUserUrl}v${podCount} -w "/data" -v $topDir/$podCount/$myTag:/data ${get_imgId} ${getUrl}/term/${myTag}
         fi
         podCount=$((podCount + 1))
