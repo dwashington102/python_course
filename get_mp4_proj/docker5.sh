@@ -38,9 +38,9 @@ MAIN() {
     create_log
     loginit=1 && log_message
     func_set_dockercmd
-    # func_getUserUrl
-    # func_search_items
-    # func_get_imageId
+    func_getUserUrl
+    func_search_items
+    func_get_imageId
     # func_run
     loginit=99 && log_message
 }
@@ -107,12 +107,13 @@ func_search_items (){
     declare -i itemCount=1 # sets search to be a min. of 1 item
     declare -i loopCount=1
 
-    printf "\nHow many items to search: "
+    printf "\nProvide number of search items: "
     read itemCount
-    re='^ [0-9]+$'
+    re='^[0-9]+$'
     if ! [[ $itemCount =~ $re ]] ; then
-       printf "Entered value is not a number...exit 101"
-       exit 101
+        log_message "itemCount: (${itemCount}) -> invalid -> exit 101" 
+        printf "Entered value (%s) is not a number...exit 101\n" "${itemCount}" 
+        exit 101
     fi
 
 
@@ -123,50 +124,54 @@ func_search_items (){
         arr+=("$searchString")
         ((loopCount++))
     done
-    printf "\nBeginning process to build containers..."
-    sleep 2
+    log_message "\tSearch items: ${arr[*]}"
 }
 
 
 func_getUserUrl () {
-    dbStorage="$HOME/.local/share/containers/storage/volumes/mydb/_data"
+    log_message "${FUNCNAME[0]}"
+
+    # Storage for Prod
+    # dbStorage="$HOME/.local/share/containers/storage/volumes/mydb/_data"
+
+    # Storage for Test
+    dbStorage="/tmp/testenv"
+
     topDir=$(mktemp -p $dbStorage -d)
     pushd $topDir &>/dev/null
-    printf "\nWhich URL: "
+    log_message "\tstorage loc: ${topDir}"
+    printf "\nEnter URL: "
     read getUrl
     IFS=$'\n'
-    wget --no-check-certificate ${getUrl} -O index.html
-    if [ $? -eq 0 ]; then
-        ls -1 index.html > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-            printf "\nDownload file name is not index.html"
-            printf "\n"
+    if wget --no-check-certificate ${getUrl} -O index.html; then
+        if ! ls -1 index.html > /dev/null 2>&1; then
+            log_message "\tDownload file name is not index.html...exit 3"
 	    exit 3
         else
-            printf "\nDownload file name is index.html...beginning to process"
-            printf "\n"
+            log_message "\tDownload file name is index.html...beginning to process"
         fi
     else
-        printf "\nwget failed to pull index file"
-        printf "\nConfirm the correct URL...exiting."
-        printf "\n"
+        log_message "\twget failed to pull index from ${getUrl}"
+        log_message "\tConfirm the correct URL...exit 148"
         exit 148
     fi
+    log_message "\tindex.html from target url: (${getUrl})"
 }
 
 
 func_get_imageId() {
+    log_message "${FUNCNAME[0]}"
     # Gather a list of docker images repo name "getmp4"
-    $DOCKERCMD images -n | grep -m1 getmp4  &>/dev/null
-    if [ "$?"  == "0" ]; then
+    if $DOCKERCMD images -n | grep -m1 getmp4  &>/dev/null; then
 	# Added grep -m1 in order to restrict the number of images being returned
         get_imgId=$($DOCKERCMD images -n | grep -m1 getmp4  | awk '{print $3}')
-        printf "\nContainer being built with image: ${get_imgId}"
-	    printf "\n"
-	    $DOCKERCMD ps 
+        log_message "\tContainer being built with image: ${get_imgId}"
+        log_message "\tCurrent running containers:"
+        ps_result=$($DOCKERCMD ps)
+        log_message "\t$ps_result"
     else
-	    printf "\nUnable to locate Image Repository '${get_ImgId}'"
-	    exit 1
+	    log_message "\tUnable to locate required Container Image...exit 105"
+	    exit 105
     fi
 }
 
