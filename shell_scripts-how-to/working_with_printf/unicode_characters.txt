@@ -1,0 +1,17 @@
+Unicode
+# ✅  ---> u2705 
+# ⌨   ---> u2328
+# ⛔  ---> u26d4
+#    ---> uf108
+# 🔌  ---> u1F50C
+# 🔋  ---> u1F50B
+# 🐧  ---> U1f427
+# 🔍  ---> U1f50d
+# 🔔  ---> U1f514
+# 🐭  ---> U1f42d
+# 🧐  ---> U1F9D0
+# 🚀  ---> U1F680
+
+
+The printf allows for printing multiple unicode characters:
+printf "%.s\U1F680" {1..50}
