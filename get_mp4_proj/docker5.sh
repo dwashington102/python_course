@@ -34,23 +34,71 @@ loopCount=$((RANDOM % 10 + 1))
 declare -ag arr=()
 
 MAIN() {
+    loginit=1
+    create_log
+    loginit=1 && log_message
     func_set_dockercmd
-    func_getUserUrl
-    func_search_items
-    func_get_imageId
-    func_run
+    # func_getUserUrl
+    # func_search_items
+    # func_get_imageId
+    # func_run
+    loginit=99 && log_message
 }
 
+create_log() {
+    if [[ "$(id -u)" == 0 ]]; then
+        logdir="/var/log/custom"
+    else
+        logdir="/var/tmp/custom"
+    fi
+
+    dts=$(date +"%Y%m%d_%H%M%S")
+
+    if [ ! -d ${logdir} ]; then
+        /usr/bin/mkdir -p ${logdir} &>/dev/null
+    fi
+
+    if [ -d "${logdir}" ]; then
+        logfile="${logdir}/runtime_${dts}.log"
+    else
+        logfile="$HOME/runtime_${dts}.log" # Fall back location
+    fi
+
+    # Create log file
+    if ! /usr/bin/truncate -s0 "${logfile}"; then
+        printf "Unable to create log file %s...exit(102)" "${logfile}"
+        exit 102
+    fi
+}
+
+
+log_message(){
+    local message
+    if [ ${loginit} == 1 ]; then
+        message="Starting application"
+        loginit=$((loginit + 1))
+    elif [ ${loginit} == 99 ]; then
+        message="Completed application"
+    else
+        message="$1"
+    fi
+
+    printf "%s: $message\n" "$(date --rfc-3339=seconds)" >> ${logfile}
+}
+# End Common functions
+
 func_set_dockercmd () {
+    log_message "${FUNCNAME[0]}"
     if which docker > /dev/null 2>&1; then
         DOCKERCMD='docker'
     elif which podman &>/dev/null; then
         DOCKERCMD='podman'
     else
-        printf "docker nor podman command found on server\n"
-        printf "Install the required packages...exit 2\n"
+        log_message "docker nor podman command found on server"
+        log_message "Install the required packages...exit 2"
         exit 2
     fi
+    log_message "\tpkg name: ${DOCKERCMD}"
 }
 
 func_search_items (){
