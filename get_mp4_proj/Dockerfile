@@ -12,11 +12,11 @@ FROM fedora:latest
 # Perform upgrade and install necessary packages
 RUN dnf upgrade -y
 RUN dnf update && \
-  dnf install -y  \
+  dnf install --skip-unavailable -y  \
   man \
   wget \
   vim \
-  mlocate \
+  plocate \
   file \
   iputils\
   && rm -rf /var/lib/apt/lists/*
