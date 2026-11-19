@@ -107,15 +107,15 @@ func_search_items (){
     log_message "${FUNCNAME[0]}()"
     unset itemCount
     unset loopCount
-    declare -i itemCount=1 # sets search to be a min. of 1 item
-    declare -i loopCount=1
+    local itemCount=0 # sets search to be a min. of 1 item
+    local loopCount=1
 
-    printf "\nProvide number of search items: "
+    printf "\nProvide number of search items (1-9): "
     read itemCount
-    re='^[0-9]+$'
+    re='^[1-9]+$'
     if ! [[ $itemCount =~ $re ]] ; then
         log_message "itemCount: (${itemCount}) -> invalid -> exit 101" 
-        printf "Entered value (%s) is not a number...exit 101\n" "${itemCount}" 
+        printf "Entered value (%s) is not valid...exit 101\n" "${itemCount}" 
         exit 101
     fi
 
