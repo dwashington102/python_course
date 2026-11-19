@@ -83,7 +83,7 @@ log_message(){
         message="$1"
     fi
 
-    printf "%s: $message\n" "$(date --rfc-3339=seconds)" >> ${logfile}
+    printf "%s: $message\n" "$(date --rfc-3339=seconds)" >> "${logfile}"
 }
 # End Common functions
 
@@ -139,7 +139,7 @@ func_getUserUrl () {
     dbStorage="/tmp/testenv"
 
     topDir=$(mktemp -p $dbStorage -d)
-    if [ -d $topDir ]; then
+    if [ -d "${topDir}" ]; then
         pushd "${topDir}" &>/dev/null 
     else
         log_message "Unable to open ${topDir}...exit 106"
@@ -148,7 +148,7 @@ func_getUserUrl () {
     fi
     log_message "\tstorage loc: ${topDir}"
     # printf "\nEnter URL: "
-    read -p "Enter URL: " getUrl
+    read -rp "Enter URL: " getUrl
     IFS=$'\n'
     if wget --no-check-certificate ${getUrl} -O index.html &>/dev/null; then
         if ! ls -1 index.html > /dev/null 2>&1; then
@@ -200,12 +200,12 @@ func_run() {
             log_message "\tSelecting random number for container: ${randopod}\n"
             mkdir_result00=$(mkdir -vp "$topDir/$randopod/$myTag")
             log_message "\tmkdir_00: $mkdir_result00"
-            $DOCKERCMD container run -d -m 512M --env TERM=dumb --rm --name ${getUserUrl}v${randopod} -w "/data" -v $topDir/$randopod/$myTag:/data ${get_imgId} ${getUrl}/term/${myTag}
+            $DOCKERCMD container run -d -m 512M --env TERM=dumb --rm --name ${getUrl}v${randopod} -w "/data" -v $topDir/$randopod/$myTag:/data ${get_imgId} ${getUrl}/term/${myTag}
         else
             mkdir_result01=$(mkdir -vp "$topDir/$podCount/$myTag")
             log_message "\tmkdir_01: $mkdir_result01"
             log_message "\tSelecting podcount number for container: ${podCount}\n"
-            $DOCKERCMD container run -d -m 512M --env TERM=dumb --rm --name ${getUserUrl}v${podCount} -w "/data" -v $topDir/$podCount/$myTag:/data ${get_imgId} ${getUrl}/term/${myTag}
+            $DOCKERCMD container run -d -m 512M --env TERM=dumb --rm --name ${getUrl}v${podCount} -w "/data" -v $topDir/$podCount/$myTag:/data ${get_imgId} ${getUrl}/term/${myTag}
         fi
         podCount=$((podCount + 1))
         sleep 3
