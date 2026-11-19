@@ -110,8 +110,7 @@ func_search_items (){
     local itemCount=0 # sets search to be a min. of 1 item
     local loopCount=1
 
-    printf "\nProvide number of search items (1-9): "
-    read itemCount
+    read -p "Provide number of search items (1-9): " itemCount
     re='^[1-9]+$'
     if ! [[ $itemCount =~ $re ]] ; then
         log_message "itemCount: (${itemCount}) -> invalid -> exit 101" 
@@ -122,8 +121,7 @@ func_search_items (){
 
     while [ $loopCount -le $itemCount ]
     do
-        echo "Enter search item number($loopCount)"
-        read searchString
+        read -p "Enter search item number($loopCount): " searchString
         ar_search+=("$searchString")
         ((loopCount++))
     done
