@@ -7,6 +7,7 @@ function set_dts () {
 
 function create_log() {
     set_dts
+    logname=$(basename $0)
     if [ $(id -u) -eq 0 ]; then
         logdir="/var/log"
     else
@@ -18,9 +19,9 @@ function create_log() {
     fi
 
     if [ -d ${logdir} ]; then
-        logfile=${logdir}/$0_${DTS}.log
+        logfile=${logdir}/${logname}_${DTS}.log
     else
-        logfile=/tmp/$0_${DTS}.log
+        logfile=/tmp/${logname}_${DTS}.log
     fi
 
     /usr/bin/truncate -s0 ${logfile}
