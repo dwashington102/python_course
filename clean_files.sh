@@ -81,8 +81,8 @@ func_dd () {
             do
                 loop_count=$((loop_count + 1))
                 f_size=$(stat -c "%s" "${f_name}")
-                printf "\nProcessing File (${loop_count}/${#file_list[@]}): %s --- Size: %s" "${f_name}" "${f_size}"
-                log_message "\tProcessing (${loop_count}/${#file_list[@]}): ${f_name} size: ${f_size}"
+                printf "\nProcessing File (${loop_count}/${#file_list[@]}): %s --- Size(bytes): %s" "${f_name}" "${f_size}"
+                log_message "\tProcessing (${loop_count}/${#file_list[@]}): ${f_name} size(bytes): ${f_size}"
                 sleep 5
                 if [ "$f_size" -gt 0 ]; then
                     printf "\n\t- Calling dd for filename: %s" "${f_name}"
