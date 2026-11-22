@@ -1,0 +1,48 @@
+###### Common Functions
+function set_dts () {
+    unset DTS
+    set DTS=$(date +"%Y%m%d_%H%M%S")
+}
+
+
+function create_log() {
+    logdir="/var/log"
+
+    if [ ! -d ${logdir} ]; then
+        /usr/bin/mkdir -p ${logdir}
+    fi
+
+    if [ -d ${logdir} ]; then
+        logfile=${logdir}/$0_${DTS}.log
+    else
+        logfile=/tmp/$0_${DTS}.log
+    fi
+
+    /usr/bin/truncate -s0 ${logfile}
+}
+
+
+function log_message(){
+    local message
+
+    if [[ $loginit == 1 ]]; then
+        message="Starting application"
+        loginit=$((loginit + 1))
+    elif [[ $loginit == 99 ]]; then
+        message="All actions completed"
+    else
+        message="$1"
+    fi
+
+    printf "%s: $message\n" "$(date --rfc-3339=seconds)" >> ${logfile}
+}
+
+
+function check_uid (){
+    if [[ "$(id -u)" -ne "0" ]]; then
+        printf "Script must be run as root or using sudo...exit(100)\n"
+        exit 100
+    fi
+    printf "Running script as root user.\n"
+}
+###### Common Functions
