@@ -6,7 +6,11 @@ function set_dts () {
 
 
 function create_log() {
-    logdir="/var/log"
+    if [ $(id -u) -eq 0 ]; then
+        logdir="/var/log"
+    else
+        logdir="/var/tmp/"
+    fi
 
     if [ ! -d ${logdir} ]; then
         /usr/bin/mkdir -p ${logdir}
