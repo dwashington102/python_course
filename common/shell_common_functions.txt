@@ -1,13 +1,13 @@
 ###### Common Functions
 function set_dts () {
     unset DTS
-    set DTS=$(date +"%Y%m%d_%H%M%S")
+    DTS=$(date +"%Y%m%d_%H%M%S")
 }
 
 
 function create_log() {
     set_dts
-    logname=$(basename $0)
+    logname=$(basename --suffix=".sh" $0)
     if [ $(id -u) -eq 0 ]; then
         logdir="/var/log"
     else
