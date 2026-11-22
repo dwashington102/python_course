@@ -6,6 +6,7 @@ function set_dts () {
 
 
 function create_log() {
+    set_dts
     if [ $(id -u) -eq 0 ]; then
         logdir="/var/log"
     else
