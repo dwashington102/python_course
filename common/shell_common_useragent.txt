@@ -1,0 +1,31 @@
+    agent_file="/root/static/static_WGETRC"
+    WGET_AGENT=""
+    if [ -f ${agent_file} ]; then
+        log_message "\tagent file found"
+        WGET_AGENT=$(shuf -n 1 "$agent_file" | sed 's/^user_agent = //')
+    fi
+    
+    
+        if [ -z "${WGET_AGENT}" ]; then
+        wget_cmd="wget --timeout=3 --no-check-certificate -a ./logs/get_index.log -O ${TOP_INDEX} ${GETURL}"
+        wget_cmd_var=1
+    else
+        wget_cmd=(
+            --timeout=3 
+            --user-agent="${WGET_AGENT}"
+            --no-check-certificate 
+            -a "./logs/get_index.log"
+            -O "${TOP_INDEX}"
+            ${GETURL}
+        )
+        wget_cmd_var=2
+    fi
+    
+        log_message "\tCalling wget_cmd"
+    if [ $wget_cmd_var == "1" ]; then
+        ${wget_cmd}
+    else
+        wget "${wget_cmd[@]}"
+    fi
+
+    log_message "\twget_cmd rc: ($?)"
