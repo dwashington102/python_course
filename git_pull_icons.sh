@@ -10,7 +10,7 @@ EXIT CODES:
 COMMENT
 
 tStamp=$(date +%Y%m%d_%H%M)
-scriptName=`basename "$0"`
+scriptName=`basename --suffix=".sh" "$0"`
 logfile=$HOME/cronlogs/cronlog-"$scriptName"_"$tStamp".log
 declare -a gitRepoList=("https://github.com/vinceliuice/Fluent-icon-theme.git"
  "https://github.com/alvatip/Nordzy-icon.git"
@@ -23,7 +23,8 @@ declare -a gitRepoList=("https://github.com/vinceliuice/Fluent-icon-theme.git"
 
 rename_dirs (){
      IFS=$'\n'
-     list_dirs=($(find . -maxdepth 1 ! -iname ".*" -type d -exec basename {} \;))
+     mapfile -t list_dirs < <(find . -maxdepth 1 ! -iname ".*" -type d -exec basename {} \;)
+     # list_dirs=($(find . -maxdepth 1 ! -iname ".*" -type d -exec basename {} \;))
      if [ "${#list_dirs[@]}" -ne "0" ]; then
          for dirName in "${list_dirs[@]}"
          do
@@ -40,24 +41,25 @@ git_clone_actions () {
     for gitRepo in "${gitRepoList[@]}"
     do
 	    git clone "$gitRepo" &>>"$logfile"
-	    printf "git '$gitRepo' rc=$?\n\n"
+	    printf "git '%s' rc=$?\n\n" "${gitRepo}"
     done
 }
 
 MAIN (){
+    dts=$(date +"%Y%md%d_%H:%M")
     if [ ! -d "$HOME"/cronlogs ]; then
         mkdir -p "$HOME"/cronlogs
     fi
     
     if [ ! -f "$logfile" ]; then
-	touch "$logfile"
+	    touch "$logfile"
     fi
 
     (
     pushd $HOME/git_icons &>/dev/null
     rename_dirs
     git_clone_actions
-    printf "\nActions Completed at $(date +%Y%m%d_%H:%M)\n"
+    printf "\nActions Completed at %s\n" "${dts}"
     ) > "$logfile"
 }
 
