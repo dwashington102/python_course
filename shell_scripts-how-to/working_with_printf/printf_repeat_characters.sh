@@ -7,6 +7,7 @@ hello
 **********************
 COMMENTS
 
+# Avoid placing \n within double-quotes or it is repeated 
 printf "%.s*" {1..50} ; printf "\n"
 echo "hello"
 printf "%.s*" {1..50} ; printf "\n"
