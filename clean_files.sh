@@ -26,14 +26,14 @@ function create_log() {
         /usr/bin/mkdir -p ${logdir}
     fi
 
-    logname=$(basename --suffix=".sh" $0)
+    logname=$(basename --suffix=".sh" "$0")
     if [ -d ${logdir} ]; then
         logfile=${logdir}/${logname}_${DTS}.log
     else
         logfile=/tmp/${logname}_${DTS}.log
     fi
 
-    /usr/bin/truncate -s0 ${logfile}
+    /usr/bin/truncate -s0 "${logfile}"
 }
 
 
@@ -49,7 +49,7 @@ function log_message(){
         message="$1"
     fi
 
-    printf "%s: $message\n" "$(date --rfc-3339=seconds)" >> ${logfile}
+    printf "%s: $message\n" "$(date --rfc-3339=seconds)" >> "${logfile}"
 }
 
 
@@ -65,7 +65,7 @@ function check_uid (){
 
 func_dd () {
     log_message "${FUNCNAME[0]}()"
-    mapfile -t file_list < <(find $PWD -maxdepth 1 -type f -name "*${ext_type}")
+    mapfile -t file_list < <(find "$PWD" -maxdepth 1 -type f -name "*${ext_type}")
     log_message "\tdirectory: $PWD"
     log_message "\text: ${ext_type}"
     log_message "\titems found: ${#file_list[@]}"
@@ -101,7 +101,11 @@ func_dd () {
                     log_message "\t- bleachbit action: rc=$?"
                 fi
                 log_message "\tCompleted actions for ${f_name}\n"
-                sleep 5
+
+                # do not sleep after processing last item in array
+                if [[ "${f_size}" -ne 0 && "${loop_count}" -lt "${#file_list[@]}" ]]; then
+                    sleep 5
+                fi
             done
     else
         printf "\nNo files with the extension %s found in current directory" "${ext_type}"
@@ -124,7 +128,7 @@ func_set_colors () {
 
 func_get_ext () {
     printf "Input File Extension.:\t"
-    read ext_type
+    read -r ext_type
 }
 
 
@@ -133,7 +137,7 @@ main () {
     loginit="1" ; log_message
     func_set_colors
     printf "\nSCRIPT WILL dd ALL FILES IN THIS DIRECTORY that match the given extension:\t"
-    echo $PWD
+    echo "$PWD"
 
     if [ -z "${ext_type}" ]; then
         func_get_ext
