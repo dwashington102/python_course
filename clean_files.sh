@@ -136,7 +136,7 @@ main () {
     create_log
     loginit="1" ; log_message
     func_set_colors
-    printf "\nSCRIPT WILL dd ALL FILES IN THIS DIRECTORY that match the given extension:\t"
+    printf "\nSCRIPT WILL REMOVE ALL FILES IN THIS DIRECTORY that match the given extension:\t"
     echo "$PWD"
 
     if [ -z "${ext_type}" ]; then
