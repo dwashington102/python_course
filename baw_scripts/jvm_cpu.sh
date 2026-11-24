@@ -1,14 +1,23 @@
 #!/usr/bin/env bash
 
-printf "Javacore 1: \t"
-read jcore1
+jcore1=""
+jcore2=""
 
-printf "Javacore 2: \t"
-read jcore2
+while [[ ! -f "$jcore1" ]]; do
+    printf "Enter first valid Javacore filename: \t"
+    read -r jcore1
+done
 
-printf "\n========================================================="
+
+while [[ ! -f "$jcore2" ]]; do
+    printf "Enter second valid Javacore filename: \t"
+    read -r jcore2
+done
+
+
+printf "%.s=" {1..50}; printf "\n"
 printf "\nTHREADINFO\t    1-CPUTIME\t2-CPUTIME    Time DIFF\n"
-printf "\n========================================================="
+printf "%.s=" {1..50}; printf "\n"
 printf "\n"
 join -a 1 -a 2 \
     <(\
