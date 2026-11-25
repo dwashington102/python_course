@@ -127,17 +127,18 @@ func_set_colors () {
 
 
 func_get_ext () {
-    printf "Input File Extension.:\t"
+    printf "\nInput File Extension:\t"
     read -r ext_type
 }
 
 
 main () {
+    export TERM="xterm"
     create_log
     loginit="1" ; log_message
     func_set_colors
-    printf "\nSCRIPT WILL REMOVE ALL FILES IN THIS DIRECTORY that match the given extension:\t"
-    echo "$PWD"
+    printf "\n%sSCRIPT WILL REMOVE ALL FILES IN THIS DIRECTORY that match the given extension:%s\n" "${cyan}" "${normal}"
+    printf "%s\n" "$PWD"
 
     if [ -z "${ext_type}" ]; then
         func_get_ext
@@ -147,7 +148,7 @@ main () {
         ext_type="*"
     fi
 
-    printf "Preparing to dd files with ext. '%s'\n" "${ext_type}"
+    printf "Preparing to remove files with ext. '%s'\n" "${ext_type}"
     sleep 5
     func_dd
     loginit="99" ; log_message
