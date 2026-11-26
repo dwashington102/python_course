@@ -144,11 +144,14 @@ main () {
         func_get_ext
     fi
 
-    if [ "${ext_type}" == "all" ]; then
+    if [ "${ext_type}" == "*" ]; then
         ext_type="*"
+        warn_msg="Preparing to remove ALL files."
+    else
+        warn_msg="Preparing to remove files with extension: ${ext_type}"
     fi
 
-    printf "Preparing to remove files with ext. '%s'\n" "${ext_type}"
+    printf "%s\n" "${warn_msg}"
     sleep 5
     func_dd
     loginit="99" ; log_message
