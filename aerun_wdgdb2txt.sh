@@ -63,17 +63,9 @@ DESCRIPTION
     tableRows=$(sqlite3 -init /dev/null "${db_filename}" "select count(*) from '$tableName'" 2>/dev/null)
     # tableRows=($(sqlite3 -init /dev/null "${db_filename}" "select count(*) from '$tableName'" 2>/dev/null))
 
-    # if-clause prints a period to show progress
-    if [[ ${loopcount} -le 10 ]]; then
-        echo -n '.'
-        loopcount=$((loopcount + 1))
-    else
-        printf "\n" && echo -n '.'
-        loopcount=0
-    fi
-
     if [[ ${tableRows} -eq 0 ]]; then
         printf "\n\t\tTablename: %s contains '0' rows - skipping converting table contents to text file.\n" "${tableName}" >> "${convertResults}"
+        outputchar="."
     else
         printf "\n\t\tTablename: %s contains '%s' rows converting table contents to text file." "${tableName}" "${tableRows}" >> "${convertResults}"
         mkdir -p "${outputLogs}"
@@ -85,6 +77,7 @@ DESCRIPTION
         echo "select * from '${tableName}';" >> convert_wdg.sql
         echo ".quit" >> convert_wdg.sql
         sqlite3 -init /dev/null "${db_filename}" ".read convert_wdg.sql" 2>/dev/null
+        outputchar="^"
     fi                        
     if [ -n "${outputText}" ]; then
         fmt_output=$(ls -lG "${outputText}")
@@ -94,6 +87,15 @@ DESCRIPTION
     fi
     # rm -f ${outputTables}
     command rm -f ./convert_wdg.sql
+
+    # if-clause prints a period to show progress
+    if [[ ${loopcount} -le 10 ]]; then
+        echo -n ${outputchar}
+        loopcount=$((loopcount + 1))
+    else
+        printf "\n" && echo -n ${outputchar}
+        loopcount=1
+    fi
 }
 
 
@@ -133,7 +135,7 @@ DESCRIPTION
         if [ -s "$outputTables" ]; then
             outputLogs='./'$dts'/'$db_filename'_db_converted_dir'
             printf "\n\n%s database: " "${db_filename}" >> "${convertResults}"
-            loopcount=0
+            # loopcount=1
             for tableName in $(cat $outputTables)
             do
                 printf "\n\tProcessing tableName -> %s" "${tableName}" >> "${convertResults}"
